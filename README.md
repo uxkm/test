@@ -1,1839 +1,548 @@
+# 레거시 브라우저 지원 가이드 (Android 6, iOS 7)
 
+## 개요
 
-# `:has()` 선택자 대응 방법 가이드
+이 문서는 Android 6 (Marshmallow, API 23) 및 iOS 7을 지원하기 위한 CSS 호환성 가이드입니다.
 
-## iOS 15.0-15.3 및 Android 7 지원을 위한 Fallback 구현
-
-검토 일자: 2025.11.20
-
----
-
-## 📋 목차
-
-1. [문제 상황](#1-문제-상황)
-2. [대응 방법 개요](#2-대응-방법-개요)
-3. [CSS @supports 방법](#3-css-supports-방법)
-4. [JavaScript Fallback 방법](#4-javascript-fallback-방법)
-5. [Vue Directive 방법](#5-vue-directive-방법) ⭐ **권장**
-6. [주요 사용 패턴별 대응](#6-주요-사용-패턴별-대응)
-7. [구현 예시](#7-구현-예시)
+### 지원 대상
+- **Android 6** (Marshmallow, API 23) - 2015년 출시
+- **iOS 7** - 2013년 출시
 
 ---
 
-## 1. 문제 상황
+## 지원되지 않는 CSS 속성 및 기능
 
-### 지원 현황
+### 1. CSS Custom Properties (CSS Variables) ❌
 
-- **iOS 15.0-15.3**: ❌ `:has()` 미지원
-- **iOS 15.4+**: ✅ `:has()` 지원
-- **Android 7 (Chrome 51-59)**: ❌ `:has()` 미지원
-- **Chrome 105+**: ✅ `:has()` 지원
-
-### 프로젝트 사용 현황
-
-- **resources/assets/styles**: 71개 사용
-- **packages/solid/src**: 5개 사용
-- **총 76개 사용**
-
----
-
-## 2. 대응 방법 개요
-
-### 옵션 1: CSS @supports (권장 - 간단한 경우)
-
-- 장점: CSS만으로 해결, JavaScript 불필요
-- 단점: 복잡한 선택자는 대응 어려움
-- 적용: 단순한 `:has()` 사용에 적합
-
-### 옵션 2: JavaScript Fallback (권장 - 복잡한 경우)
-
-- 장점: 모든 경우에 대응 가능, 유연함
-- 단점: JavaScript 코드 필요
-- 적용: 복잡한 선택자나 동적 콘텐츠에 적합
-
-### 옵션 3: Vue Directive (⭐ 권장)
-
-- 장점: Vue스러운 선언적 방식, 컴포넌트에서 직접 사용 가능, 자동 클래스 관리
-- 단점: Vue 프로젝트에서만 사용 가능
-- 적용: **가장 권장되는 방법**
-
-### 옵션 4: 하이브리드
-
-- Vue Directive + CSS @supports 조합
-- 최적의 호환성과 성능 제공
-
----
-
-## 3. CSS @supports 방법
-
-### ⚠️ 중요: @supports selector() 지원 여부
-
-**@supports 기본 구문**:
-
-- ✅ iOS 15: 지원 (Safari 9+)
-- ✅ Android 7: 지원 (Chrome 28+)
-
-**@supports selector() 구문**:
-
-- ⚠️ iOS 15.0-15.3: 미지원 (Safari 15.0-15.3)
-- ✅ iOS 15.4+: 지원 (Safari 15.4+)
-- ❌ Android 7: 미지원 (Chrome 51-59)
-- ✅ Chrome 88+: 지원
-
-**결론**: `@supports selector(:has(*))` 구문은 iOS 15.0-15.3과 Android 7에서 **지원되지 않습니다**.
-
-따라서 `@supports selector()`를 사용할 수 없으므로, **JavaScript Fallback 방법을 사용해야 합니다**.
-
-### 대안: @supports 속성 기반 감지 (제한적)
-
-`:has()` 선택자 자체를 직접 감지할 수 없으므로, 대신 다른 방법을 사용해야 합니다:
-
+**문제:**
 ```scss
-// ❌ 작동하지 않음 (iOS 15.0-15.3, Android 7 미지원)
-@supports selector(:has(*)) {
-  // ...
-}
-
-// ✅ 대안: JavaScript로 클래스 추가 후 CSS에서 사용
-.sc-container.has-bottom-action-container {
-  overscroll-behavior: contain;
+// ❌ 지원 안됨
+.element {
+  padding: var(--spacing-lg);
+  color: var(--text-primary);
+  background: var(--bg-canvas_white);
 }
 ```
 
-### 기본 사용법 (JavaScript Fallback 필수)
-
+**해결 방법:**
 ```scss
-// :has() 미지원 시 (JavaScript로 클래스 추가 필요)
-.sc-container.has-bottom-action-container {
-  overscroll-behavior: contain;
+// ✅ 대체 방법
+.element {
+  padding: 12px; // 직접 값 사용
+  color: #1a1a1a;
+  background: #ffffff;
 }
 
-// :has() 지원 시 (선택적 - 성능 최적화)
-@supports selector(:has(*)) {
-  .sc-container:has(.sv-bottom-action-container) {
-    overscroll-behavior: contain;
-  }
+// 또는 SCSS 변수 사용
+$spacing-lg: 12px;
+$text-primary: #1a1a1a;
+.element {
+  padding: $spacing-lg;
+  color: $text-primary;
 }
 ```
 
-### 실제 적용 예시
+**현재 프로젝트 사용 현황:**
+- `var(--spacing-*)` - 모든 spacing 토큰
+- `var(--text-*)` - 모든 텍스트 색상
+- `var(--bg-*)` - 모든 배경 색상
+- `var(--border-*)` - 모든 border 색상
+- `var(--radius-*)` - border-radius 값
+- `var(--font-size-*)` - 폰트 크기
 
-#### 예시 1: 단순 자식 요소 확인
+---
 
+### 2. CSS Grid ❌
+
+**문제:**
 ```scss
-// layouts/_layout.scss
-.sc-container {
-  // 기본 스타일
-  padding-top: var(--spacing-xl);
-
-  // :has() 미지원 시 (JavaScript로 클래스 추가 - 필수)
-  &.has-bottom-action-container {
-    overscroll-behavior: contain;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  // :has() 지원 시 (선택적 - 성능 최적화)
-  // iOS 15.4+, Chrome 105+에서만 작동
-  @supports selector(:has(*)) {
-    &:has(.sv-bottom-action-container) {
-      overscroll-behavior: contain;
-      -webkit-overflow-scrolling: touch;
-    }
-  }
+// ❌ 지원 안됨
+.container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
 }
 ```
 
-#### 예시 2: :not()과 조합
-
+**해결 방법:**
 ```scss
-// layouts/_layout.scss
-.error-boundary-wrap {
-  min-height: 100vh;
-  min-height: 100dvh;
+// ✅ Flexbox 사용 (부분 지원)
+.container {
+  display: -webkit-box; // iOS 7
+  display: -webkit-flex; // iOS 7
+  display: flex;
+  -webkit-flex-wrap: wrap;
+  flex-wrap: wrap;
+}
 
-  // :has() 미지원 시 (JavaScript로 클래스 추가 - 필수)
-  // JavaScript에서 .sv-bottom-action-container가 없으면 클래스 추가
-  &:not(.has-bottom-action-container) {
-    padding-bottom: calc(var(--spacing-4xl) + env(safe-area-inset-bottom));
-    min-height: 100vh;
-    min-height: 100dvh;
-  }
-
-  // :has() 지원 시 (선택적 - 성능 최적화)
-  @supports selector(:has(*)) {
-    &:not(:has(.sv-bottom-action-container)) {
-      padding-bottom: calc(var(--spacing-4xl) + env(safe-area-inset-bottom));
-      min-height: 100vh;
-      min-height: 100dvh;
-    }
-  }
+.item {
+  -webkit-box-flex: 1;
+  -webkit-flex: 1;
+  flex: 1;
+  margin: 8px; // gap 대신 margin 사용
 }
 ```
 
 ---
 
-## 4. JavaScript Fallback 방법
+### 3. Flexbox Gap 속성 ❌
 
-### 4.1 유틸리티 함수 생성
-
-`packages/shared/src/utils/hasSelectorFallback.ts` 파일 생성:
-
-```typescript
-/**
- * :has() 선택자 fallback 유틸리티
- * iOS 15.0-15.3 및 Android 7에서 :has() 선택자를 대체하기 위한 클래스 추가
- */
-
-/**
- * :has() 선택자 지원 여부 확인
- */
-export function supportsHasSelector(): boolean {
-  try {
-    return CSS.supports("selector(:has(*))");
-  } catch {
-    return false;
-  }
-}
-
-/**
- * 특정 선택자에 해당하는 요소에 클래스 추가
- * @param selector - :has() 선택자를 포함한 전체 선택자
- * @param className - 추가할 클래스명
- * @param rootElement - 검색 시작 요소 (기본값: document)
- */
-export function addHasSelectorClass(
-  selector: string,
-  className: string,
-  rootElement: Document | HTMLElement = document
-): void {
-  if (supportsHasSelector()) {
-    return; // :has() 지원 시 JavaScript 처리 불필요
-  }
-
-  // :has() 선택자에서 실제 선택자와 :has() 부분 분리
-  const hasMatch = selector.match(/:has\(([^)]+)\)/);
-  if (!hasMatch) {
-    return;
-  }
-
-  const baseSelector = selector.replace(/:has\([^)]+\)/, "").trim();
-  const hasSelector = hasMatch[1];
-
-  // baseSelector로 요소 찾기
-  const elements = rootElement.querySelectorAll(baseSelector);
-
-  elements.forEach((element) => {
-    // :has() 내부 선택자로 자식 요소 확인
-    const hasChild = element.querySelector(hasSelector);
-    if (hasChild) {
-      element.classList.add(className);
-    } else {
-      element.classList.remove(className);
-    }
-  });
-}
-
-/**
- * MutationObserver를 사용하여 동적 콘텐츠 변경 감지
- * @param selector - :has() 선택자를 포함한 전체 선택자
- * @param className - 추가할 클래스명
- * @param rootElement - 관찰 대상 요소 (기본값: document.body)
- */
-export function observeHasSelector(
-  selector: string,
-  className: string,
-  rootElement: HTMLElement = document.body
-): MutationObserver | null {
-  if (supportsHasSelector()) {
-    return null; // :has() 지원 시 관찰 불필요
-  }
-
-  const hasMatch = selector.match(/:has\(([^)]+)\)/);
-  if (!hasMatch) {
-    return null;
-  }
-
-  const baseSelector = selector.replace(/:has\([^)]+\)/, "").trim();
-  const hasSelector = hasMatch[1];
-
-  const observer = new MutationObserver(() => {
-    const elements = rootElement.querySelectorAll(baseSelector);
-    elements.forEach((element) => {
-      const hasChild = element.querySelector(hasSelector);
-      if (hasChild) {
-        element.classList.add(className);
-      } else {
-        element.classList.remove(className);
-      }
-    });
-  });
-
-  observer.observe(rootElement, {
-    childList: true,
-    subtree: true,
-  });
-
-  // 초기 실행
-  const elements = rootElement.querySelectorAll(baseSelector);
-  elements.forEach((element) => {
-    const hasChild = element.querySelector(hasSelector);
-    if (hasChild) {
-      element.classList.add(className);
-    }
-  });
-
-  return observer;
-}
-```
-
-### 4.2 Vue Composable 생성
-
-`packages/shared/src/composables/useHasSelectorFallback.ts` 파일 생성:
-
-```typescript
-import { onMounted, onUnmounted } from "vue";
-import { observeHasSelector, supportsHasSelector } from "@/utils/hasSelectorFallback";
-
-interface HasSelectorConfig {
-  selector: string;
-  className: string;
-  rootElement?: HTMLElement;
-}
-
-/**
- * :has() 선택자 fallback을 위한 Vue Composable
- */
-export function useHasSelectorFallback(configs: HasSelectorConfig[]) {
-  let observers: (MutationObserver | null)[] = [];
-
-  onMounted(() => {
-    if (supportsHasSelector()) {
-      return; // :has() 지원 시 처리 불필요
-    }
-
-    observers = configs.map((config) =>
-      observeHasSelector(config.selector, config.className, config.rootElement)
-    );
-  });
-
-  onUnmounted(() => {
-    observers.forEach((observer) => {
-      if (observer) {
-        observer.disconnect();
-      }
-    });
-  });
-}
-```
-
----
-
-## 5. Vue Directive 방법 ⭐ **권장**
-
-Vue Directive를 사용하면 더 선언적이고 Vue스러운 방식으로 `:has()` fallback을 구현할 수 있습니다.
-
-### 5.1 Directive 구현
-
-`packages/shared/src/directives/hasSelector.ts` 파일 생성:
-
-```typescript
-import type { App, Directive, DirectiveBinding } from "vue";
-
-/**
- * :has() 선택자 지원 여부 확인
- */
-function supportsHasSelector(): boolean {
-  try {
-    return CSS.supports("selector(:has(*))");
-  } catch {
-    return false;
-  }
-}
-
-/**
- * v-has directive 타입 정의
- */
-interface HasDirectiveValue {
-  selector: string; // :has() 내부 선택자
-  className?: string; // 추가할 클래스명 (기본값: 'has-{selector}')
-}
-
-/**
- * v-has directive 구현
- * 사용법: v-has="'.sv-bottom-action-container'"
- * 또는: v-has="{ selector: '.sv-bottom-action-container', className: 'has-bottom-action' }"
- */
-const hasDirective: Directive = {
-  mounted(el: HTMLElement, binding: DirectiveBinding<string | HasDirectiveValue>) {
-    if (supportsHasSelector()) {
-      return; // :has() 지원 시 처리 불필요
-    }
-
-    const value = binding.value;
-    let selector: string;
-    let className: string;
-
-    if (typeof value === "string") {
-      selector = value;
-      // 클래스명 자동 생성 (예: '.sv-bottom-action-container' -> 'has-sv-bottom-action-container')
-      className = `has-${selector.replace(/^\./, "").replace(/\s+/g, "-")}`;
-    } else {
-      selector = value.selector;
-      className = value.className || `has-${selector.replace(/^\./, "").replace(/\s+/g, "-")}`;
-    }
-
-    // 초기 체크
-    checkAndUpdateClass(el, selector, className);
-
-    // MutationObserver로 동적 변경 감지
-    const observer = new MutationObserver(() => {
-      checkAndUpdateClass(el, selector, className);
-    });
-
-    observer.observe(el, {
-      childList: true,
-      subtree: true,
-    });
-
-    // cleanup을 위해 observer를 el에 저장
-    (el as any).__hasObserver = observer;
-  },
-
-  updated(el: HTMLElement, binding: DirectiveBinding<string | HasDirectiveValue>) {
-    if (supportsHasSelector()) {
-      return;
-    }
-
-    // 값이 변경된 경우 재체크
-    const value = binding.value;
-    let selector: string;
-    let className: string;
-
-    if (typeof value === "string") {
-      selector = value;
-      className = `has-${selector.replace(/^\./, "").replace(/\s+/g, "-")}`;
-    } else {
-      selector = value.selector;
-      className = value.className || `has-${selector.replace(/^\./, "").replace(/\s+/g, "-")}`;
-    }
-
-    checkAndUpdateClass(el, selector, className);
-  },
-
-  unmounted(el: HTMLElement) {
-    // cleanup
-    const observer = (el as any).__hasObserver;
-    if (observer) {
-      observer.disconnect();
-      delete (el as any).__hasObserver;
-    }
-  },
-};
-
-/**
- * 요소에 자식 요소가 있는지 확인하고 클래스 추가/제거
- */
-function checkAndUpdateClass(el: HTMLElement, selector: string, className: string) {
-  const hasChild = el.querySelector(selector);
-  if (hasChild) {
-    el.classList.add(className);
-  } else {
-    el.classList.remove(className);
-  }
-}
-
-/**
- * v-has-not directive (반대 로직)
- * :not(:has()) 패턴에 사용
- */
-const hasNotDirective: Directive = {
-  mounted(el: HTMLElement, binding: DirectiveBinding<string | HasDirectiveValue>) {
-    if (supportsHasSelector()) {
-      return;
-    }
-
-    const value = binding.value;
-    let selector: string;
-    let className: string;
-
-    if (typeof value === "string") {
-      selector = value;
-      className = `has-${selector.replace(/^\./, "").replace(/\s+/g, "-")}`;
-    } else {
-      selector = value.selector;
-      className = value.className || `has-${selector.replace(/^\./, "").replace(/\s+/g, "-")}`;
-    }
-
-    // 반대 로직: 자식이 없으면 클래스 추가
-    checkAndUpdateClassNot(el, selector, className);
-
-    const observer = new MutationObserver(() => {
-      checkAndUpdateClassNot(el, selector, className);
-    });
-
-    observer.observe(el, {
-      childList: true,
-      subtree: true,
-    });
-
-    (el as any).__hasNotObserver = observer;
-  },
-
-  updated(el: HTMLElement, binding: DirectiveBinding<string | HasDirectiveValue>) {
-    if (supportsHasSelector()) {
-      return;
-    }
-
-    const value = binding.value;
-    let selector: string;
-    let className: string;
-
-    if (typeof value === "string") {
-      selector = value;
-      className = `has-${selector.replace(/^\./, "").replace(/\s+/g, "-")}`;
-    } else {
-      selector = value.selector;
-      className = value.className || `has-${selector.replace(/^\./, "").replace(/\s+/g, "-")}`;
-    }
-
-    checkAndUpdateClassNot(el, selector, className);
-  },
-
-  unmounted(el: HTMLElement) {
-    const observer = (el as any).__hasNotObserver;
-    if (observer) {
-      observer.disconnect();
-      delete (el as any).__hasNotObserver;
-    }
-  },
-};
-
-function checkAndUpdateClassNot(el: HTMLElement, selector: string, className: string) {
-  const hasChild = el.querySelector(selector);
-  if (!hasChild) {
-    el.classList.add(className);
-  } else {
-    el.classList.remove(className);
-  }
-}
-
-/**
- * Vue Plugin으로 등록
- */
-export const hasSelectorDirectivePlugin = {
-  install(app: App) {
-    app.directive("has", hasDirective);
-    app.directive("has-not", hasNotDirective);
-  },
-};
-
-export default hasSelectorDirectivePlugin;
-```
-
-### 5.2 Plugin 등록
-
-`packages/shared/src/directives/index.ts` 파일 생성:
-
-```typescript
-export { hasSelectorDirectivePlugin } from "./hasSelector";
-```
-
-`packages/shared/src/index.ts`에 export 추가:
-
-```typescript
-export { hasSelectorDirectivePlugin } from "./directives";
-```
-
-`apps/@pms/src/plugins/index.ts` 수정:
-
-```typescript
-import "@/plugins/aggrid";
-import vuetify from "@/plugins/vuetify";
-import { hasSelectorDirectivePlugin } from "@shc-nss/shared";
-import { createPinia } from "pinia";
-import type { App, Plugin } from "vue";
-import Vue3Lottie from "vue3-lottie";
-
-const pinia = createPinia();
-
-/**
- * 플러그인 등록
- * @param {Object} app Vue 인스턴스
- */
-export const registerPlugins = (app: App) => {
-  app.use(pinia);
-  app.use(vuetify);
-  app.use(Vue3Lottie as unknown as Plugin, { name: "Vue3Lottie" });
-  app.use(hasSelectorDirectivePlugin); // v-has directive 등록
-};
-```
-
-### 5.3 사용 예시
-
-#### 예시 1: 기본 사용 (문자열)
-
-```vue
-<template>
-  <!-- .sc-container:has(.sv-bottom-action-container) -->
-  <div
-    class="sc-container"
-    v-has="'.sv-bottom-action-container'"
-  >
-    <div class="sv-bottom-action-container">...</div>
-  </div>
-</template>
-```
-
-#### 예시 2: 커스텀 클래스명
-
-```vue
-<template>
-  <div
-    class="sc-container"
-    v-has="{ selector: '.sv-bottom-action-container', className: 'has-bottom-action' }"
-  >
-    <div class="sv-bottom-action-container">...</div>
-  </div>
-</template>
-```
-
-#### 예시 3: :not(:has()) 패턴
-
-```vue
-<template>
-  <!-- .error-boundary-wrap:not(:has(.sv-bottom-action-container)) -->
-  <div
-    class="error-boundary-wrap"
-    v-has-not="'.sv-bottom-action-container'"
-  >
-    <!-- .sv-bottom-action-container가 없으면 'has-sv-bottom-action-container' 클래스 추가 -->
-  </div>
-</template>
-```
-
-#### 예시 4: 복잡한 선택자
-
-```vue
-<template>
-  <!-- .sc-container:has(> .sc-contents__body > .sc-tabs__group > .sv-tabs) -->
-  <div
-    class="sc-container"
-    v-has="{
-      selector: '> .sc-contents__body > .sc-tabs__group > .sv-tabs',
-      className: 'has-tabs-group',
-    }"
-  >
-    <div class="sc-contents__body">
-      <div class="sc-tabs__group">
-        <div class="sv-tabs">...</div>
-      </div>
-    </div>
-  </div>
-</template>
-```
-
-#### 예시 5: 동적 선택자
-
-```vue
-<script setup lang="ts">
-import { ref } from "vue";
-
-const hasContent = ref(".sv-bottom-action-container");
-</script>
-
-<template>
-  <div
-    class="sc-container"
-    v-has="hasContent"
-  >
-    <div class="sv-bottom-action-container">...</div>
-  </div>
-</template>
-```
-
-### 5.4 SCSS와 함께 사용
-
+**문제:**
 ```scss
-// layouts/_layout.scss
-.sc-container {
-  padding-top: var(--spacing-xl);
-
-  // :has() 미지원 시 (v-has directive로 클래스 추가)
-  &.has-sv-bottom-action-container {
-    overscroll-behavior: contain;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  // :has() 지원 시 (선택적 - 성능 최적화)
-  @supports selector(:has(*)) {
-    &:has(.sv-bottom-action-container) {
-      overscroll-behavior: contain;
-      -webkit-overflow-scrolling: touch;
-    }
-  }
+// ❌ 지원 안됨
+.flex-container {
+  display: flex;
+  gap: var(--spacing-lg);
 }
 ```
 
-### 5.5 장점
-
-1. **선언적**: 템플릿에서 직접 사용 가능
-2. **자동 관리**: 클래스 추가/제거 자동 처리
-3. **반응형**: Vue의 반응성 시스템과 통합
-4. **타입 안전**: TypeScript 지원
-5. **성능**: `:has()` 지원 브라우저에서는 자동으로 비활성화
-
----
-
-## 6. 주요 사용 패턴별 대응
-
-### 패턴 1: 단순 자식 요소 확인
-
+**해결 방법:**
 ```scss
-// 원본
-.sc-container:has(.sv-bottom-action-container) {
-  overscroll-behavior: contain;
+// ✅ margin 사용
+.flex-container {
+  display: -webkit-box; // iOS 7
+  display: -webkit-flex;
+  display: flex;
+  
+  > * + * {
+    margin-left: 12px; // gap 대신
+  }
 }
 
-// 대응 (JavaScript Fallback 필수)
-.sc-container.has-bottom-action-container {
-  overscroll-behavior: contain;
-}
-
-// 선택적: :has() 지원 브라우저용 (성능 최적화)
-@supports selector(:has(*)) {
-  .sc-container:has(.sv-bottom-action-container) {
-    overscroll-behavior: contain;
+// 또는 flex-direction: column인 경우
+.flex-container--column {
+  > * + * {
+    margin-top: 12px;
   }
 }
 ```
 
-```typescript
-// JavaScript
-observeHasSelector(".sc-container:has(.sv-bottom-action-container)", "has-bottom-action-container");
-```
+**현재 프로젝트 사용 현황:**
+- `.sortable-card__list` - `gap: var(--spacing-lg)`
+- `.sv-select-box-group`, `.sv-card` - `gap: var(--spacing-lg)`
+- `.password-bottomsheet__field .sv-cell-input` - `gap: var(--spacing-2xl)`
 
-### 패턴 2: :not()과 조합
+---
 
+### 4. `:has()` 선택자 ❌
+
+**문제:**
 ```scss
-// 원본
-&:not(:has(.sv-bottom-action-container)) {
-  padding-bottom: calc(var(--spacing-4xl) + env(safe-area-inset-bottom));
+// ❌ 지원 안됨
+.container:has(.child) {
+  padding: 20px;
 }
 
-// 대응 (JavaScript Fallback 필수)
-&:not(.has-bottom-action-container) {
-  padding-bottom: calc(var(--spacing-4xl) + env(safe-area-inset-bottom));
-}
-
-// 선택적: :has() 지원 브라우저용
-@supports selector(:has(*)) {
-  &:not(:has(.sv-bottom-action-container)) {
-    padding-bottom: calc(var(--spacing-4xl) + env(safe-area-inset-bottom));
-  }
+.sv-popup__body:has(.sortable-card__section) {
+  padding-inline: 0;
 }
 ```
 
-```typescript
-// JavaScript - :not()은 클래스 추가 로직이 반대
-const elements = document.querySelectorAll(".error-boundary-wrap");
-elements.forEach((element) => {
-  const hasChild = element.querySelector(".sv-bottom-action-container");
-  if (!hasChild) {
-    element.classList.add("has-bottom-action-container");
-  } else {
-    element.classList.remove("has-bottom-action-container");
-  }
-});
-```
-
-### 패턴 3: 복잡한 자식 선택자
-
+**해결 방법:**
 ```scss
-// 원본
-.sc-container:has(> .sc-contents__body > .sc-tabs__group > .sv-tabs) {
-  padding-top: 0;
+// ✅ 클래스 추가 또는 JavaScript 사용
+.container.has-child {
+  padding: 20px;
 }
 
-// 대응 (JavaScript Fallback 필수)
-.sc-container.has-tabs-group {
-  padding-top: 0;
-}
-
-// 선택적: :has() 지원 브라우저용
-@supports selector(:has(*)) {
-  .sc-container:has(> .sc-contents__body > .sc-tabs__group > .sv-tabs) {
-    padding-top: 0;
+// 또는 인접 선택자 활용
+.child {
+  .container {
+    padding: 20px;
   }
 }
 ```
 
-```typescript
-// JavaScript
-observeHasSelector(
-  ".sc-container:has(> .sc-contents__body > .sc-tabs__group > .sv-tabs)",
-  "has-tabs-group"
-);
-```
+**현재 프로젝트 사용 현황:**
+- `.sc-container:has(.sv-bottom-action-container)`
+- `.sc-container:has(> .sc-contents__body > .sc-tabs__group > .sv-tabs)`
+- `.sc-container:has(.sc-body__title ~ .sc-contents__body > .sc-tabs__group)`
+- `.sc-container:has(.sv-linear-progress-step)`
+- `.sc-container:has(.sv-tabs.sv-tabs--type-segment)`
+- `.sv-popup__body:has(.sortable-card__section)`
 
-### 패턴 4: 인접 형제 선택자와 조합
+---
 
+### 5. CSS Logical Properties ❌
+
+**문제:**
 ```scss
-// 원본 (table/_table.scss)
-&:not(:has(~ .#{$baseClass}__th--sticky-left)) {
-  border-right: 0;
-}
-
-// 대응 (JavaScript Fallback 필수)
-&:not(.has-sticky-left-sibling) {
-  border-right: 0;
-}
-
-// 선택적: :has() 지원 브라우저용
-@supports selector(:has(*)) {
-  &:not(:has(~ .#{$baseClass}__th--sticky-left)) {
-    border-right: 0;
-  }
+// ❌ 지원 안됨
+.element {
+  padding-inline: var(--spacing-2xl);
+  margin-inline: auto;
+  border-inline: 1px solid #ccc;
 }
 ```
 
-```typescript
-// JavaScript - 형제 요소 확인
-const elements = document.querySelectorAll(`.${baseClass}__th`);
-elements.forEach((element) => {
-  const nextSibling = element.nextElementSibling;
-  const hasStickyLeft = nextSibling?.classList.contains(`${baseClass}__th--sticky-left`);
-  if (!hasStickyLeft) {
-    element.classList.add("has-sticky-left-sibling");
-  } else {
-    element.classList.remove("has-sticky-left-sibling");
-  }
-});
-```
-
-### 패턴 5: 속성 선택자와 조합
-
+**해결 방법:**
 ```scss
-// 원본 (discoverNew_comp.scss)
-&:has([src=""]),
-&:has([src]),
-&:has([src="about:invalid"]),
-&:has([src^="data:image/svg+xml"]) {
-  // ...
-}
-
-// 대응 (JavaScript Fallback 필수)
-&.has-empty-src,
-&.has-src,
-&.has-invalid-src,
-&.has-svg-src {
-  // ...
-}
-
-// 선택적: :has() 지원 브라우저용
-@supports selector(:has(*)) {
-  &:has([src=""]),
-  &:has([src]),
-  &:has([src="about:invalid"]),
-  &:has([src^="data:image/svg+xml"]) {
-    // ...
-  }
+// ✅ 물리적 속성 사용
+.element {
+  padding-left: 20px;
+  padding-right: 20px;
+  margin-left: auto;
+  margin-right: auto;
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc;
 }
 ```
 
-```typescript
-// JavaScript
-const images = document.querySelectorAll("img");
-images.forEach((img) => {
-  const src = img.getAttribute("src");
-  if (!src || src === "" || src === "about:invalid") {
-    img.classList.add("has-empty-src", "has-invalid-src");
-  } else if (src.startsWith("data:image/svg+xml")) {
-    img.classList.add("has-svg-src");
-  } else {
-    img.classList.add("has-src");
-  }
-});
-```
+**현재 프로젝트 사용 현황:**
+- `.sv-popup__body:has(.sortable-card__section)` - `padding-inline: 0`
+- `.sc-container:has(.sv-tabs.sv-tabs--type-segment)` - `padding-inline: var(--spacing-2xl)`
 
 ---
 
-## 7. 구현 예시
+### 6. `object-fit` 속성 ❌
 
-### 7.1 Vue Directive 방법 (권장)
-
-#### 7.1.1 Directive 및 Plugin 생성
-
-위의 [5. Vue Directive 방법](#5-vue-directive-방법-⭐-권장) 섹션을 참고하여 구현합니다.
-
-#### 7.1.2 컴포넌트에서 사용
-
-```vue
-<template>
-  <!-- layouts/_layout.scss의 .sc-container:has(.sv-bottom-action-container) -->
-  <div
-    class="sc-container"
-    v-has="'.sv-bottom-action-container'"
-  >
-    <div class="sc-contents__body">...</div>
-    <div class="sv-bottom-action-container">...</div>
-  </div>
-
-  <!-- layouts/_layout.scss의 .error-boundary-wrap:not(:has(.sv-bottom-action-container)) -->
-  <div
-    class="error-boundary-wrap"
-    v-has-not="'.sv-bottom-action-container'"
-  >
-    <!-- 내용 -->
-  </div>
-</template>
-```
-
-### 7.2 전역 초기화 방법 (대안)
-
-```typescript
-// apps/@pms/src/main.ts 또는 plugins/hasSelectorFallback.ts
-import { observeHasSelector, supportsHasSelector } from "@shc-nss/shared/utils/hasSelectorFallback";
-
-if (!supportsHasSelector()) {
-  // 주요 :has() 사용 패턴에 대한 fallback 설정
-
-  // 1. .sc-container:has(.sv-bottom-action-container)
-  observeHasSelector(
-    ".sc-container:has(.sv-bottom-action-container)",
-    "has-bottom-action-container"
-  );
-
-  // 2. .sc-container:has(> .sc-contents__body > .sc-tabs__group > .sv-tabs)
-  observeHasSelector(
-    ".sc-container:has(> .sc-contents__body > .sc-tabs__group > .sv-tabs)",
-    "has-tabs-group"
-  );
-
-  // 3. .sc-container:has(> .sc-contents__body > .sc-tabs__group > .sv-tabs.sv-tabs--type-segment)
-  observeHasSelector(
-    ".sc-container:has(> .sc-contents__body > .sc-tabs__group > .sv-tabs.sv-tabs--type-segment)",
-    "has-segment-tabs"
-  );
-
-  // 4. .sc-container:has(.sc-body__title ~ .sc-contents__body > .sc-tabs__group)
-  observeHasSelector(
-    ".sc-container:has(.sc-body__title ~ .sc-contents__body > .sc-tabs__group)",
-    "has-title-tabs-group"
-  );
-
-  // 5. .sc-container:has(.sv-linear-progress-step)
-  observeHasSelector(".sc-container:has(.sv-linear-progress-step)", "has-linear-progress");
-
-  // 6. .sc-tabs__group:has(.sv-tabs.sv-tabs--type-segment)
-  observeHasSelector(".sc-tabs__group:has(.sv-tabs.sv-tabs--type-segment)", "has-segment-tabs");
-
-  // 7. .error-boundary-wrap:not(:has(.sv-bottom-action-container))
-  // :not()은 반대 로직으로 처리
-  const errorBoundaryElements = document.querySelectorAll(".error-boundary-wrap");
-  errorBoundaryElements.forEach((element) => {
-    const hasChild = element.querySelector(".sv-bottom-action-container");
-    if (!hasChild) {
-      element.classList.add("has-bottom-action-container");
-    }
-  });
-
-  // MutationObserver로 동적 변경 감지
-  const errorBoundaryObserver = new MutationObserver(() => {
-    const elements = document.querySelectorAll(".error-boundary-wrap");
-    elements.forEach((element) => {
-      const hasChild = element.querySelector(".sv-bottom-action-container");
-      if (!hasChild) {
-        element.classList.add("has-bottom-action-container");
-      } else {
-        element.classList.remove("has-bottom-action-container");
-      }
-    });
-  });
-  errorBoundaryObserver.observe(document.body, {
-    childList: true,
-    subtree: true,
-  });
-}
-```
-
-### 7.3 컴포넌트별 사용 (Vue Composable - 대안)
-
-```vue
-<!-- 컴포넌트에서 사용 -->
-<script setup lang="ts">
-import { useHasSelectorFallback } from "@shc-nss/shared/composables/useHasSelectorFallback";
-
-// :has() fallback 설정
-useHasSelectorFallback([
-  {
-    selector: ".sc-container:has(.sv-bottom-action-container)",
-    className: "has-bottom-action-container",
-  },
-  {
-    selector: ".sc-container:has(> .sc-contents__body > .sc-tabs__group > .sv-tabs)",
-    className: "has-tabs-group",
-  },
-]);
-</script>
-```
-
-### 7.4 SCSS 파일 수정 예시
-
+**문제:**
 ```scss
-// layouts/_layout.scss 수정 예시
+// ❌ 지원 안됨
+img {
+  object-fit: contain;
+  object-fit: cover;
+}
+```
 
-// 원본
-.sc-container:has(.sv-bottom-action-container) {
-  overscroll-behavior: contain;
-  -webkit-overflow-scrolling: touch;
+**해결 방법:**
+```scss
+// ✅ background-image 사용
+.image-container {
+  width: 100%;
+  height: 100%;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
-// 수정 후
-.sc-container {
-  // :has() 지원 시
-  @supports selector(:has(*)) {
-    &:has(.sv-bottom-action-container) {
-      overscroll-behavior: contain;
-      -webkit-overflow-scrolling: touch;
-    }
-  }
+// 또는 JavaScript로 처리
+```
 
-  // :has() 미지원 시 (JavaScript로 클래스 추가)
-  &.has-bottom-action-container {
-    overscroll-behavior: contain;
-    -webkit-overflow-scrolling: touch;
-  }
+**현재 프로젝트 사용 현황:**
+- `.card-list__body .sv-list__icon img` - `object-fit: contain`
+- `.loading-lottie img` - 주석 처리됨 (`// object-fit: contain;`)
+
+---
+
+### 7. `line-clamp` (표준 속성) ⚠️
+
+**문제:**
+```scss
+// ⚠️ 표준 line-clamp는 지원 안됨
+.text {
+  line-clamp: 2;
+}
+```
+
+**해결 방법:**
+```scss
+// ✅ -webkit-line-clamp 사용 (이미 사용 중)
+.text {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+```
+
+**현재 프로젝트 사용 현황:**
+- `.sortable-card__list .sv-list__text__main` - 이미 `-webkit-line-clamp` 사용 중 ✅
+
+---
+
+### 8. `position: sticky` ⚠️
+
+**문제:**
+```scss
+// ⚠️ iOS 7에서 부분 지원, Android 6에서 지원
+.sticky-element {
+  position: sticky;
+  top: 0;
+}
+```
+
+**해결 방법:**
+```scss
+// ✅ JavaScript로 폴백 구현 또는 position: fixed 사용
+.sticky-element {
+  position: -webkit-sticky; // iOS 7
+  position: sticky;
+  top: 0;
+}
+```
+
+**현재 프로젝트 사용 현황:**
+- `.sc-container:has(.sv-linear-progress-step) .sv-linear-progress-step` - `position: sticky`
+- `.sc-header__title` - `position: sticky`
+- `.sc-header__title--sticky` - `position: sticky`
+
+---
+
+### 9. `calc()` 함수 ⚠️
+
+**문제:**
+```scss
+// ⚠️ iOS 7에서 부분 지원, 복잡한 calc()는 문제 발생 가능
+.element {
+  width: calc(100% - 20px);
+  margin-top: calc(var(--spacing-4xl) - var(--spacing-xl)); // var()와 함께 사용 불가
+}
+```
+
+**해결 방법:**
+```scss
+// ✅ 직접 계산된 값 사용
+.element {
+  width: calc(100% - 20px); // 단순 calc는 가능
+  margin-top: 20px; // 32px - 12px = 20px
+}
+```
+
+**현재 프로젝트 사용 현황:**
+- `calc(var(--spacing-4xl) + env(safe-area-inset-bottom))` - var()와 함께 사용 ❌
+- `calc(var(--spacing-4xl) - var(--spacing-xl))` - var()와 함께 사용 ❌
+- `calc(var(--spacing-xl) * -1)` - var()와 함께 사용 ❌
+
+---
+
+### 10. `env()` 함수 ❌
+
+**문제:**
+```scss
+// ❌ 지원 안됨
+.element {
+  padding-bottom: env(safe-area-inset-bottom);
+  padding-top: calc(var(--spacing-4xl) + env(safe-area-inset-bottom));
+}
+```
+
+**해결 방법:**
+```scss
+// ✅ JavaScript로 safe-area 계산 또는 고정값 사용
+.element {
+  padding-bottom: 0; // 기본값
+}
+
+// JavaScript로 처리
+// const safeAreaBottom = window.safeAreaInsets?.bottom || 0;
+```
+
+---
+
+### 11. Flexbox (부분 지원) ⚠️
+
+**문제:**
+```scss
+// ⚠️ 구버전 prefix 필요
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+```
+
+**해결 방법:**
+```scss
+// ✅ 구버전 prefix 추가
+.container {
+  display: -webkit-box; // iOS 7 (구버전 flexbox)
+  display: -webkit-flex; // iOS 7 (신버전 flexbox)
+  display: flex;
+  
+  -webkit-box-pack: center; // justify-content (구버전)
+  -webkit-justify-content: center; // justify-content (신버전)
+  justify-content: center;
+  
+  -webkit-box-align: center; // align-items (구버전)
+  -webkit-align-items: center; // align-items (신버전)
+  align-items: center;
+}
+```
+
+**현재 프로젝트 사용 현황:**
+- 대부분의 flexbox 사용에 prefix 누락 가능성
+
+---
+
+### 12. `backdrop-filter` ❌
+
+**문제:**
+```scss
+// ❌ 지원 안됨
+.modal-backdrop {
+  backdrop-filter: blur(10px);
+}
+```
+
+**해결 방법:**
+```scss
+// ✅ 반투명 배경 사용
+.modal-backdrop {
+  background: rgba(0, 0, 0, 0.5);
+  // blur 효과는 불가능
 }
 ```
 
 ---
 
-## 📝 체크리스트
+### 13. `will-change` ❌
 
-### 구현 단계
+**문제:**
+```scss
+// ❌ 지원 안됨
+.animated {
+  will-change: transform;
+}
+```
 
-#### 방법 1: Vue Directive (권장)
-
-1. **Directive 및 Plugin 생성**
-   - [ ] `packages/shared/src/directives/hasSelector.ts` 생성
-   - [ ] `v-has` directive 구현
-   - [ ] `v-has-not` directive 구현
-   - [ ] Plugin 등록 함수 구현
-
-2. **Plugin 등록**
-   - [ ] `packages/shared/src/directives/index.ts` 생성
-   - [ ] `packages/shared/src/index.ts`에 export 추가
-   - [ ] `apps/@pms/src/plugins/index.ts`에 plugin 등록
-
-3. **SCSS 파일 수정**
-   - [ ] fallback 클래스 스타일 추가
-
-4. **컴포넌트에서 사용**
-   - [ ] 템플릿에 `v-has` 또는 `v-has-not` directive 추가
-
-#### 방법 2: 전역 초기화 (대안)
-
-1. **유틸리티 함수 생성**
-   - [ ] `packages/shared/src/utils/hasSelectorFallback.ts` 생성
-   - [ ] `supportsHasSelector()` 함수 구현
-   - [ ] `addHasSelectorClass()` 함수 구현
-   - [ ] `observeHasSelector()` 함수 구현
-
-2. **Vue Composable 생성**
-   - [ ] `packages/shared/src/composables/useHasSelectorFallback.ts` 생성
-
-3. **SCSS 파일 수정**
-   - [ ] `layouts/_layout.scss` 수정 (8개)
-   - [ ] `base/_utility.scss` 수정 (5개)
-   - [ ] `pay/_auth.scss` 수정 (6개)
-   - [ ] `module/_agree-list.scss` 수정 (18개)
-   - [ ] `pay/_benefits.scss` 수정 (7개)
-   - [ ] 기타 파일들 수정
-
-4. **JavaScript 초기화**
-   - [ ] 전역 초기화 코드 추가 (main.ts 또는 plugin)
-   - [ ] 주요 패턴에 대한 observer 설정
-
-5. **테스트**
-   - [ ] iOS 15.0-15.3 테스트
-   - [ ] Android 7 테스트
-   - [ ] iOS 15.4+ 테스트 (기존 동작 확인)
+**해결 방법:**
+```scss
+// ✅ 제거 (성능 최적화는 불가능하지만 기능에는 영향 없음)
+.animated {
+  // will-change 제거
+}
+```
 
 ---
 
-## 🎯 권장 구현 순서
+### 14. `transform` 속성 (부분 지원) ⚠️
 
-### Vue Directive 방법 (권장)
+**문제:**
+```scss
+// ⚠️ 일부 transform 함수는 지원 안됨
+.element {
+  transform: translate3d(0, 0, 0);
+  transform: scale(1.2);
+}
+```
 
-1. **1단계**: Directive 및 Plugin 생성
-   - `packages/shared/src/directives/hasSelector.ts` 생성
-   - `v-has`, `v-has-not` directive 구현
-
-2. **2단계**: Plugin 등록
-   - `apps/@pms/src/plugins/index.ts`에 등록
-
-3. **3단계**: SCSS 파일 수정
-   - fallback 클래스 스타일 추가 (layouts/\_layout.scss 등)
-
-4. **4단계**: 컴포넌트에서 사용
-   - 템플릿에 `v-has` directive 추가
-
-5. **5단계**: 테스트 및 검증
-
-### 전역 초기화 방법 (대안)
-
-1. **1단계**: 유틸리티 함수 및 Composable 생성
-2. **2단계**: 가장 많이 사용되는 패턴부터 SCSS 수정 (layouts/\_layout.scss)
-3. **3단계**: 전역 JavaScript 초기화 코드 추가
-4. **4단계**: 나머지 파일들 순차적으로 수정
-5. **5단계**: 테스트 및 검증
+**해결 방법:**
+```scss
+// ✅ -webkit-transform prefix 사용
+.element {
+  -webkit-transform: translate3d(0, 0, 0);
+  transform: translate3d(0, 0, 0);
+}
+```
 
 ---
 
-## 📚 참고 자료
+### 15. `transition` 속성 (부분 지원) ⚠️
 
-- [MDN - :has()](https://developer.mozilla.org/en-US/docs/Web/CSS/:has)
-- [MDN - @supports](https://developer.mozilla.org/en-US/docs/Web/CSS/@supports)
-- [Can I Use - :has()](https://caniuse.com/css-has)
-- [CSS :has() Polyfill](https://github.com/csstools/postcss-plugins/tree/main/plugins/css-has-pseudo)
+**문제:**
+```scss
+// ⚠️ 일부 속성은 transition 불가
+.element {
+  transition: all 0.3s ease;
+}
+```
 
----
----
-
-# iOS 15 및 Android 7 지원 가이드
-## 완전한 호환성 검토 및 대응 방안
-
-검토 일자: 2025.11.20  
-대상 브라우저:
-- iOS 15 (Safari 15)
-- Android 7 (Chrome 51-59)
-
-검토 범위: `resources/assets/styles/**/*.scss`
-
----
-
-## 📋 목차
-
-1. [적용된 설정](#1-적용된-설정)
-2. [속성별 호환성 비교표](#2-속성별-호환성-비교표)
-3. [주요 CSS 속성 상세 분석](#3-주요-css-속성-상세-분석)
-4. [파일별 검토 결과](#4-파일별-검토-결과)
-5. [대응 방안](#5-대응-방안)
-6. [체크리스트](#6-체크리스트)
-7. [참고 자료](#7-참고-자료)
+**해결 방법:**
+```scss
+// ✅ -webkit-transition prefix 사용
+.element {
+  -webkit-transition: all 0.3s ease;
+  transition: all 0.3s ease;
+}
+```
 
 ---
 
-## 1. 적용된 설정
+## 우선순위별 대응 가이드
 
-### 1.1 Browserslist 설정
-`package.json`에 다음 browserslist 설정이 추가되었습니다:
+### 🔴 Critical (즉시 수정 필요)
+
+1. **CSS Variables (var())** - 가장 광범위하게 사용됨
+2. **`:has()` 선택자** - 여러 곳에서 사용
+3. **`gap` 속성** - Flexbox 레이아웃에 사용
+4. **CSS Logical Properties** - `padding-inline` 등
+
+### 🟡 Important (중요)
+
+5. **`object-fit`** - 이미지 표시에 영향
+6. **`calc()` + `var()` 조합** - 레이아웃 계산
+7. **`env()` 함수** - Safe area 처리
+
+### 🟢 Nice to have (선택적)
+
+8. **Flexbox prefix** - 대부분 동작하지만 prefix 추가 권장
+9. **`position: sticky`** - 폴백 구현 고려
+10. **`line-clamp`** - 이미 `-webkit-` prefix 사용 중
+
+---
+
+## 자동화 도구 제안
+
+### PostCSS 플러그인
+
 ```json
-"browserslist": [
-  "iOS >= 15",
-  "Android >= 7",
-  "Chrome >= 51",
-  "Safari >= 15"
-]
-```
-
-### 1.2 Vite 빌드 타겟
-`vite.config.ts`에서 `build.target`을 `es2017`로 설정하여 iOS 15와 Android 7에서 안정적으로 동작하도록 했습니다.
-
-### 1.3 Autoprefixer 설정
-CSS vendor prefix를 자동으로 추가하도록 autoprefixer를 설정했습니다:
-- Flexbox: `no-2009` (구버전 호환)
-- Grid: `autoplace` (CSS Grid 자동 배치 지원)
-
-```javascript
-autoprefixer({
-  overrideBrowserslist: [
-    "iOS >= 15",
-    "Android >= 7",
-    "Chrome >= 51",
-    "Safari >= 15"
-  ],
-  flexbox: "no-2009",
-  grid: "autoplace",
-})
-```
-
----
-
-## 2. 속성별 호환성 비교표
-
-| 속성/기능 | iOS 15 | Android 7 | 프로젝트 사용 | 비고 |
-|----------|--------|-----------|--------------|------|
-| **`:has()` 선택자** | ⚠️ 15.4+ | ❌ 미지원 | ✅ 81개 | iOS 15.0-15.3 미지원 |
-| **`:not()` 선택자** | ✅ 지원 | ✅ 지원 | ✅ 69개 | 완전 지원 |
-| **Flexbox 전체** | ✅ 지원 | ✅ 지원 | ✅ 1,210개 | 완전 지원 |
-| **CSS Grid** | ✅ 지원 | ⚠️ 부분 | ✅ 102개 | Android 7 부분 지원 |
-| **`gap` 속성** | ✅ 지원 | ⚠️ 부분 | ✅ 243개 | Grid/Flexbox gap |
-| **`filter`** | ✅ 지원 | ✅ 지원 | ✅ 45개 | 완전 지원 |
-| **`backdrop-filter`** | ✅ 지원 | ⚠️ 부분 | ✅ 여러 개 | Android 7 부분 지원 |
-| **`aspect-ratio`** | ✅ 지원 | ✅ 지원 | ✅ 여러 개 | 완전 지원 |
-| **`calc()`** | ✅ 지원 | ✅ 지원 | ✅ 많이 사용 | 완전 지원 |
-| **`max()`, `min()`, `clamp()`** | ⚠️ 15.4+ | ❌ 미지원 | ✅ 3개 | iOS 15.0-15.3 미지원 |
-| **`dvh`, `dvw`** | ⚠️ 15.4+ | ❌ 미지원 | ✅ 2개 | iOS 15.0-15.3 미지원 |
-| **`env(safe-area-inset-*)`** | ✅ 지원 | ⚠️ 부분 | ✅ 14개 | Android 9+ |
-
----
-
-## 3. 주요 CSS 속성 상세 분석
-
-### 3.1 `:has()` 선택자
-
-#### 지원 현황
-- **iOS 15.0-15.3**: ❌ 미지원
-- **iOS 15.4+**: ✅ 지원
-- **Android 7 (Chrome 51-59)**: ❌ 미지원
-- **Chrome 105+**: ✅ 지원
-
-#### 프로젝트 사용 현황
-**총 81개 사용**
-
-주요 사용 파일:
-- `layouts/_layout.scss`: 8개
-- `module/_agree-list.scss`: 18개
-- `pay/_auth.scss`: 6개
-- `pay/_benefits.scss`: 7개
-- `pay/_my-junior.scss`: 3개
-- `module/_keypad.scss`: 3개
-- `discover/pages/_discoverNew_comp.scss`: 4개
-- 기타 여러 파일
-
-#### 사용 예시
-```scss
-// layouts/_layout.scss
-&:not(:has(.sv-bottom-action-container)) { ... }
-.sc-container:has(.sv-bottom-action-container) { ... }
-.sc-container:has(> .sc-contents__body > .sc-tabs__group > .sv-tabs) { ... }
-
-// module/_agree-list.scss
-&:has(.sc-agree__head-description) { ... }
-&:has(.agree-content) { ... }
-```
-
-#### 대응 방법
-1. **iOS 15.4+만 지원** (권장): 현재 코드 유지
-2. **iOS 15.0-15.3도 지원**: JavaScript로 대체 또는 `@supports` 사용
-   ```scss
-   // :has() 지원 시
-   @supports selector(:has(*)) {
-     .sc-container:has(.sv-bottom-action-container) {
-       overscroll-behavior: contain;
-     }
-   }
-   
-   // :has() 미지원 시 (JavaScript로 클래스 추가)
-   .sc-container.has-bottom-action-container {
-     overscroll-behavior: contain;
-   }
-   ```
-
----
-
-### 3.2 `:not()` 선택자
-
-#### 지원 현황
-- **iOS 15**: ✅ 완전 지원
-- **Android 7 (Chrome 51-59)**: ✅ 완전 지원
-
-#### 프로젝트 사용 현황
-**총 69개 사용**
-
-#### 사용 예시
-```scss
-// layouts/_layout.scss
-&:not(:has(.sv-bottom-action-container)) { ... }
-
-// pay/_auth.scss
-&:not(:has(.sv-tabs--type-segment)) { ... }
-
-// abstracts/_mixins.scss
-&:active:not(:disabled) { ... }
-```
-
-#### 대응 방법
-✅ **추가 작업 불필요** - 모든 대상 브라우저에서 완전 지원
-
----
-
-### 3.3 Flexbox 관련 속성
-
-#### 지원 현황
-- **iOS 15**: ✅ 완전 지원
-- **Android 7 (Chrome 51-59)**: ✅ 완전 지원
-
-#### 프로젝트 사용 현황
-**총 1,210개 이상 사용**
-
-#### 주요 사용 속성
-
-##### `flex` 단축 속성
-```scss
-flex: 0 0 auto;      // ✅ 지원
-flex: 1 1 auto;      // ✅ 지원
-flex: 1;             // ✅ 지원
-flex: 0 0 80.16%;    // ✅ 지원
-```
-
-##### `flex-direction`
-```scss
-flex-direction: column;  // ✅ 지원
-flex-direction: row;     // ✅ 지원
-```
-
-##### `flex-wrap`
-```scss
-flex-wrap: wrap;      // ✅ 지원
-flex-wrap: nowrap;    // ✅ 지원
-```
-
-##### `justify-content`
-```scss
-justify-content: center;           // ✅ 지원
-justify-content: space-between;    // ✅ 지원
-justify-content: flex-start;       // ✅ 지원
-justify-content: flex-end;         // ✅ 지원
-```
-
-##### `align-items`
-```scss
-align-items: center;      // ✅ 지원
-align-items: flex-start;  // ✅ 지원
-align-items: flex-end;    // ✅ 지원
-```
-
-##### `align-self`
-```scss
-align-self: center;      // ✅ 지원
-align-self: flex-start;  // ✅ 지원
-align-self: flex-end;    // ✅ 지원
-align-self: stretch;     // ✅ 지원
-```
-
-##### `align-content`
-```scss
-align-content: center;           // ✅ 지원
-align-content: space-between;    // ✅ 지원
-```
-
-##### 개별 속성
-```scss
-flex-grow: 0;     // ✅ 지원
-flex-shrink: 0;   // ✅ 지원
-flex-basis: auto; // ✅ 지원
-```
-
-#### 대응 방법
-✅ **추가 작업 불필요** - 모든 대상 브라우저에서 완전 지원
-
----
-
-### 3.4 CSS Grid 관련 속성
-
-#### 지원 현황
-- **iOS 15**: ✅ 완전 지원
-- **Android 7 (Chrome 51-59)**: ⚠️ 부분 지원
-  - Chrome 51-56: Grid 미지원
-  - Chrome 57+: Grid 지원 (autoprefixer로 대응 가능)
-
-#### 프로젝트 사용 현황
-**총 102개 사용**
-
-#### 주요 사용 속성
-
-##### 기본 Grid
-```scss
-display: grid;  // ⚠️ Android 7 Chrome 51-56 미지원
-```
-
-##### `grid-template-columns`
-```scss
-grid-template-columns: 1fr 1fr;                    // ⚠️ 부분 지원
-grid-template-columns: repeat(2, minmax(0, 1fr));  // ⚠️ 부분 지원
-grid-template-columns: repeat(3, 1fr);             // ⚠️ 부분 지원
-grid-template-columns: auto 1fr;                   // ⚠️ 부분 지원
-grid-template-columns: none;                       // ⚠️ 부분 지원
-```
-
-##### `grid-template-rows`
-```scss
-grid-template-rows: 1fr 1fr;                    // ⚠️ 부분 지원
-grid-template-rows: repeat(4, 1fr);             // ⚠️ 부분 지원
-```
-
-##### `grid-column` / `grid-row`
-```scss
-grid-column: 1 / -1;      // ⚠️ 부분 지원
-grid-column: span 1;      // ⚠️ 부분 지원
-grid-row: 1;              // ⚠️ 부분 지원
-```
-
-##### `grid-auto-flow`
-```scss
-grid-auto-flow: column;   // ⚠️ 부분 지원
-```
-
-##### `place-items` / `place-content`
-```scss
-place-items: center;      // ⚠️ 부분 지원 (Chrome 59+)
-place-content: center;    // ⚠️ 부분 지원 (Chrome 59+)
-```
-
-#### 대응 방법
-1. **Autoprefixer 설정** (이미 적용됨)
-   ```javascript
-   autoprefixer({
-     grid: "autoplace", // CSS Grid 자동 배치 지원
-   })
-   ```
-
-2. **Fallback 제공** (필요 시)
-   ```scss
-   // Grid 미지원 시 Flexbox로 대체
-   .grid-container {
-     display: flex;
-     flex-wrap: wrap;
-     
-     @supports (display: grid) {
-       display: grid;
-       grid-template-columns: repeat(2, 1fr);
-     }
-   }
-   ```
-
----
-
-### 3.5 `gap` 속성
-
-#### 지원 현황
-- **iOS 15**: ✅ 완전 지원
-- **Android 7 (Chrome 51-59)**: ⚠️ 부분 지원
-  - Flexbox `gap`: Chrome 84+ (Android 7 미지원)
-  - Grid `gap`: Chrome 57+ (부분 지원)
-
-#### 프로젝트 사용 현황
-**총 243개 사용**
-
-#### 사용 예시
-```scss
-// Flexbox gap
-gap: var(--spacing-lg);
-gap: var(--spacing-md);
-gap: var(--spacing-sm);
-
-// Grid gap
-gap: var(--spacing-2xl) var(--spacing-xl);
-column-gap: var(--spacing-xl);
-row-gap: var(--spacing-lg);
-```
-
-#### 대응 방법
-1. **Autoprefixer** (이미 적용됨) - Grid gap에 대한 prefix 추가
-
-2. **Flexbox gap fallback** (필요 시)
-   ```scss
-   .flex-container {
-     // gap 미지원 시 margin 사용
-     > * + * {
-       margin-left: var(--spacing-lg);
-     }
-     
-     @supports (gap: 1px) {
-       gap: var(--spacing-lg);
-       > * + * {
-         margin-left: 0;
-       }
-     }
-   }
-   ```
-
----
-
-### 3.6 `filter` 속성
-
-#### 지원 현황
-- **iOS 15**: ✅ 완전 지원
-- **Android 7 (Chrome 51-59)**: ✅ 완전 지원
-
-#### 프로젝트 사용 현황
-**총 45개 사용**
-
-#### 사용 예시
-```scss
-// 기본 filter
-filter: none;
-filter: blur(1px);
-filter: brightness(0.7);
-filter: contrast(0.8);
-filter: grayscale(100%);
-filter: drop-shadow(0 4px 8px rgba(12, 17, 29, 0.06));
-
-// 복합 filter
-filter: brightness(0.7) contrast(0.8);
-filter: brightness(1.2) contrast(1.15) saturate(1.1);
-filter: invert(16%) sepia(30%) saturate(7115%) hue-rotate(218deg) brightness(91%) contrast(90%);
-```
-
-#### 대응 방법
-✅ **추가 작업 불필요** - 모든 대상 브라우저에서 완전 지원
-
----
-
-### 3.7 `backdrop-filter` 속성
-
-#### 지원 현황
-- **iOS 15**: ✅ 완전 지원
-- **Android 7 (Chrome 51-59)**: ⚠️ 부분 지원
-  - Chrome 76+ 지원
-  - Android 7 Chrome 51-59: 미지원
-
-#### 프로젝트 사용 현황
-**여러 개 사용**
-
-#### 사용 예시
-```scss
-backdrop-filter: blur(10px);
-backdrop-filter: blur(5px);
-backdrop-filter: blur(24px);
-backdrop-filter: blur(48px);
-
-// -webkit- prefix 포함
--webkit-backdrop-filter: blur(10px);
-```
-
-#### 대응 방법
-1. **-webkit- prefix 사용** (이미 적용됨)
-   ```scss
-   backdrop-filter: blur(10px);
-   -webkit-backdrop-filter: blur(10px);
-   ```
-
-2. **Fallback 배경색 제공**
-   ```scss
-   .backdrop-element {
-     background-color: rgba(255, 255, 255, 0.8); // fallback
-     backdrop-filter: blur(10px);
-     -webkit-backdrop-filter: blur(10px);
-   }
-   ```
-
----
-
-### 3.8 기타 주요 속성
-
-#### 3.8.1 `aspect-ratio`
-- **iOS 15**: ✅ 지원
-- **Android 7**: ✅ 지원 (Chrome 88+)
-- **프로젝트 사용**: 여러 개
-
-```scss
-aspect-ratio: 335/269;
-aspect-ratio: 1 / 1;
-aspect-ratio: 0.911;
-```
-
-#### 3.8.2 `env(safe-area-inset-*)`
-- **iOS 15**: ✅ 지원
-- **Android 7**: ⚠️ 부분 지원 (Android 9+)
-- **프로젝트 사용**: 14개
-
-```scss
-padding-left: env(safe-area-inset-left);
-padding-right: env(safe-area-inset-right);
-padding-bottom: env(safe-area-inset-bottom);
-```
-
-#### 3.8.3 `calc()`
-- **iOS 15**: ✅ 지원
-- **Android 7**: ✅ 지원
-- **프로젝트 사용**: 많이 사용
-
-```scss
-padding-bottom: calc(var(--spacing-4xl) + env(safe-area-inset-bottom));
-```
-
-#### 3.8.4 `max()`, `min()`, `clamp()`
-- **iOS 15.4+**: ✅ 지원
-- **iOS 15.0-15.3**: ❌ 미지원
-- **Android 7**: ❌ 미지원 (Chrome 79+)
-- **프로젝트 사용**: 3개 (`max()`)
-
-**사용 위치**:
-- `discover/pages/_discoverNew_main.scss` (1개)
-- `discover/pages/_discoverNew_comp.scss` (2개)
-
-**사용 예시**:
-```scss
-// 현재 사용 (iOS 15.4+만 지원)
-padding-bottom: max(calc(env(safe-area-inset-bottom) + 2px), var(--spacing-xl));
-bottom: max(calc(env(safe-area-inset-bottom) - 18px), 0px);
-
-// Fallback 필요
-padding-bottom: calc(env(safe-area-inset-bottom) + 2px);
-padding-bottom: max(calc(env(safe-area-inset-bottom) + 2px), var(--spacing-xl));
-```
-
-#### 3.8.5 `dvh`, `dvw` (Dynamic Viewport Units)
-- **iOS 15.4+**: ✅ 지원
-- **iOS 15.0-15.3**: ❌ 미지원
-- **Android 7**: ❌ 미지원 (Chrome 108+)
-- **프로젝트 사용**: 2개 (`dvh`)
-
-**사용 위치**:
-- `layouts/_layout.scss` (2개)
-
-**사용 예시**:
-```scss
-// 현재 사용 (iOS 15.4+만 지원)
-min-height: 100dvh;
-
-// Fallback 필요
-min-height: 100vh;  // fallback
-min-height: 100dvh; // iOS 15.4+
-```
-
----
-
-## 4. 파일별 검토 결과
-
-### 4.1 주요 레이아웃 파일
-
-#### `layouts/_layout.scss`
-- ⚠️ `:has()` 선택자: 8개 사용
-- ⚠️ `dvh` 단위: 2개 사용
-- ✅ `env(safe-area-inset-*)`: 사용 (iOS 11+ 지원)
-
-#### `base/_utility.scss`
-- ⚠️ `:has()` 선택자: 5개 사용
-- ✅ `gap` 속성: 많이 사용 (지원됨)
-- ✅ CSS Grid: 사용 (autoprefixer로 대응)
-
-### 4.2 모듈 파일
-
-#### `module/_agree-list.scss`
-- ⚠️ `:has()` 선택자: 18개 사용 (가장 많이 사용)
-- ✅ `gap` 속성: 많이 사용
-
-#### `module/_input-field.scss`
-- ✅ CSS Grid: 사용 (autoprefixer로 대응)
-- ✅ `gap` 속성: 사용
-
-#### `module/_keypad.scss`
-- ⚠️ `:has()` 선택자: 3개 사용
-- ✅ CSS Grid: 사용
-
-### 4.3 페이지 파일
-
-#### `pay/_benefits.scss`
-- ⚠️ `:has()` 선택자: 7개 사용
-- ✅ `aspect-ratio`: 사용
-- ✅ `gap` 속성: 많이 사용
-
-#### `pay/_auth.scss`
-- ⚠️ `:has()` 선택자: 6개 사용
-- ✅ `gap` 속성: 사용
-- ✅ `@media (prefers-reduced-motion: reduce)`: 사용 (지원됨)
-
-#### `discover/pages/_discoverNew_comp.scss`
-- ⚠️ `:has()` 선택자: 4개 사용
-- ⚠️ `max()` 함수: 2개 사용
-- ✅ `backdrop-filter`: 사용
-- ✅ `aspect-ratio`: 사용
-
-#### `discover/pages/_discoverNew_main.scss`
-- ⚠️ `max()` 함수: 1개 사용
-
----
-
-## 5. 대응 방안
-
-### 5.1 종합 대응 방안
-
-#### ✅ 즉시 사용 가능 (추가 작업 불필요)
-1. `:not()` 선택자
-2. Flexbox 전체 속성
-3. `filter` 속성
-4. `calc()` 함수
-5. CSS Custom Properties
-6. `aspect-ratio`
-
-#### ⚠️ 주의 필요 (부분 지원)
-1. **`:has()` 선택자**
-   - iOS 15.4+만 지원
-   - Android 7 미지원
-   - **대응**: iOS 15.4+ 지원으로 제한 또는 JavaScript 대체
-
-2. **CSS Grid**
-   - Android 7 Chrome 51-56 미지원
-   - **대응**: Autoprefixer 설정 (이미 적용됨)
-
-3. **`gap` 속성**
-   - Flexbox gap: Android 7 미지원
-   - Grid gap: Android 7 부분 지원
-   - **대응**: Autoprefixer 설정 (이미 적용됨)
-
-4. **`backdrop-filter`**
-   - Android 7 Chrome 51-59 미지원
-   - **대응**: -webkit- prefix 사용 (이미 적용됨), fallback 배경색 제공
-
-5. **`max()`, `min()`, `clamp()`**
-   - iOS 15.0-15.3 미지원
-   - Android 7 미지원
-   - **대응**: Fallback 값 제공
-
-6. **`dvh`, `dvw`**
-   - iOS 15.0-15.3 미지원
-   - Android 7 미지원
-   - **대응**: `vh`, `vw` fallback 제공
-
----
-
-### 5.2 권장 대응 방안
-
-#### 옵션 1: iOS 15.4+ 지원 (권장)
-**장점**:
-- 현재 코드 유지 가능
-- 추가 작업 불필요
-- 최신 기능 활용 가능
-
-**단점**:
-- iOS 15.0-15.3 사용자는 일부 기능 미지원
-
-**적용 방법**:
-- 현재 설정 유지
-- 사용자에게 iOS 15.4+ 권장 안내
-
----
-
-#### 옵션 2: iOS 15.0+ 완전 지원
-**필요 작업**:
-
-1. **`dvh` 단위 fallback 추가** (2개 위치):
-   ```scss
-   // layouts/_layout.scss
-   .error-boundary-wrap {
-     min-height: 100vh;  // fallback
-     min-height: 100dvh; // iOS 15.4+
-     
-     &:not(:has(.sv-bottom-action-container)) {
-       min-height: 100vh;  // fallback
-       min-height: 100dvh; // iOS 15.4+
-     }
-   }
-   ```
-
-2. **`max()` 함수 fallback 추가** (3개 위치):
-   ```scss
-   // discover/pages/_discoverNew_main.scss
-   padding-bottom: calc(env(safe-area-inset-bottom) + 02px);
-   padding-bottom: max(calc(env(safe-area-inset-bottom) + 02px), var(--spacing-2xl));
-   
-   // discover/pages/_discoverNew_comp.scss
-   bottom: calc(env(safe-area-inset-bottom) - 18px);
-   bottom: max(calc(env(safe-area-inset-bottom) - 18px), 0px);
-   ```
-
-3. **`:has()` 선택자 대체** (81개 위치):
-   - JavaScript로 동적 클래스 추가
-   - 또는 다른 CSS 선택자로 대체
-   - 또는 `@supports selector(:has(*))` 사용하여 조건부 스타일 적용
-
-**예시**:
-```scss
-// :has() 대체 예시
-.sc-container {
-  // 기본 스타일
-  padding-top: var(--spacing-xl);
-  
-  // :has() 지원 시
-  @supports selector(:has(*)) {
-    &:has(.sv-bottom-action-container) {
-      overscroll-behavior: contain;
-    }
+{
+  "postcss-custom-properties": {
+    "preserve": false
+  },
+  "postcss-logical": {
+    "dir": "ltr"
+  },
+  "autoprefixer": {
+    "overrideBrowserslist": [
+      "iOS 7",
+      "Android 6"
+    ]
   }
-  
-  // :has() 미지원 시 (JavaScript로 클래스 추가 필요)
-  &.has-bottom-action-container {
-    overscroll-behavior: contain;
+}
+```
+
+### SCSS Mixin 예시
+
+```scss
+// CSS Variables 폴백 mixin
+@mixin legacy-var($property, $var-name, $fallback) {
+  #{$property}: #{$fallback};
+  #{$property}: var(#{$var-name});
+}
+
+// 사용 예시
+.element {
+  @include legacy-var(padding, --spacing-lg, 12px);
+}
+
+// Gap 폴백 mixin
+@mixin legacy-gap($gap-value, $direction: row) {
+  @if $direction == row {
+    > * + * {
+      margin-left: #{$gap-value};
+    }
+  } @else {
+    > * + * {
+      margin-top: #{$gap-value};
+    }
   }
 }
 ```
 
 ---
 
-#### 옵션 3: Android 7 완전 지원
-**필요 작업**:
-1. CSS Grid → Flexbox fallback (102개)
-2. Flexbox `gap` → margin fallback (일부)
-3. `backdrop-filter` → 배경색 fallback (여러 개)
+## 테스트 체크리스트
+
+- [ ] CSS Variables가 모든 브라우저에서 동작하는지 확인
+- [ ] Flexbox 레이아웃이 올바르게 표시되는지 확인
+- [ ] `:has()` 선택자 사용 부분 JavaScript로 대체
+- [ ] `gap` 속성 사용 부분 `margin`으로 대체
+- [ ] `object-fit` 사용 부분 `background-image`로 대체
+- [ ] `padding-inline`, `margin-inline` 등 Logical Properties 수정
+- [ ] `calc()` + `var()` 조합 수정
+- [ ] `env()` 함수 사용 부분 JavaScript로 대체
+- [ ] 실제 디바이스에서 테스트 (Android 6, iOS 7)
 
 ---
 
-### 5.3 추가 설정 필요 시
+## 참고 자료
 
-#### PostCSS 플러그인 추가
-더 나은 호환성을 위해 다음 플러그인 고려:
-- `postcss-preset-env`: 최신 CSS를 구버전 브라우저용으로 변환
-- `postcss-normalize`: 브라우저 간 스타일 정규화
-
-#### Polyfill 추가
-필요한 경우:
-- `core-js`: JavaScript 기능 polyfill
-- `regenerator-runtime`: async/await 지원
+- [Can I Use - Android Browser](https://caniuse.com/?compare=android+6)
+- [Can I Use - iOS Safari 7](https://caniuse.com/?compare=ios_saf+7)
+- [MDN Web Docs - CSS Custom Properties](https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_custom_properties)
+- [MDN Web Docs - :has() selector](https://developer.mozilla.org/en-US/docs/Web/CSS/:has)
 
 ---
-
-## 6. 체크리스트
-
-### 즉시 적용 가능
-- [x] Browserslist 설정 추가
-- [x] Vite build.target 설정
-- [x] Autoprefixer 설정 강화
-
-### 추가 작업 필요 (iOS 15.0-15.3 지원 시)
-- [ ] `dvh` 단위 fallback 추가 (2개 위치)
-- [ ] `max()` 함수 fallback 추가 (3개 위치)
-- [ ] `:has()` 선택자 대체 또는 JavaScript 대응 (81개 위치)
-
-### 테스트 필요
-- [ ] iOS 15.0 실제 기기 테스트
-- [ ] iOS 15.4+ 실제 기기 테스트
-- [ ] Android 7 실제 기기 테스트
-- [ ] 주요 화면 UI 확인
-
----
-
-## 7. 참고 자료
-
-### 브라우저 호환성
-- [Can I Use - :has()](https://caniuse.com/css-has)
-- [Can I Use - CSS Grid](https://caniuse.com/css-grid)
-- [Can I Use - gap](https://caniuse.com/flexbox-gap)
-- [Can I Use - backdrop-filter](https://caniuse.com/css-backdrop-filter)
-- [Can I Use - max()](https://caniuse.com/css-math-functions)
-- [Can I Use - dvh](https://caniuse.com/viewport-unit-variants)
-
-### iOS Safari 버전별 기능 지원
-- iOS 15.0: Safari 15.0
-- iOS 15.4: Safari 15.4 (`:has()`, `dvh`, `max()` 지원 시작)
-
-### Android 7 Chrome 버전
-- Android 7.0: Chrome 51-59
-- CSS Grid: Chrome 57+ 지원
-- Flexbox gap: Chrome 84+ 지원 (Android 7 미지원)
-
----
-
-## 🎯 결론
-
-현재 코드베이스는 **iOS 15.4+**를 기준으로 작성되어 있습니다.
-
-**권장 사항**:
-1. **iOS 15.4+ 지원으로 제한** (현재 코드 유지) - 가장 간단하고 권장되는 방법
-2. 또는 **iOS 15.0-15.3도 지원**하려면 위의 추가 작업 필요
-
----
-
