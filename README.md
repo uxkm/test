@@ -5,8 +5,143 @@
 이 문서는 Android 6 (Marshmallow, API 23) 및 iOS 7을 지원하기 위한 CSS 호환성 가이드입니다.
 
 ### 지원 대상
-- **Android 6** (Marshmallow, API 23) - 2015년 출시
-- **iOS 7** - 2013년 출시
+
+#### Android 6 (Marshmallow, API 23) - 2015년 출시
+
+- Samsung Galaxy S6, S6 Edge, S7, S7 Edge
+- LG G4, G5, V10
+- HTC One M9, M9+
+- Sony Xperia Z5, Z5 Premium
+- Motorola Moto X Pure, Moto G (3rd gen)
+- 기타 2015-2016년 Android 6.0 기기
+
+#### iOS 7 - 2013년 출시
+
+- iPhone 4, 4S, 5, 5C, 5S
+- iPad 2, 3, 4, Mini (1st gen)
+- iPod Touch 5세대
+
+---
+
+## 지원되지 않는 CSS 속성 및 기능 요약표
+
+### 🔴 Critical (즉시 수정 필요)
+
+| CSS 속성/기능           | Android 6 | iOS 7     | 대체 방법                       | 현재 프로젝트 사용 여부 |
+| ----------------------- | --------- | --------- | ------------------------------- | ----------------------- |
+| `var(--variable-name)`  | ❌ 미지원 | ❌ 미지원 | SCSS 변수 또는 직접 값 사용     | ✅ 광범위하게 사용      |
+| `gap` (Flexbox/Grid)    | ❌ 미지원 | ❌ 미지원 | `margin` 사용                   | ✅ 사용 중              |
+| `:has()` 선택자         | ❌ 미지원 | ❌ 미지원 | JavaScript 또는 클래스 추가     | ✅ 사용 중              |
+| `padding-inline`        | ❌ 미지원 | ❌ 미지원 | `padding-left`, `padding-right` | ✅ 사용 중              |
+| `padding-block`         | ❌ 미지원 | ❌ 미지원 | `padding-top`, `padding-bottom` | ❓ 확인 필요            |
+| `margin-inline`         | ❌ 미지원 | ❌ 미지원 | `margin-left`, `margin-right`   | ❓ 확인 필요            |
+| `margin-block`          | ❌ 미지원 | ❌ 미지원 | `margin-top`, `margin-bottom`   | ❓ 확인 필요            |
+| `calc()` + `var()` 조합 | ❌ 미지원 | ❌ 미지원 | 직접 계산된 값 사용             | ✅ 사용 중              |
+
+### 🟡 Important (중요)
+
+| CSS 속성/기능                   | Android 6    | iOS 7        | 대체 방법                                         | 현재 프로젝트 사용 여부 |
+| ------------------------------- | ------------ | ------------ | ------------------------------------------------- | ----------------------- |
+| `display: grid`                 | ❌ 미지원    | ❌ 미지원    | Flexbox 또는 float 사용                           | ❓ 확인 필요            |
+| `object-fit`                    | ❌ 미지원    | ❌ 미지원    | `background-image` + `background-size`            | ✅ 사용 중              |
+| `env()` 함수                    | ❌ 미지원    | ❌ 미지원    | JavaScript 또는 고정값                            | ✅ 사용 중              |
+| `position: sticky`              | ✅ 지원      | ⚠️ 부분 지원 | `-webkit-sticky` prefix 추가                      | ✅ 사용 중              |
+| `display: flex` (prefix 없음)   | ⚠️ 부분 지원 | ⚠️ 부분 지원 | `-webkit-box`, `-webkit-flex` 추가                | ✅ 사용 중              |
+| `justify-content` (prefix 없음) | ⚠️ 부분 지원 | ⚠️ 부분 지원 | `-webkit-box-pack`, `-webkit-justify-content`     | ✅ 사용 중              |
+| `align-items` (prefix 없음)     | ⚠️ 부분 지원 | ⚠️ 부분 지원 | `-webkit-box-align`, `-webkit-align-items`        | ✅ 사용 중              |
+| `flex-wrap` (prefix 없음)       | ⚠️ 부분 지원 | ⚠️ 부분 지원 | `-webkit-flex-wrap` 추가                          | ✅ 사용 중              |
+| `flex-direction` (prefix 없음)  | ⚠️ 부분 지원 | ⚠️ 부분 지원 | `-webkit-box-direction`, `-webkit-flex-direction` | ✅ 사용 중              |
+| `transform` (prefix 없음)       | ⚠️ 부분 지원 | ⚠️ 부분 지원 | `-webkit-transform` 추가                          | ✅ 사용 중              |
+| `transition` (prefix 없음)      | ⚠️ 부분 지원 | ⚠️ 부분 지원 | `-webkit-transition` 추가                         | ✅ 사용 중              |
+| `border-inline`                 | ❌ 미지원    | ❌ 미지원    | `border-left`, `border-right`                     | ❓ 확인 필요            |
+| `inset-inline`                  | ❌ 미지원    | ❌ 미지원    | `left`, `right`                                   | ❓ 확인 필요            |
+
+### 🟢 Nice to have (선택적)
+
+| CSS 속성/기능               | Android 6    | iOS 7        | 대체 방법                      | 현재 프로젝트 사용 여부 |
+| --------------------------- | ------------ | ------------ | ------------------------------ | ----------------------- |
+| `:is()` 선택자              | ❌ 미지원    | ❌ 미지원    | 개별 선택자 나열               | ❓ 확인 필요            |
+| `:where()` 선택자           | ❌ 미지원    | ❌ 미지원    | 개별 선택자 나열               | ❓ 확인 필요            |
+| `object-position`           | ❌ 미지원    | ❌ 미지원    | `background-position`          | ❓ 확인 필요            |
+| `line-clamp` (표준)         | ❌ 미지원    | ❌ 미지원    | `-webkit-line-clamp` 사용      | ✅ 이미 사용 중         |
+| `calc()` (단순)             | ⚠️ 부분 지원 | ⚠️ 부분 지원 | 직접 계산된 값 사용            | ✅ 사용 중              |
+| `animation` (prefix 없음)   | ⚠️ 부분 지원 | ⚠️ 부분 지원 | `-webkit-animation` 추가       | ❓ 확인 필요            |
+| `@keyframes` (prefix 없음)  | ⚠️ 부분 지원 | ⚠️ 부분 지원 | `@-webkit-keyframes` 추가      | ❓ 확인 필요            |
+| `backdrop-filter`           | ❌ 미지원    | ❌ 미지원    | 반투명 배경 사용               | ❓ 확인 필요            |
+| `filter: blur()`            | ⚠️ 부분 지원 | ⚠️ 부분 지원 | `-webkit-filter` 추가          | ❓ 확인 필요            |
+| `filter: grayscale()`       | ⚠️ 부분 지원 | ⚠️ 부분 지원 | `-webkit-filter` 추가          | ❓ 확인 필요            |
+| `will-change`               | ❌ 미지원    | ❌ 미지원    | 제거 (기능 영향 없음)          | ❓ 확인 필요            |
+| `contain`                   | ❌ 미지원    | ❌ 미지원    | 제거 (성능 최적화용)           | ❓ 확인 필요            |
+| `appearance`                | ⚠️ 부분 지원 | ⚠️ 부분 지원 | `-webkit-appearance` 추가      | ❓ 확인 필요            |
+| `user-select`               | ⚠️ 부분 지원 | ⚠️ 부분 지원 | `-webkit-user-select` 추가     | ❓ 확인 필요            |
+| `touch-action`              | ❌ 미지원    | ⚠️ 부분 지원 | JavaScript로 처리              | ❓ 확인 필요            |
+| `scroll-behavior`           | ❌ 미지원    | ❌ 미지원    | JavaScript로 처리              | ❓ 확인 필요            |
+| `overscroll-behavior`       | ❌ 미지원    | ❌ 미지원    | JavaScript로 처리              | ❓ 확인 필요            |
+| `clip-path`                 | ❌ 미지원    | ⚠️ 부분 지원 | `-webkit-clip-path` 추가       | ❓ 확인 필요            |
+| `mask`                      | ⚠️ 부분 지원 | ⚠️ 부분 지원 | `-webkit-mask` 추가            | ❓ 확인 필요            |
+| `shape-outside`             | ❌ 미지원    | ❌ 미지원    | float 사용                     | ❓ 확인 필요            |
+| `columns` (Multi-column)    | ⚠️ 부분 지원 | ⚠️ 부분 지원 | `-webkit-columns` 추가         | ❓ 확인 필요            |
+| `writing-mode`              | ⚠️ 부분 지원 | ⚠️ 부분 지원 | `-webkit-writing-mode` 추가    | ❓ 확인 필요            |
+| `text-decoration` (신규 값) | ⚠️ 부분 지원 | ⚠️ 부분 지원 | 기본 값 사용                   | ❓ 확인 필요            |
+| `@supports`                 | ❌ 미지원    | ❌ 미지원    | JavaScript로 feature detection | ❓ 확인 필요            |
+
+### ✅ 지원되는 CSS 속성 (사용 가능)
+
+| CSS 속성/기능             | Android 6 | iOS 7   | 비고 |
+| ------------------------- | --------- | ------- | ---- |
+| `text-shadow` (복수)      | ✅ 지원   | ✅ 지원 | -    |
+| `box-shadow` (복수)       | ✅ 지원   | ✅ 지원 | -    |
+| `border-radius`           | ✅ 지원   | ✅ 지원 | -    |
+| `opacity`                 | ✅ 지원   | ✅ 지원 | -    |
+| `rgba()`                  | ✅ 지원   | ✅ 지원 | -    |
+| `@media` queries          | ✅ 지원   | ✅ 지원 | -    |
+| `float`                   | ✅ 지원   | ✅ 지원 | -    |
+| `clear`                   | ✅ 지원   | ✅ 지원 | -    |
+| `z-index`                 | ✅ 지원   | ✅ 지원 | -    |
+| `overflow`                | ✅ 지원   | ✅ 지원 | -    |
+| `text-align`              | ✅ 지원   | ✅ 지원 | -    |
+| `font-family`             | ✅ 지원   | ✅ 지원 | -    |
+| `font-size`               | ✅ 지원   | ✅ 지원 | -    |
+| `font-weight`             | ✅ 지원   | ✅ 지원 | -    |
+| `line-height`             | ✅ 지원   | ✅ 지원 | -    |
+| `color`                   | ✅ 지원   | ✅ 지원 | -    |
+| `background-color`        | ✅ 지원   | ✅ 지원 | -    |
+| `background-image`        | ✅ 지원   | ✅ 지원 | -    |
+| `background-size`         | ✅ 지원   | ✅ 지원 | -    |
+| `background-position`     | ✅ 지원   | ✅ 지원 | -    |
+| `background-repeat`       | ✅ 지원   | ✅ 지원 | -    |
+| `border`                  | ✅ 지원   | ✅ 지원 | -    |
+| `margin`                  | ✅ 지원   | ✅ 지원 | -    |
+| `padding`                 | ✅ 지원   | ✅ 지원 | -    |
+| `width`, `height`         | ✅ 지원   | ✅ 지원 | -    |
+| `max-width`, `max-height` | ✅ 지원   | ✅ 지원 | -    |
+| `min-width`, `min-height` | ✅ 지원   | ✅ 지원 | -    |
+| `display: block`          | ✅ 지원   | ✅ 지원 | -    |
+| `display: inline`         | ✅ 지원   | ✅ 지원 | -    |
+| `display: inline-block`   | ✅ 지원   | ✅ 지원 | -    |
+| `display: table`          | ✅ 지원   | ✅ 지원 | -    |
+| `position: static`        | ✅ 지원   | ✅ 지원 | -    |
+| `position: relative`      | ✅ 지원   | ✅ 지원 | -    |
+| `position: absolute`      | ✅ 지원   | ✅ 지원 | -    |
+| `position: fixed`         | ✅ 지원   | ✅ 지원 | -    |
+
+**범례:**
+
+- ❌ 미지원: 완전히 지원되지 않음
+- ⚠️ 부분 지원: prefix 필요하거나 제한적 지원
+- ✅ 지원: 완전히 지원됨
+- 🔴 Critical: 즉시 수정 필요
+- 🟡 Important: 중요하지만 긴급하지 않음
+- 🟢 Nice to have: 선택적 개선 사항
+
+**범례:**
+
+- ❌ 미지원: 완전히 지원되지 않음
+- ⚠️ 부분 지원: prefix 필요하거나 제한적 지원
+- ✅ 지원: 완전히 지원됨
+- 🔴 Critical: 즉시 수정 필요
+- 🟡 Important: 중요하지만 긴급하지 않음
+- 🟢 Nice to have: 선택적 개선 사항
 
 ---
 
@@ -15,6 +150,7 @@
 ### 1. CSS Custom Properties (CSS Variables) ❌
 
 **문제:**
+
 ```scss
 // ❌ 지원 안됨
 .element {
@@ -25,6 +161,7 @@
 ```
 
 **해결 방법:**
+
 ```scss
 // ✅ 대체 방법
 .element {
@@ -43,6 +180,7 @@ $text-primary: #1a1a1a;
 ```
 
 **현재 프로젝트 사용 현황:**
+
 - `var(--spacing-*)` - 모든 spacing 토큰
 - `var(--text-*)` - 모든 텍스트 색상
 - `var(--bg-*)` - 모든 배경 색상
@@ -55,6 +193,7 @@ $text-primary: #1a1a1a;
 ### 2. CSS Grid ❌
 
 **문제:**
+
 ```scss
 // ❌ 지원 안됨
 .container {
@@ -65,6 +204,7 @@ $text-primary: #1a1a1a;
 ```
 
 **해결 방법:**
+
 ```scss
 // ✅ Flexbox 사용 (부분 지원)
 .container {
@@ -88,6 +228,7 @@ $text-primary: #1a1a1a;
 ### 3. Flexbox Gap 속성 ❌
 
 **문제:**
+
 ```scss
 // ❌ 지원 안됨
 .flex-container {
@@ -97,13 +238,14 @@ $text-primary: #1a1a1a;
 ```
 
 **해결 방법:**
+
 ```scss
 // ✅ margin 사용
 .flex-container {
   display: -webkit-box; // iOS 7
   display: -webkit-flex;
   display: flex;
-  
+
   > * + * {
     margin-left: 12px; // gap 대신
   }
@@ -118,6 +260,7 @@ $text-primary: #1a1a1a;
 ```
 
 **현재 프로젝트 사용 현황:**
+
 - `.sortable-card__list` - `gap: var(--spacing-lg)`
 - `.sv-select-box-group`, `.sv-card` - `gap: var(--spacing-lg)`
 - `.password-bottomsheet__field .sv-cell-input` - `gap: var(--spacing-2xl)`
@@ -127,6 +270,7 @@ $text-primary: #1a1a1a;
 ### 4. `:has()` 선택자 ❌
 
 **문제:**
+
 ```scss
 // ❌ 지원 안됨
 .container:has(.child) {
@@ -139,6 +283,7 @@ $text-primary: #1a1a1a;
 ```
 
 **해결 방법:**
+
 ```scss
 // ✅ 클래스 추가 또는 JavaScript 사용
 .container.has-child {
@@ -154,6 +299,7 @@ $text-primary: #1a1a1a;
 ```
 
 **현재 프로젝트 사용 현황:**
+
 - `.sc-container:has(.sv-bottom-action-container)`
 - `.sc-container:has(> .sc-contents__body > .sc-tabs__group > .sv-tabs)`
 - `.sc-container:has(.sc-body__title ~ .sc-contents__body > .sc-tabs__group)`
@@ -166,6 +312,7 @@ $text-primary: #1a1a1a;
 ### 5. CSS Logical Properties ❌
 
 **문제:**
+
 ```scss
 // ❌ 지원 안됨
 .element {
@@ -176,6 +323,7 @@ $text-primary: #1a1a1a;
 ```
 
 **해결 방법:**
+
 ```scss
 // ✅ 물리적 속성 사용
 .element {
@@ -189,6 +337,7 @@ $text-primary: #1a1a1a;
 ```
 
 **현재 프로젝트 사용 현황:**
+
 - `.sv-popup__body:has(.sortable-card__section)` - `padding-inline: 0`
 - `.sc-container:has(.sv-tabs.sv-tabs--type-segment)` - `padding-inline: var(--spacing-2xl)`
 
@@ -197,6 +346,7 @@ $text-primary: #1a1a1a;
 ### 6. `object-fit` 속성 ❌
 
 **문제:**
+
 ```scss
 // ❌ 지원 안됨
 img {
@@ -206,6 +356,7 @@ img {
 ```
 
 **해결 방법:**
+
 ```scss
 // ✅ background-image 사용
 .image-container {
@@ -220,6 +371,7 @@ img {
 ```
 
 **현재 프로젝트 사용 현황:**
+
 - `.card-list__body .sv-list__icon img` - `object-fit: contain`
 - `.loading-lottie img` - 주석 처리됨 (`// object-fit: contain;`)
 
@@ -228,6 +380,7 @@ img {
 ### 7. `line-clamp` (표준 속성) ⚠️
 
 **문제:**
+
 ```scss
 // ⚠️ 표준 line-clamp는 지원 안됨
 .text {
@@ -236,6 +389,7 @@ img {
 ```
 
 **해결 방법:**
+
 ```scss
 // ✅ -webkit-line-clamp 사용 (이미 사용 중)
 .text {
@@ -248,6 +402,7 @@ img {
 ```
 
 **현재 프로젝트 사용 현황:**
+
 - `.sortable-card__list .sv-list__text__main` - 이미 `-webkit-line-clamp` 사용 중 ✅
 
 ---
@@ -255,6 +410,7 @@ img {
 ### 8. `position: sticky` ⚠️
 
 **문제:**
+
 ```scss
 // ⚠️ iOS 7에서 부분 지원, Android 6에서 지원
 .sticky-element {
@@ -264,6 +420,7 @@ img {
 ```
 
 **해결 방법:**
+
 ```scss
 // ✅ JavaScript로 폴백 구현 또는 position: fixed 사용
 .sticky-element {
@@ -274,6 +431,7 @@ img {
 ```
 
 **현재 프로젝트 사용 현황:**
+
 - `.sc-container:has(.sv-linear-progress-step) .sv-linear-progress-step` - `position: sticky`
 - `.sc-header__title` - `position: sticky`
 - `.sc-header__title--sticky` - `position: sticky`
@@ -283,6 +441,7 @@ img {
 ### 9. `calc()` 함수 ⚠️
 
 **문제:**
+
 ```scss
 // ⚠️ iOS 7에서 부분 지원, 복잡한 calc()는 문제 발생 가능
 .element {
@@ -292,6 +451,7 @@ img {
 ```
 
 **해결 방법:**
+
 ```scss
 // ✅ 직접 계산된 값 사용
 .element {
@@ -301,6 +461,7 @@ img {
 ```
 
 **현재 프로젝트 사용 현황:**
+
 - `calc(var(--spacing-4xl) + env(safe-area-inset-bottom))` - var()와 함께 사용 ❌
 - `calc(var(--spacing-4xl) - var(--spacing-xl))` - var()와 함께 사용 ❌
 - `calc(var(--spacing-xl) * -1)` - var()와 함께 사용 ❌
@@ -310,6 +471,7 @@ img {
 ### 10. `env()` 함수 ❌
 
 **문제:**
+
 ```scss
 // ❌ 지원 안됨
 .element {
@@ -319,6 +481,7 @@ img {
 ```
 
 **해결 방법:**
+
 ```scss
 // ✅ JavaScript로 safe-area 계산 또는 고정값 사용
 .element {
@@ -334,6 +497,7 @@ img {
 ### 11. Flexbox (부분 지원) ⚠️
 
 **문제:**
+
 ```scss
 // ⚠️ 구버전 prefix 필요
 .container {
@@ -344,17 +508,18 @@ img {
 ```
 
 **해결 방법:**
+
 ```scss
 // ✅ 구버전 prefix 추가
 .container {
   display: -webkit-box; // iOS 7 (구버전 flexbox)
   display: -webkit-flex; // iOS 7 (신버전 flexbox)
   display: flex;
-  
+
   -webkit-box-pack: center; // justify-content (구버전)
   -webkit-justify-content: center; // justify-content (신버전)
   justify-content: center;
-  
+
   -webkit-box-align: center; // align-items (구버전)
   -webkit-align-items: center; // align-items (신버전)
   align-items: center;
@@ -362,6 +527,7 @@ img {
 ```
 
 **현재 프로젝트 사용 현황:**
+
 - 대부분의 flexbox 사용에 prefix 누락 가능성
 
 ---
@@ -369,6 +535,7 @@ img {
 ### 12. `backdrop-filter` ❌
 
 **문제:**
+
 ```scss
 // ❌ 지원 안됨
 .modal-backdrop {
@@ -377,6 +544,7 @@ img {
 ```
 
 **해결 방법:**
+
 ```scss
 // ✅ 반투명 배경 사용
 .modal-backdrop {
@@ -390,6 +558,7 @@ img {
 ### 13. `will-change` ❌
 
 **문제:**
+
 ```scss
 // ❌ 지원 안됨
 .animated {
@@ -398,6 +567,7 @@ img {
 ```
 
 **해결 방법:**
+
 ```scss
 // ✅ 제거 (성능 최적화는 불가능하지만 기능에는 영향 없음)
 .animated {
@@ -410,6 +580,7 @@ img {
 ### 14. `transform` 속성 (부분 지원) ⚠️
 
 **문제:**
+
 ```scss
 // ⚠️ 일부 transform 함수는 지원 안됨
 .element {
@@ -419,6 +590,7 @@ img {
 ```
 
 **해결 방법:**
+
 ```scss
 // ✅ -webkit-transform prefix 사용
 .element {
@@ -432,6 +604,7 @@ img {
 ### 15. `transition` 속성 (부분 지원) ⚠️
 
 **문제:**
+
 ```scss
 // ⚠️ 일부 속성은 transition 불가
 .element {
@@ -440,6 +613,7 @@ img {
 ```
 
 **해결 방법:**
+
 ```scss
 // ✅ -webkit-transition prefix 사용
 .element {
@@ -486,10 +660,7 @@ img {
     "dir": "ltr"
   },
   "autoprefixer": {
-    "overrideBrowserslist": [
-      "iOS 7",
-      "Android 6"
-    ]
+    "overrideBrowserslist": ["iOS 7", "Android 6"]
   }
 }
 ```
