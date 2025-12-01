@@ -1,37 +1,17 @@
 # test
 ```scss
 // 251201
-// common
-// 이용안내 스타일
-.info-cards-popup {
-  .sv-bottom-sheet__body {
-    padding-bottom: var(--spacing-xl);
-  }
-}
-.info-cards {
-  display: flex;
-  flex-direction: column;
-  .info-card {
-    .sv-card__content {
-      padding: var(--spacing-xl) var(--spacing-lg);
-    }
-    ~ .info-card {
-      margin-top: var(--spacing-md);
-    }
-    .sv-list__text__main {
-      @include font-set("title-s", 500);
-      font-weight: 500;
-      color: var(--text-secondary);
-    }
-    .sv-list__text__sub {
-      margin-top: var(--spacing-md);
-      @include font-set("body-m", 300);
-      font-weight: 300;
-      color: var(--text-quaternary);
-    }
-    .sv-list__icon {
-      color: var(--fg-secondary);
+  @each $placement, $config in $placements {
+    &[data-placement="#{$placement}"] {
+      #{map-get($config, "container-position")}: calc(100% + 8px);
+      #{map-get($config, "container-align")}: 50%;
+      transform: #{map-get($config, "container-transform")};
+      &::after {
+        #{map-get($config, "arrow-position")}: -8px;
+        #{map-get($config, "arrow-align")}: 50%;
+        transform: #{map-get($config, "arrow-transform")};
+        #{map-get($config, "arrow-border")}: 8px solid var(--bg-dark);
+      }
     }
   }
-}
 ```
