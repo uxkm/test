@@ -1,17 +1,23 @@
 # test
 ```scss
-// 251201
-@each $placement, $config in $placements {
-    &[data-placement="#{$placement}"] {
-      #{map.get($config, "container-position")}: calc(100% + 8px);
-      #{map.get($config, "container-align")}: 50%;
-      transform: #{map.get($config, "container-transform")};
-      &::after {
-        #{map.get($config, "arrow-position")}: -8px;
-        #{map.get($config, "arrow-align")}: 50%;
-        transform: #{map.get($config, "arrow-transform")};
-        #{map.get($config, "arrow-border")}: 8px solid var(--bg-dark);
-      }
-    }
+// 251202
+
+.not-padding-y {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  // 모달 내 콘텐츠 영역 간격
+  .sv-bottom-sheet__body {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
   }
+}
+.not-padding-x {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  // 모달 내 콘텐츠 영역 간격
+  .sv-bottom-sheet__body {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+}
 ```
