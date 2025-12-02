@@ -2,6 +2,40 @@
 ```scss
 // 251202
 
+
+.not-padding-y {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  // 모달 내 콘텐츠 상하 영역 간격
+  .sv-bottom-sheet__body {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+}
+.not-padding-x {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  // 모달 내 콘텐츠 좌우 영역 간격
+  .sv-bottom-sheet__body {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+}
+.not-padding-t {
+  padding-top: 0 !important;
+  // 모달 내 콘텐츠 상단 영역 간격
+  .sv-bottom-sheet__body {
+    padding-top: 0 !important;
+  }
+}
+.not-padding-b {
+  padding-bottom: 0 !important;
+  // 모달 내 콘텐츠 하단 영역 간격
+  .sv-bottom-sheet__body {
+    padding-bottom: 0 !important;
+  }
+}
+
 // 조회 기간 선택
 .month-filter {
   &__header {
