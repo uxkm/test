@@ -39,12 +39,19 @@
 }
 
 .sc-bottom-info__card {
+  margin-right: var(--spacing-2xl);
+  margin-left: var(--spacing-2xl);
   padding: var(--spacing-xl);
   border-radius: var(--radius-md);
   background-color: var(--bg-graylight);
   @include font-set("body-m", 300);
   font-weight: 300;
   color: var(--text-quaternary);
+  &.full-width {
+    margin-right: 0;
+    margin-left: 0;
+    border-radius: 0;
+  }
 }
 
 .sc-banner {
