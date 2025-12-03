@@ -3,6 +3,41 @@
 // 251203
 // utility // custom popover style 전
 
+// 하단 공통 꼭! 알아두세요
+.foot-notice {
+  margin-right: var(--spacing-2xl);
+  margin-left: var(--spacing-2xl);
+  article {
+    ~ article {
+      margin-top: var(--spacing-3xl);
+    }
+  }
+  &__title {
+    padding: var(--spacing-2xl) 0;
+    @include font-set("title-m", 700);
+    color: var(--text-secondary);
+  }
+  &__subtitle {
+    padding: var(--spacing-md) 0;
+    @include font-set("title-s", 500);
+    color: var(--text-secondary);
+  }
+  [role="list"] ~ [role="list"] {
+    margin-top: var(--spacing-4xl);
+  }
+  .sv-text-list {
+    color: var(--text-quaternary);
+    ul {
+      margin-top: var(--spacing-md);
+    }
+  }
+  .sv-text-list__content {
+    strong {
+      font-weight: 700;
+    }
+  }
+}
+
 .sc-bottom-info__card {
   padding: var(--spacing-xl);
   border-radius: var(--radius-md);
