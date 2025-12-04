@@ -29,6 +29,14 @@
     }
   }
 
+// input-field
+
+  .field-item__rowgroup {
+    // 14번 케이스: label 텍스트가 줄바꿈되지 않도록 설정
+    .sv-input-label__text {
+      white-space: nowrap;
+    }
+
 
 // ScHeader.vue
 
