@@ -46,3 +46,6 @@
       <ScIcon iconName="shinhan" />
       <h1>{{ title || '신한카드' }}</h1>
 ```
+```vue
+<h1>{{ title || '신한카드' }}</h1>
+```
