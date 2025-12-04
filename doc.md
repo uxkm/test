@@ -3,6 +3,14 @@
 // 251204
 // layout 60 line
 
+ 
+  .sv-navigation__title {
+    > div {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+    }
+  }
   @at-root .sc-main .sv-navigation {
     .sv-navigation__title {
       .sc-icon {
