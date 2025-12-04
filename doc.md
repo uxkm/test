@@ -28,4 +28,13 @@
       }
     }
   }
+
+
+// ScHeader.vue
+
+      v-if="variant === 'main'"
+      #title
+    >
+      <ScIcon iconName="shinhan" />
+      <h1>{{ title || '신한카드' }}</h1>
 ```
