@@ -1,19 +1,3 @@
-# test
-```scss
-// 251205
-// layout 60 line
-
-[role="link"],
-[role="button"] {
-  cursor: pointer;
-}
-```
-
----
-
-```js
-// guide- index
-
 <route lang="yaml">
 meta:
   id: publish-index
@@ -2178,5 +2162,3 @@ body {
   }
 }
 </style>
-
-```
