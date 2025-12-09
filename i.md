@@ -1,5 +1,6 @@
 # index.vue
 
+{% raw %}
 ```js
 <route lang="yaml">
 meta:
@@ -2167,3 +2168,4 @@ body {
 </style>
 
 ```
+{% endraw %}
