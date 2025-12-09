@@ -1,4 +1,6 @@
 # test
+
+{% raw %}
 ```scss
 // 251205
 // utillity
@@ -11,5 +13,6 @@
   color: var(--text-primary);
 }
 ```
+{% endraw %}
 
 ---

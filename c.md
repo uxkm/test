@@ -47,7 +47,7 @@ meta:
   category: 혜택
   publish: 김대민
   publishVersion: 0.8
-  status: 작업중
+  status: 작업완료
   header:
     variant: sub
     fixed: true
@@ -62,8 +62,10 @@ meta:
     title=""
     v-model="isOpen"
   >
-    <p>서비스 이용 동의를 해지하시겠어요?<br />
-      해지 시 해당 앱테크 서비스를 이용하실 수 없어요. 해지 후 다시 동의할 수 있어요.</p>
+    <p>
+      <strong class="modal-tit">서비스 이용 동의를 해지하시겠어요?</strong>
+      해지 시 매일 랜덤포인트 서비스를 이용하실 수 없어요. 해지 후 다시 동의할 수 있어요.
+    </p>
     <template #footer>
       <BoxButton
         @click="isOpen = false"
@@ -88,9 +90,6 @@ import { ModalPopup, BoxButton } from "@shc-nss/ui/solid";
 const isOpen = defineModel({ default: true });
 </script>
 
-<style lang="scss" scoped>
-</style>
-  
 ```
 {% endraw %}
 
