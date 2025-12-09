@@ -1,5 +1,6 @@
 # SBT068A01
 
+{% raw %}
 ```js
 
 <route lang="yaml">
@@ -782,4 +783,5 @@ const pointMoreList = [
 
 ```
 
+{% endraw %}
 ---
