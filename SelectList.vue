@@ -151,7 +151,7 @@ function setMark(item) {
   if (marks.value == "" && item.selected) {
     return item.selected;
   } else if (marks.value !== null && marks.value !== "") {
-    return marks.value.includes(item.value);
+    return marks.value === item.value;
   }
   return false;
 }

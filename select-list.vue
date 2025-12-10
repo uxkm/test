@@ -78,7 +78,7 @@ meta:
   <!-- S : 유형 1-2 : Select Box (SelectBoxGroup) -->
   <div class="sc-select__list">
     <div class="select-list__group">
-      <SelectList :items="markItems1" iconSize="40" />
+      <SelectList :items="markItems1" :iconSize="40" />
     </div>
   </div>
   <!-- E : 유형 1 : Select Box -->
