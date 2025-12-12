@@ -1,19 +1,19 @@
-# SBT119A01
+# SBT108A02
 
 {% raw %}
 ```js
 
 <route lang="yaml">
 meta:
-  id: SBT119A01
+  id: SBT108A02
   title: 이벤트
-  menu: "혜택 > 이벤트 메인화면 > 이벤트 전체보기: 종료 이벤트"
+  menu: "혜택 > 이벤트 메인화면 > 이벤트 전체보기: 진행중 이벤트 > 검색"
   layout: SubLayout
   category: 혜택
   publish: 김대민
   publishVersion: 0.8
   status: 작업완료
-  etc: "IA 화면 ID와 동기화"
+  etc: "SBT108A02(진행중인 이벤트), SBT119A01(이벤트 검색), SBT162A01(이벤트 선택 BS), SBT120A01(조회기간 선택 BS)"
   header:
     variant: sub
     fixed: true
@@ -53,13 +53,10 @@ meta:
     </div>
 
     <!-- 
-      진행 중 이벤트 인 경우 노출
+      검색 필드 노출
       검색 필드는 SOLID에서 제공한 UI가 없어서 별도 작업 
     -->
-    <div
-      v-if="selectedCategory === 'ongoing' || !selectedCategory"
-      class="category-filter__search"
-    >
+    <div class="category-filter__search">
       <div
         class="category-filter__search-field"
         :class="{
@@ -113,22 +110,6 @@ meta:
           v-model="selectedValue"
         />
       </div>
-    </div>
-
-    <!-- 종료 이벤트 인 경우 노출 SBT119A01 클릭시 나오는 월 선택 BS SBT120A01 -->
-    <div v-if="selectedCategory === 'ended'" class="category-filter__ended">
-      <InlineDropdown
-        class="sc-card__dropdown usage-history__dropdown"
-        @click="openMonthSheet"
-      >
-        <template #value>
-          <span class="card-display">
-            <span class="card-info">
-              <span class="card-title">{{ selectedMonthLabel }}</span>
-            </span>
-          </span>
-        </template>
-      </InlineDropdown>
     </div>
   </div>
 
@@ -427,9 +408,9 @@ const categories = [
 // 카테고리 선택 바텀시트 열림/닫힘 상태
 const isCategorySheetOpen = ref(false);
 // 현재 선택된 카테고리 값
-const selectedCategory = ref("ended");
+const selectedCategory = ref(null);
 // 바텀시트에서 선택한 임시 카테고리 값 (적용 전)
-const nextCategoryValue = ref("ended");
+const nextCategoryValue = ref("ongoing");
 // 카테고리 드롭다운 DOM 참조
 const categoryDropdownRef = ref(null);
 // 월 선택 바텀시트 열림/닫힘 상태
@@ -452,7 +433,7 @@ const isInputFocused = ref(false);
 // 검색 입력 필드 DOM 참조
 const searchInputRef = ref(null);
 // 검색 모드 활성화 여부 (검색 입력 필드 표시/숨김)
-const isSearchMode = ref(false);
+const isSearchMode = ref(true);
 // 선택된 칩 값 (기본값: "전체")
 const selectedValue = ref("all");
 // 표시할 항목 수 (기본값: 8개)
@@ -529,16 +510,16 @@ const items = [
 /**
  * 선택된 카테고리 라벨
  * - 카테고리 드롭다운에 표시될 텍스트
- * - 선택된 카테고리가 없으면 "종료 이벤트" 반환
+ * - 선택된 카테고리가 없으면 "진행 중 이벤트" 반환
  */
 const selectedCategoryLabel = computed(() => {
   if (!selectedCategory.value) {
-    return "종료 이벤트";
+    return "진행 중 이벤트";
   }
   const found = categories.find(
     (category) => category.value === selectedCategory.value
   );
-  return found ? found.main : "종료 이벤트";
+  return found ? found.main : "진행 중 이벤트";
 });
 
 /**
@@ -547,7 +528,7 @@ const selectedCategoryLabel = computed(() => {
  * - 검색어가 있으면 검색어로 필터링
  */
 const filteredItems = computed(() => {
-  const activeCategory = selectedCategory.value || "ended";
+  const activeCategory = selectedCategory.value || "ongoing";
   // 선택된 카테고리에 따라 데이터 소스 선택
   const sourceItems = activeCategory === "ongoing" ? ongoingItems : endedItems;
 
@@ -859,7 +840,7 @@ function highlightSearchKeyword(text) {
  * - 현재 선택된 카테고리 값을 임시 값으로 설정
  */
 function openCategorySheet() {
-  nextCategoryValue.value = selectedCategory.value || "ended";
+  nextCategoryValue.value = selectedCategory.value || "ongoing";
   isCategorySheetOpen.value = true;
 }
 
@@ -872,7 +853,7 @@ function onCategoryMark(value, checked) {
     // 선택 시 바로 적용하고 바텀시트 닫기
     applyCategory();
   } else if (nextCategoryValue.value === value) {
-    nextCategoryValue.value = "ended";
+    nextCategoryValue.value = "ongoing";
     applyCategory();
   }
 }
@@ -895,7 +876,7 @@ function toggleCategoryMark(item) {
  */
 function setCategoryMark(item) {
   if (nextCategoryValue.value === null || nextCategoryValue.value === "") {
-    return item.value === "ended";
+    return item.value === "ongoing";
   }
   return nextCategoryValue.value === item.value;
 }
@@ -905,7 +886,7 @@ function setCategoryMark(item) {
  * - 바텀시트에서 초기화 버튼 클릭 시 호출
  */
 function resetCategory() {
-  nextCategoryValue.value = "ended";
+  nextCategoryValue.value = "ongoing";
 }
 
 /**
@@ -1243,7 +1224,6 @@ const endedItems = [
   },
 ];
 </script>
-
 
 
 ```
