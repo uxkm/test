@@ -2,85 +2,131 @@
 
 {% raw %}
 ```scss
-// 251211 utitlity
-// 1319
+// 251212 benefits
 
-  // 참여한 이벤트 스타일
-  &.event-applied {
-    padding-bottom: var(--spacing-2xl);
-    .usage-history__dropdown {
-      margin-bottom: 0;
-    }
+
+/* 혜택 - 이벤트 모음형 페이지 */
+.sc-event-collection {
+  padding: var(--spacing-5xl) var(--container-padding-mobile);
+  background-color: #e2f3fd;
+  [data-theme="dark"] & {
+    background-color: var(--gray-800);
   }
-
-// 1441
-
-    // 당첨 정보 버튼
-    .ev-detail-btn {
-      min-height: 22px;
-      margin-top: var(--spacing-md);
-      .sv-button__label {
-        color: var(--text-secondary);
-      }
-    }
-    // 이벤트 제목에 링크가 있는 경우
-    [role="link"] {
+  .collection-header {
+    position: relative;
+    padding: 0;
+    span,
+    strong {
       display: block;
-      position: relative;
-      @include font-set(title-s, 500);
-      font-weight: 500;
-      color: var(--text-secondary);
-
-      // 클릭 영역 확장하기 위한 요소 추가
-      &::after {
-        content: "";
-        position: absolute;
-        top: -20px;
-        left: 0;
-        width: 100%;
-        height: calc(100% + 40px);
-      }
     }
-    .event-description {
-      margin-top: var(--spacing-md);
-      @include font-set(body-s, 300);
+    &__title {
+      @include font-set(headline-s, 700);
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    &__title-sub {
+      @include font-set(body-m, 300);
       font-weight: 300;
       color: var(--text-secondary);
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
     }
-
-// 
-
-
-// 251212 commmon 618
-
-    // 참여한 이벤트 내역 스타일
-    &.event-applied__body {
-      .category-item {
-        padding: 0;
-      }
-      .sv-list {
-        height: 118px;
-        padding-top: var(--spacing-lg);
-        padding-bottom: var(--spacing-lg);
-      }
-      .usage-date__title {
-        @include font-set("body-s", 300);
-        font-weight: 300;
-        color: var(--text-tertiary);
-        margin-bottom: var(--spacing-sm);
-        padding-top: 0;
-        padding-bottom: var(--spacing-md);
-        border-bottom: 1px solid var(--border-tertiary);
-      }
-      .usage-history__section {
-        ~ .usage-history__section {
-          margin-top: var(--spacing-2xl);
+    img {
+      position: absolute;
+      top: 50%;
+      right: 0;
+      transform: translateY(-50%);
+      width: 100px;
+      height: 100px;
+      object-fit: contain;
+    }
+  }
+  .collection-body {
+    overflow: hidden;
+    position: relative;
+    margin-top: var(--spacing-5xl);
+    padding-top: 42px;
+    border-radius: var(--radius-xl);
+    background-color: var(--white-a50);
+    [data-theme="dark"] & {
+      background-color: var(--white-a5);
+    }
+    &__header {
+      position: absolute;
+      top: 0;
+      left: 0;
+      // 184px ÷ 375px × 100 = 49.07% = width: 50.93% (100% - 49.07%)
+      // width: 50.93%;
+      width: 100%;
+      height: 42px;
+      background-repeat: no-repeat;
+      background-position: 0 0;
+      background-size: auto 42px;
+      // background-image: url(#{$cdn-url}/images/pages/benefits/main/bg_event_collection.svg);
+      border-top-left-radius: var(--radius-xl);
+      .bg_collection-header {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        path[fill="white"] {
+          [data-theme="dark"] & {
+            background-color: var(--gray-950);
+          }
         }
       }
     }
+    &__header-title {
+      display: flex;
+      align-items: flex-end;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 42px;
+      padding: 0 var(--spacing-2xl) var(--spacing-sm);
+      white-space: nowrap;
+      @include font-set(title-s, 500);
+      font-weight: 500;
+      color: var(--text-secondary);
+      em {
+        color: var(--text-brand);
+        font-style: normal;
+      }
+    }
+  }
+  .collection-inner {
+    border-top-right-radius: var(--radius-xl);
+    background-color: var(--white);
+    padding: var(--spacing-xl);
+    [data-theme="dark"] & {
+      background-color: var(--gray-950);
+    }
+  }
+  .sharebtn {
+    max-width: 101px;
+    margin: var(--spacing-3xl) auto 0;
+  }
+}
+
+/* 혜택 - 이벤트 하단 꼭! 알아두세요 아코디언 형태 */
+.event-collection__notice {
+  margin-top: 10px;
+  padding: 0;
+  .sv-accordion-item {
+    border-bottom: 1px solid var(--border-secondary);
+  }
+  .sv-accordion-item__title {
+    @include font-set(title-m, 500);
+    font-weight: 500;
+    color: var(--text-secondary);
+  }
+  .sv-text-list__content ul {
+    margin-top: var(--spacing-md);
+  }
+  .sv-list {
+    color: var(--text-quaternary);
+  }
+}
 ```
 {% endraw %}
 
