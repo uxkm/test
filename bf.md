@@ -517,6 +517,97 @@ const ongoingEventCount = computed(() => {
 
 
 
+
+
+
+<route lang="yaml">
+meta:
+  id: SBT113A02
+  title: 이벤트
+  menu: "혜택 > 이벤트 메인화면 > 모음형 이벤트 > 공유하기 (BS)"
+  layout: SubLayout
+  category: 혜택
+  publish: 김대민
+  publishVersion: 0.8
+  status: 작업완료
+  header:
+    variant: sub
+    fixed: true
+    back: true
+    close: false
+    home: true
+  mainClassList: "pt-none"
+</route>
+<template>
+  <!-- 공유하기 바텀시트 -->
+  <BottomSheet
+    v-model="isShareBottomSheetOpen"
+    closableDimm
+    dimmed
+    title="공유하기"
+  >
+    <ul class="shared-list">
+      <li>
+        <TextButton
+          text="카카오톡"
+          ariaLabel="카카오톡으로 공유하기"
+          class="kakao-btn"
+        >
+          <template #leftIcon>
+            <ScIcon
+              iconName="icon_kakao_brand"
+              width="36"
+              height="36"
+              aria-hidden="true"
+            />
+          </template>
+        </TextButton>
+      </li>
+      <li>
+        <TextButton
+          text="문자메세지"
+          ariaLabel="문자메세지로 공유하기"
+          class="message-btn"
+        >
+          <template #leftIcon>
+            <ScIcon
+              iconName="icon_message_brand"
+              width="36"
+              height="36"
+              aria-hidden="true"
+            />
+          </template>
+        </TextButton>
+      </li>
+      <li>
+        <TextButton
+          text="링크 복사"
+          ariaLabel="링크 복사하기"
+          class="link-copy-btn"
+        >
+          <template #leftIcon>
+            <ScIcon iconName="Link" width="36" height="36" aria-hidden="true" />
+          </template>
+        </TextButton>
+      </li>
+    </ul>
+  </BottomSheet>
+</template>
+
+<script setup>
+// ==========================================
+// Import
+// ==========================================
+import { ScIcon } from "@shc-nss/ui/shc";
+import { TextButton, BottomSheet } from "@shc-nss/ui/solid";
+import { defineModel } from "vue";
+
+// ==========================================
+// 바텀시트 제어
+// ==========================================
+const isShareBottomSheetOpen = defineModel({ default: true });
+</script>
+
 ```
 {% endraw %}
 ---
