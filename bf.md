@@ -268,12 +268,9 @@ meta:
           class="kakao-btn"
         >
           <template #leftIcon>
-            <ScIcon
-              iconName="icon_kakao_brand"
-              width="36"
-              height="36"
-              aria-hidden="true"
-            />
+            <span aria-hidden="true">
+              <ScIcon iconName="icon_kakao_brand" width="36" height="36" />
+            </span>
           </template>
         </TextButton>
       </li>
@@ -284,12 +281,9 @@ meta:
           class="message-btn"
         >
           <template #leftIcon>
-            <ScIcon
-              iconName="icon_message_brand"
-              width="36"
-              height="36"
-              aria-hidden="true"
-            />
+            <span aria-hidden="true">
+              <ScIcon iconName="icon_message_brand" width="36" height="36" />
+            </span>
           </template>
         </TextButton>
       </li>
@@ -300,7 +294,9 @@ meta:
           class="link-copy-btn"
         >
           <template #leftIcon>
-            <ScIcon iconName="Link" width="36" height="36" aria-hidden="true" />
+            <span aria-hidden="true">
+              <ScIcon iconName="Link" width="36" height="36" />
+            </span>
           </template>
         </TextButton>
       </li>
@@ -554,12 +550,9 @@ meta:
           class="kakao-btn"
         >
           <template #leftIcon>
-            <ScIcon
-              iconName="icon_kakao_brand"
-              width="36"
-              height="36"
-              aria-hidden="true"
-            />
+            <span aria-hidden="true">
+              <ScIcon iconName="icon_kakao_brand" width="36" height="36" />
+            </span>
           </template>
         </TextButton>
       </li>
@@ -570,12 +563,9 @@ meta:
           class="message-btn"
         >
           <template #leftIcon>
-            <ScIcon
-              iconName="icon_message_brand"
-              width="36"
-              height="36"
-              aria-hidden="true"
-            />
+            <span aria-hidden="true">
+              <ScIcon iconName="icon_message_brand" width="36" height="36" />
+            </span>
           </template>
         </TextButton>
       </li>
@@ -586,7 +576,9 @@ meta:
           class="link-copy-btn"
         >
           <template #leftIcon>
-            <ScIcon iconName="Link" width="36" height="36" aria-hidden="true" />
+            <span aria-hidden="true">
+              <ScIcon iconName="Link" width="36" height="36" />
+            </span>
           </template>
         </TextButton>
       </li>
