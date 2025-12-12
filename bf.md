@@ -58,11 +58,8 @@ meta:
           :aria-label="`${item.title} ${item.description}`"
         >
           <div class="welcome-giftpack__item-image" aria-hidden="true">
-            <img :src="`${$cdnURL}/${item.image.replace(/^\//, '')}`" alt="" />
-            <img
-              :src="`${$cdnURL}/${item.imageDark.replace(/^\//, '')}`"
-              alt=""
-            />
+            <img :src="`${$cdnURL}/${item.image}`" alt="" />
+            <img :src="`${$cdnURL}/${item.imageDark}`" alt="" />
           </div>
           <p class="welcome-giftpack__item-text" aria-hidden="true">
             <strong>{{ item.title }}</strong>
@@ -143,38 +140,38 @@ import { Divider, UnorderedList, UnorderedListItem } from "@shc-nss/ui/solid";
 // 웰컴 기프트팩 아이템 데이터
 const giftpackItems = [
   {
-    image: "/images/pages/benefits/welcome/icon_gift_compose.png",
-    imageDark: "/images/pages/benefits/welcome/icon_gift_compose_dark.png",
+    image: "images/pages/benefits/welcome/icon_gift_compose.png",
+    imageDark: "images/pages/benefits/welcome/icon_gift_compose_dark.png",
     title: "컴포즈커피",
     description: "2잔에 100원",
   },
   {
-    image: "/images/pages/benefits/welcome/icon_gift_emart.png",
-    imageDark: "/images/pages/benefits/welcome/icon_gift_emart_dark.png",
+    image: "images/pages/benefits/welcome/icon_gift_emart.png",
+    imageDark: "images/pages/benefits/welcome/icon_gift_emart_dark.png",
     title: "이마트",
     description: "상품권 할인",
   },
   {
-    image: "/images/pages/benefits/welcome/icon_gift_mappin.png",
-    imageDark: "/images/pages/benefits/welcome/icon_gift_mappin_dark.png",
+    image: "images/pages/benefits/welcome/icon_gift_mappin.png",
+    imageDark: "images/pages/benefits/welcome/icon_gift_mappin_dark.png",
     title: "위치기반 동의시",
     description: "GS25 캔커피 1원",
   },
   {
-    image: "/images/pages/benefits/welcome/icon_gift_cardnotice.png",
-    imageDark: "/images/pages/benefits/welcome/icon_gift_cardnotice_dark.png",
+    image: "images/pages/benefits/welcome/icon_gift_cardnotice.png",
+    imageDark: "images/pages/benefits/welcome/icon_gift_cardnotice_dark.png",
     title: "카드사용알림 동의시",
     description: "GS25 박카스 1원",
   },
   {
-    image: "/images/pages/benefits/welcome/icon_gift_mycar.png",
-    imageDark: "/images/pages/benefits/welcome/icon_gift_mycar_dark.png",
+    image: "images/pages/benefits/welcome/icon_gift_mycar.png",
+    imageDark: "images/pages/benefits/welcome/icon_gift_mycar_dark.png",
     title: "마이카 내차고 i 등록시",
     description: "1,000Px2 더블포인트!",
   },
   {
-    image: "/images/pages/benefits/welcome/icon_gift_mydata.png",
-    imageDark: "/images/pages/benefits/welcome/icon_gift_mydata_dark.png",
+    image: "images/pages/benefits/welcome/icon_gift_mydata.png",
+    imageDark: "images/pages/benefits/welcome/icon_gift_mydata_dark.png",
     title: "마이데이터 미션 달성시",
     description: "4천 포인트 100% 적립",
   },
@@ -186,7 +183,6 @@ const noticeItems = [
   "웰컴 기프트백은 해당월에 이용할 수 있습니다.",
 ];
 </script>
-
 
 
 ```
