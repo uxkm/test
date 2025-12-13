@@ -13,7 +13,8 @@ meta:
   publish: 김대민
   publishVersion: 0.8
   status: 재작업
-  etc: "251215: 이미지 변경 및 배너 타입, 컬러 속성 추가"
+  etc:  |
+    251215: 이미지 변경 및 배너 타입, 컬러 속성 추가 다크모드 대응 이미지 추가
   header:
     variant: sub
     fixed: true
@@ -183,6 +184,7 @@ const noticeItems = [
   "웰컴 기프트백은 해당월에 이용할 수 있습니다.",
 ];
 </script>
+
 
 
 ```
