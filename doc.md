@@ -888,6 +888,52 @@
 
 
 
+// border 그리기 애니메이션 (border-radius 고려)
+// top → right → bottom → left 순서로 각 0.25초씩
+@keyframes drawBorder {
+  0% {
+    border-top-color: transparent;
+    border-right-color: transparent;
+    border-bottom-color: transparent;
+    border-left-color: transparent;
+  }
+  25% {
+    border-top-color: var(--text-brand);
+    border-right-color: transparent;
+    border-bottom-color: transparent;
+    border-left-color: transparent;
+  }
+  50% {
+    border-top-color: var(--text-brand);
+    border-right-color: var(--text-brand);
+    border-bottom-color: transparent;
+    border-left-color: transparent;
+  }
+  75% {
+    border-top-color: var(--text-brand);
+    border-right-color: var(--text-brand);
+    border-bottom-color: var(--text-brand);
+    border-left-color: transparent;
+  }
+  100% {
+    border-top-color: var(--text-brand);
+    border-right-color: var(--text-brand);
+    border-bottom-color: var(--text-brand);
+    border-left-color: var(--text-brand);
+  }
+}
+
+
+
+
+
+
+// 진행 중인 쿠폰, 쿠폰 검색 하단 토스트 위치 (쿠폰 검색 위에 위치)
+.sc-coupon__ongoing {
+  ~ .sc-toast-container--bottom {
+    bottom: 52px;
+  }
+}
 
 ```
 {% endraw %}
