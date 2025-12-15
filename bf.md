@@ -301,20 +301,23 @@ function openCategorySheet() {
 
 function toggleReceivedOnly(value) {
   showReceivedOnly.value = value;
-  if (value) {
-    onShowToast();
-  }
+  onShowToast(value);
 }
 
 // 토스트 표시 함수
 // 받은 쿠폰만 보기 설정되었습니다. / 받은 쿠폰만 보기 해제되었습니다.
-const onShowToast = () => {
-  toast.info("받은 쿠폰만 보기 설정되었습니다.", {
-    position: "bottom",
-    color: "dark",
-    autoCloseDuration: 3000,
-    offset: 52,
-  });
+const onShowToast = (isChecked) => {
+  toast.info(
+    isChecked
+      ? "받은 쿠폰만 보기 설정되었습니다."
+      : "받은 쿠폰만 보기 해제되었습니다.",
+    {
+      position: "bottom",
+      color: "dark",
+      autoCloseDuration: 3000,
+      offset: 52,
+    }
+  );
 };
 
 function resetCategory() {
