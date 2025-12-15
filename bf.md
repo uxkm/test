@@ -187,6 +187,7 @@ meta:
 
 <script setup>
 import { AppContextKey } from "@/configs/inject/appContext";
+import useToastStore from "@/stores/common/toast";
 import { ScIcon } from "@shc-nss/ui/shc";
 import {
   BottomSheet,
@@ -209,6 +210,7 @@ import { computed, inject, ref } from "vue";
 import NoData from "../../_module/NoData.vue";
 
 const { $cdnURL } = inject(AppContextKey);
+const { toast } = useToastStore();
 
 const categories = [
   {
@@ -299,7 +301,21 @@ function openCategorySheet() {
 
 function toggleReceivedOnly(value) {
   showReceivedOnly.value = value;
+  if (value) {
+    onShowToast();
+  }
 }
+
+// 토스트 표시 함수
+// 받은 쿠폰만 보기 설정되었습니다. / 받은 쿠폰만 보기 해제되었습니다.
+const onShowToast = () => {
+  toast.info("받은 쿠폰만 보기 설정되었습니다.", {
+    position: "bottom",
+    color: "dark",
+    autoCloseDuration: 3000,
+    offset: 52,
+  });
+};
 
 function resetCategory() {
   nextCategoryValue.value = "all";
