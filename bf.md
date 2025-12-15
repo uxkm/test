@@ -1,7 +1,6 @@
 
 {% raw %}
 ```js
-
 <route lang="yaml">
 meta:
   id: SBT137A01
@@ -23,6 +22,8 @@ meta:
     close: false
     menu: false
     home: true
+  appClassList: "sc-coupon__ongoing"
+  mainClassList: "coupon-ongoing__main"
 </route>
 <template>
   <div class="sc-category__group coupon-ongoing">
@@ -205,12 +206,23 @@ import {
   Icon,
   FabScrollTop,
 } from "@shc-nss/ui/solid";
-import { computed, inject, ref } from "vue";
+import { computed, inject, onUnmounted, ref } from "vue";
 
 import NoData from "../../_module/NoData.vue";
 
 const { $cdnURL } = inject(AppContextKey);
-const { toast } = useToastStore();
+const { toast, addToast, updateConfig } = useToastStore();
+
+// 초기 설정 저장
+const initialConfig = {
+  defaultColor: "dark",
+  offset: 52,
+};
+
+// 초기 설정으로 되돌리는 함수
+const initConfig = () => {
+  updateConfig(initialConfig);
+};
 
 const categories = [
   {
@@ -301,24 +313,31 @@ function openCategorySheet() {
 
 function toggleReceivedOnly(value) {
   showReceivedOnly.value = value;
-  onShowToast(value);
+  // 체크되었을 때와 해제되었을 때 토스트 호출
+  const toastOptions = {
+    position: "bottom",
+    offset: 52,
+    color: "dark",
+  };
+  if (value) {
+    addToast("받은 쿠폰만 보기 설정되었습니다.", toastOptions);
+  } else {
+    addToast("받은 쿠폰만 보기 해제되었습니다.", toastOptions);
+  }
 }
 
-// 토스트 표시 함수
-// 받은 쿠폰만 보기 설정되었습니다. / 받은 쿠폰만 보기 해제되었습니다.
-const onShowToast = (isChecked) => {
-  toast.info(
-    isChecked
-      ? "받은 쿠폰만 보기 설정되었습니다."
-      : "받은 쿠폰만 보기 해제되었습니다.",
-    {
-      position: "bottom",
-      color: "dark",
-      autoCloseDuration: 3000,
-      offset: 52,
-    }
-  );
+// 설정 업데이트 함수
+const onUpdateConfig = () => {
+  updateConfig({
+    defaultColor: "light",
+  });
 };
+
+// 초기 설정 함수
+const onInitConfig = () => initConfig();
+
+// 컴포넌트 언마운트 시 초기 설정으로 복원
+onUnmounted(() => initConfig());
 
 function resetCategory() {
   nextCategoryValue.value = "all";
