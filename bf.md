@@ -4,9 +4,9 @@
 
 <route lang="yaml">
 meta:
-  id: SBT128A05
-  title: 맞춤 혜택
-  menu: "혜택 > 할인 쿠폰 메인화면 > 맞춤혜택 전체보기"
+  id: SBT128A04
+  title: 월간 쿠폰북
+  menu: "혜택 > 할인 쿠폰 메인화면 > 쿠폰북"
   layout: SubLayout
   category: 혜택
   publish: 김대민
@@ -19,433 +19,193 @@ meta:
     close: false
     menu: false
     home: true
-  appClassList: "sc-user__benefit"
-  mainClassList: "user-benefit__main"
+  appClassList: "sc-coupon-book"
+  mainClassList: "coupon-book__main"
 </route>
 <template>
-  <div class="sc-category__group user-benefit">
-    <div class="category-filter">
-      <div class="category-filter__left">
-        <Checkbox
-          align="left"
-          label="받은 쿠폰만 보기"
-          variant="box"
-          :model-value="showReceivedOnly"
-          @update:model-value="toggleReceivedOnly"
-        />
-      </div>
-      <div class="category-filter__right">
-        <TextButton color="secondary" size="xsmall">
-          <template #leftIcon>
-            <span aria-hidden="true">
-              <ScIcon iconName="Arrow_refresh" size="16" />
-            </span>
-          </template>
-          <template #label>
-            <span class="font-weight-300">쿠폰 새로고침</span>
-          </template>
-        </TextButton>
-      </div>
-    </div>
-  </div>
-  <div class="sc-contents__body coupon-ongoing">
-    <div class="cupon-contents">
-      <div class="cupon-list__wrap">
-        <div class="cupon-list__body">
-          <!-- 링크인 경우에만 role="link" tabindex="0" aria-label="쿠폰 정보" 추가 -->
-          <div
-            v-for="coupon in filteredCoupons"
-            :key="coupon.id"
-            :class="[
-              'cupon-item outline',
-              { 'is-label': coupon.label || coupon.expiryDate },
-            ]"
-            role="link"
-            :aria-label="
-              [
-                coupon.label ? `쿠폰 상태: ${coupon.label}` : null,
-                coupon.expiryDate ? `만료일: ${coupon.expiryDate}` : null,
-                coupon.sub,
-                coupon.main,
-              ]
-                .filter(Boolean)
-                .join(', ')
-            "
+  <div class="sc-contents__body coupon-book">
+    <h2 class="coupon-book__title">5월 쿠폰북</h2>
+    <section v-for="(section, sectionIndex) in sections" :key="sectionIndex">
+      <h3 class="coupon-book__title-sub">{{ section.title }}</h3>
+      <article>
+        <ul class="coupon-book__carousel">
+          <li
+            v-for="(slide, index) in section.slides"
+            :key="index"
+            class="coupon-book__card"
           >
-            <ListItem align="centered" :left="{ direction: 'reverse' }">
-              <template #label v-if="coupon.label || coupon.expiryDate">
-                <div class="flex gap-4">
-                  <!-- 쿠폰 상태 -->
-                  <SolidLabel
-                    v-if="coupon.label"
-                    :title="coupon.label"
-                    :color="coupon.labelColor || 'blue'"
-                    class="inline-flex"
-                  />
-                  <!-- 만료일 -->
-                  <TintLabel
-                    v-if="coupon.expiryDate"
-                    :title="coupon.expiryDate"
-                    :color="coupon.expiryDateColor || 'blue'"
-                  />
-                </div>
-              </template>
-              <template #leftSubText>
-                <span aria-hidden="true">{{ coupon.sub }}</span>
-              </template>
-              <template #leftMainText>
-                <strong aria-hidden="true">{{ coupon.main }}</strong>
-              </template>
-              <template #rightIcon>
-                <img
-                  :src="coupon.icon.src"
-                  :alt="coupon.icon.alt"
-                  class="cupon-icon"
-                  aria-hidden="true"
-                />
-              </template>
-            </ListItem>
-          </div>
-        </div>
-      </div>
+            <a
+              class="coupon-book__card-item"
+              role="link"
+              tabindex="0"
+              :href="slide.link"
+              :aria-label="`${slide.brand} ${slide.reward.replace(/<br\s*\/?>/gi, ' ')}`"
+              @focus="handleCardFocus"
+            >
+              <div class="coupon-book__card-img" aria-hidden="true">
+                <ScImage :src="slide.logo" alt="" />
+              </div>
+              <div class="coupon-book__card-texts">
+                <span class="coupon-book__card-brand">{{ slide.brand }}</span>
+                <strong class="coupon-book__card-reward" v-html="slide.reward">
+                </strong>
+              </div>
+            </a>
+          </li>
+        </ul>
+      </article>
+    </section>
+  </div>
 
-      <!-- 카테고리 쿠폰 없음 -->
-      <NoData v-if="showReceivedNoData" mainText="받은 쿠폰이 없습니다." />
-
-      <NoData
-        v-else-if="showFilteredNoData"
-        mainText="해당되는 쿠폰이 없습니다."
-        subText="카테고리를 다시 설정해 주세요."
-      />
-    </div>
+  <div class="search-floating__btn">
+    <CapsuleButton
+      size="large"
+      text="쿠폰 검색"
+      variant="tonal"
+      @click="goToCouponSearch"
+    >
+      <template #leftIcon>
+        <Icon name="Search" size="24" aria-hidden="true" />
+      </template>
+    </CapsuleButton>
   </div>
 </template>
 
 <script setup>
 import { AppContextKey } from "@/configs/inject/appContext";
-import useToastStore from "@/stores/common/toast";
-import { ScIcon } from "@shc-nss/ui/shc";
-import {
-  BottomSheet,
-  BoxButton,
-  BoxButtonGroup,
-  CapsuleButton,
-  Checkbox,
-  ListItem,
-  ListTitle,
-  RadioCircleGroup,
-  SolidLabel,
-  TextButton,
-  TextDropdown,
-  TintLabel,
-  Icon,
-  FabScrollTop,
-} from "@shc-nss/ui/solid";
-import { computed, inject, onUnmounted, ref } from "vue";
-
-import NoData from "../../_module/NoData.vue";
+import { ScImage } from "@shc-nss/ui/shc";
+import { CapsuleButton, Icon } from "@shc-nss/ui/solid";
+import { inject, ref } from "vue";
+import { useRouter } from "vue-router";
 
 const { $cdnURL } = inject(AppContextKey);
-const { toast, addToast, updateConfig } = useToastStore();
+const router = useRouter();
 
-// 초기 설정 저장
-const initialConfig = {
-  defaultColor: "dark",
-  offset: 52,
+const goToCouponSearch = () => {
+  router.push({ name: "SBT137A02" });
 };
 
-// 초기 설정으로 되돌리는 함수
-const initConfig = () => {
-  updateConfig(initialConfig);
+const handleCardFocus = (event) => {
+  const target = event.currentTarget;
+  const cardElement = target.closest(".coupon-book__card");
+  const carouselElement = target.closest(".coupon-book__carousel");
+
+  if (cardElement && carouselElement) {
+    const cardRect = cardElement.getBoundingClientRect();
+    const carouselRect = carouselElement.getBoundingClientRect();
+
+    // 현재 뷰포트에서 카드가 보이는지 확인
+    const cardLeft = cardRect.left;
+    const cardRight = cardRect.right;
+    const carouselLeft = carouselRect.left;
+    const carouselRight = carouselRect.right;
+
+    // 카드가 뷰포트 안에 완전히 보이는지 확인
+    const isFullyVisible =
+      cardLeft >= carouselLeft && cardRight <= carouselRight;
+
+    // 카드가 부분적으로라도 보이는지 확인
+    const isPartiallyVisible =
+      cardRight > carouselLeft && cardLeft < carouselRight;
+
+    // 카드가 오른쪽에 가려져 있는지 확인
+    const isOffscreenRight = cardLeft > carouselRight;
+
+    // 카드가 왼쪽에 가려져 있는지 확인
+    const isOffscreenLeft = cardRight < carouselLeft;
+
+    // 스크롤이 필요한 경우만 처리
+    if (isFullyVisible) {
+      // 완전히 보이면 스크롤하지 않음
+      return;
+    }
+
+    // 아이템 크기와 간격 계산 (136px + 8px = 144px)
+    const spacingMd = parseInt(
+      getComputedStyle(document.documentElement).getPropertyValue(
+        "--spacing-md"
+      ) || "8px",
+      10
+    );
+    const cardWidth = 136;
+    const itemSize = cardWidth + spacingMd; // 144px
+
+    const currentScrollLeft = carouselElement.scrollLeft;
+    const maxScroll = carouselElement.scrollWidth - carouselElement.clientWidth;
+
+    // 오른쪽에 가려진 경우: 아이템 크기만큼 오른쪽으로 스크롤
+    if (cardRight > carouselRight) {
+      const newScrollLeft = Math.min(currentScrollLeft + itemSize, maxScroll);
+      carouselElement.scrollTo({
+        left: newScrollLeft,
+        behavior: "smooth",
+      });
+    }
+    // 왼쪽에 가려진 경우: 아이템 크기만큼 왼쪽으로 스크롤
+    else if (cardLeft < carouselLeft) {
+      const newScrollLeft = Math.max(currentScrollLeft - itemSize, 0);
+      carouselElement.scrollTo({
+        left: newScrollLeft,
+        behavior: "smooth",
+      });
+    }
+  }
 };
 
-const categories = [
+// 쿠폰북 슬라이드 데이터
+const defaultSlides = [
   {
-    label: "전체",
-    value: "all",
+    brand: "올리브영",
+    reward: "20,000원<br />캐시백",
+    logo: `${$cdnURL}/images/dummy/img_couponbook1.png`,
   },
   {
-    label: "카페·다이닝",
-    value: "카페 다이닝",
+    brand: "crocs",
+    reward: "20,000원<br />캐시백",
+    logo: `${$cdnURL}/images/dummy/img_couponbook2.png`,
   },
   {
-    label: "여가·스포츠",
-    value: "여가 스포츠",
+    brand: "GREAT",
+    reward: "20,000원<br />캐시백",
+    logo: `${$cdnURL}/images/dummy/img_couponbook1.png`,
   },
   {
-    label: "라이프서비스",
-    value: "라이프서비스",
+    brand: "GREAT",
+    reward: "20,000원<br />캐시백",
+    logo: `${$cdnURL}/images/dummy/img_couponbook2.png`,
   },
   {
-    label: "쇼핑",
-    value: "쇼핑",
-  },
-  {
-    label: "헬스",
-    value: "헬스",
-  },
-  {
-    label: "반려동물",
-    value: "반려동물",
-  },
-  {
-    label: "패션·뷰티",
-    value: "패션 뷰티",
-  },
-  {
-    label: "여행",
-    value: "여행",
-  },
-  {
-    label: "금융·렌탈",
-    value: "금융 렌탈",
-  },
-  {
-    label: "자동차",
-    value: "자동차",
-  },
-  {
-    label: "육아·교육",
-    value: "육아 교육",
-  },
-  {
-    label: "기타",
-    value: "기타",
+    brand: "GREAT",
+    reward: "20,000원<br />캐시백",
+    logo: `${$cdnURL}/images/dummy/img_couponbook2.png`,
   },
 ];
 
-const isCategorySheetOpen = ref(false);
-const selectedCategory = ref(null);
-const nextCategoryValue = ref("all");
-const showReceivedOnly = ref(false);
-
-const selectedCategoryLabel = computed(() => {
-  if (!selectedCategory.value) {
-    return "카테고리";
-  }
-  const found = categories.find(
-    (category) => category.value === selectedCategory.value
-  );
-  return found ? found.label : "카테고리";
-});
-
-const filteredCoupons = computed(() => {
-  const activeCategory = selectedCategory.value || "all";
-  const base =
-    activeCategory === "all"
-      ? couponItems
-      : couponItems.filter((coupon) => coupon.categoryType === activeCategory);
-
-  return showReceivedOnly.value
-    ? base.filter((coupon) => coupon.received)
-    : base;
-});
-
-function openCategorySheet() {
-  nextCategoryValue.value = selectedCategory.value || "all";
-  isCategorySheetOpen.value = true;
-}
-
-function toggleReceivedOnly(value) {
-  showReceivedOnly.value = value;
-  // 체크되었을 때와 해제되었을 때 토스트 호출
-  const toastOptions = {
-    position: "bottom",
-    offset: 52,
-    color: "dark",
-  };
-  if (value) {
-    addToast("받은 쿠폰만 보기 설정되었습니다.", toastOptions);
-  } else {
-    addToast("받은 쿠폰만 보기 해제되었습니다.", toastOptions);
-  }
-}
-
-// 설정 업데이트 함수
-const onUpdateConfig = () => {
-  updateConfig({
-    defaultColor: "light",
-  });
-};
-
-// 초기 설정 함수
-const onInitConfig = () => initConfig();
-
-// 컴포넌트 언마운트 시 초기 설정으로 복원
-onUnmounted(() => initConfig());
-
-function resetCategory() {
-  nextCategoryValue.value = "all";
-}
-
-function applyCategory() {
-  selectedCategory.value = nextCategoryValue.value;
-  isCategorySheetOpen.value = false;
-}
-
-const showReceivedNoData = computed(
-  () => showReceivedOnly.value && filteredCoupons.value.length === 0
-);
-
-const showFilteredNoData = computed(
-  () => !showReceivedOnly.value && filteredCoupons.value.length === 0
-);
-
-// 쿠폰 리스트 데이터 (이미지 참조)
-const couponItems = [
+// 섹션 데이터
+const sections = [
   {
-    categoryType: "카페 다이닝",
-    id: 1,
-    icon: {
-      src: `${$cdnURL}/images/dummy/thumb_benefit_cupon1.png`,
-      alt: "",
-    },
-    label: "보유중",
-    labelColor: "blue",
-    expiryDate: "D-14",
-    expiryDateColor: "blue",
-    main: "마이카플러스 신규 가입 이벤트",
-    sub: "배달의 민족 5,000원건",
+    title: "5월 마이샵데이 혜택받기!",
+    slides: defaultSlides,
   },
   {
-    categoryType: "여가 스포츠",
-    id: 2,
-    icon: {
-      src: `${$cdnURL}/images/dummy/thumb_benefit_cupon2.png`,
-      alt: "",
-    },
-    expiryDate: "D-7",
-    expiryDateColor: "blue",
-    main: "[이벤트] 아이스 카페 아메리카노",
-    sub: "스타벅스",
+    title: "매일의 필수템 다 모였다!",
+    slides: defaultSlides,
   },
   {
-    categoryType: "라이프서비스",
-    id: 3,
-    icon: {
-      src: `${$cdnURL}/images/dummy/thumb_benefit_cupon2.png`,
-      alt: "",
-    },
-    expiryDate: "D-14",
-    expiryDateColor: "blue",
-    main: "[이벤트] 아이스 카페 아메리카노",
-    sub: "서브웨이",
+    title: "따뜻한 날씨만큼 기분 좋은 미식",
+    slides: defaultSlides,
   },
   {
-    categoryType: "쇼핑",
-    id: 4,
-    icon: {
-      src: `${$cdnURL}/images/dummy/thumb_benefit_cupon3.png`,
-      alt: "",
-    },
-    expiryDate: "D-30",
-    expiryDateColor: "blue",
-    main: "스탬프 쿠폰을 찾고 계세요?",
-    sub: "신한 Super SOL",
+    title: "집사들 모여라! 댕냥템 이벤트중",
+    slides: defaultSlides,
   },
   {
-    categoryType: "헬스",
-    id: 5,
-    icon: {
-      src: `${$cdnURL}/images/dummy/thumb_benefit_cupon4.png`,
-      alt: "",
-    },
-    expiryDate: "D-Day",
-    expiryDateColor: "blue",
-    main: "최대 20만원 캐시백 받기",
-    sub: "신한 Super SOL",
-  },
-  {
-    categoryType: "반려동물",
-    id: 6,
-    icon: {
-      src: `${$cdnURL}/images/dummy/thumb_benefit_cupon5.png`,
-      alt: "",
-    },
-    expiryDate: "D-21",
-    expiryDateColor: "blue",
-    main: "Tops 쿠폰",
-    sub: "신한 Super SOL",
-  },
-  {
-    categoryType: "패션 뷰티",
-    id: 7,
-    icon: {
-      src: `${$cdnURL}/images/dummy/thumb_benefit_cupon6.png`,
-      alt: "",
-    },
-    expiryDate: "D-5",
-    expiryDateColor: "blue",
-    main: "신세계 백화점 상품권 포함 5가지 혜택 받기",
-    sub: "신한 Super SOL",
-  },
-  {
-    categoryType: "여행",
-    id: 8,
-    received: false,
-    icon: {
-      src: `${$cdnURL}/images/dummy/thumb_benefit_cupon2.png`,
-      alt: "",
-    },
-    expiryDate: "D-10",
-    expiryDateColor: "blue",
-    main: "스타벅스 쿠폰 받기",
-    sub: "신한 Super SOL",
-  },
-  {
-    categoryType: "금융 렌탈",
-    id: 9,
-    received: false,
-    icon: {
-      src: `${$cdnURL}/images/dummy/thumb_benefit_cupon7.png`,
-      alt: "",
-    },
-    expiryDate: "D-3",
-    expiryDateColor: "blue",
-    main: "해외여행 필수템",
-    sub: "신한 Super SOL",
-  },
-  {
-    categoryType: "자동차",
-    id: 10,
-    received: false,
-    icon: {
-      src: `${$cdnURL}/images/dummy/thumb_benefit_cupon3.png`,
-      alt: "",
-    },
-    expiryDate: "D-15",
-    expiryDateColor: "blue",
-    main: "1등 당첨되면 발뮤다 더 토스트",
-    sub: "신한 Super SOL",
-  },
-  {
-    categoryType: "육아 교육",
-    id: 11,
-    received: false,
-    icon: {
-      src: `${$cdnURL}/images/dummy/thumb_benefit_cupon3.png`,
-      alt: "",
-    },
-    expiryDate: "D-8",
-    expiryDateColor: "blue",
-    main: "1등 당첨되면 발뮤다 더 토스트",
-    sub: "신한 Super SOL",
-  },
-  {
-    categoryType: "기타",
-    id: 12,
-    received: false,
-    icon: {
-      src: `${$cdnURL}/images/dummy/thumb_benefit_cupon3.png`,
-      alt: "",
-    },
-    expiryDate: "D-12",
-    expiryDateColor: "blue",
-    main: "1등 당첨되면 발뮤다 더 토스트",
-    sub: "신한 Super SOL",
+    title: "Tops 인기쿠폰",
+    slides: defaultSlides,
   },
 ];
 </script>
+
 
 
 ```
