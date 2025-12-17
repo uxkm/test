@@ -4,837 +4,428 @@
 
 <route lang="yaml">
 meta:
-  id: SBT128A01
-  title: 할인・쿠폰
-  menu: "혜택 > 할인・쿠폰 메인화면"
+  id: SPY154A01
+  title: 신한Pay머니 발급하기
+  menu: "페이 > 페이:결제/뱅킹 Tab > 신한 Pay 머니 신청: 약관동의"
   layout: SubLayout
-  category: 혜택
+  category: 페이
   publish: 김대민
   publishVersion: 0.8
   status: 작업완료
   header:
-    variant: sub
     fixed: true
     back: true
     close: false
-    menu: false
-    home: true
-  appClassList: "sc-discount__coupon"
-  mainClassList: "discount-coupon__main"
 </route>
 <template>
-  <!-- S : 로딩중 스켈레톤 -->
-  <div
-    class="card-grid__skeleton discount-coupon"
-    aria-label="로딩중"
-    tabindex="0"
-  >
-    <section class="bg-canvas_gray" aria-hidden="true">
-      <div class="couponbook-cards__area">
-        <div class="discount-coupon__header">
-          <LoadingSkeleton
-            width="65%"
-            :height="29"
-            rounded="small"
-            class="left"
-          />
-          <LoadingSkeleton
-            :width="71"
-            :height="29"
-            rounded="small"
-            class="right"
-          />
-        </div>
-        <article class="couponbook-cards">
-          <div class="couponbook-cards__head">
-            <LoadingSkeleton width="100%" :height="33" rounded="small" />
-          </div>
-          <div class="couponbook-cards__body">
-            <div class="couponbook-cards__img">
-              <LoadingSkeleton width="100%" height="100%" rounded="small" />
-            </div>
-            <div class="couponbook-cards__content">
-              <LoadingSkeleton width="100%" :height="29" rounded="small" />
-              <LoadingSkeleton
-                width="100%"
-                :height="22"
-                rounded="small"
-                class="p"
-              />
-            </div>
-          </div>
-          <div class="couponbook-cards__foot">
-            <BoxButtonGroup variant="35:65">
-              <LoadingSkeleton width="100%" :height="48" rounded="medium" />
-              <LoadingSkeleton width="100%" :height="48" rounded="medium" />
-            </BoxButtonGroup>
-          </div>
-        </article>
-      </div>
-    </section>
-    <section class="section" aria-hidden="true">
-      <div class="discount-coupon__header">
-        <h2 class="discount-coupon__title">진행 중인 쿠폰</h2>
-        <LoadingSkeleton
-          :width="71"
-          :height="29"
-          rounded="small"
-          class="right"
-        />
-      </div>
-      <div class="discount-coupon__search">
-        <LoadingSkeleton
-          width="calc(100% - 32px)"
-          :height="56"
-          rounded="medium"
-          class="left"
-        />
-        <LoadingSkeleton
-          :width="36"
-          :height="36"
-          rounded="medium"
-          class="right"
-        />
-      </div>
-      <article class="discount-coupon__body">
-        <div class="cupon-list__body">
-          <div class="cupon-item outline skeleton">
-            <div class="label">
-              <LoadingSkeleton width="40%" :height="22" rounded="small" />
-            </div>
-            <div class="content">
-              <div class="left">
-                <LoadingSkeleton width="25%" :height="22" rounded="small" />
-                <LoadingSkeleton width="100%" :height="26" rounded="small" />
-              </div>
-              <div class="right">
-                <LoadingSkeleton :width="48" :height="48" rounded="medium" />
-              </div>
-            </div>
-          </div>
-          <div class="cupon-item outline skeleton">
-            <div class="label">
-              <LoadingSkeleton width="40%" :height="22" rounded="small" />
-            </div>
-            <div class="content">
-              <div class="left">
-                <LoadingSkeleton width="25%" :height="22" rounded="small" />
-                <LoadingSkeleton width="100%" :height="26" rounded="small" />
-              </div>
-              <div class="right">
-                <LoadingSkeleton :width="48" :height="48" rounded="medium" />
-              </div>
-            </div>
-          </div>
-          <div class="cupon-item outline skeleton">
-            <div class="label">
-              <LoadingSkeleton width="40%" :height="22" rounded="small" />
-            </div>
-            <div class="content">
-              <div class="left">
-                <LoadingSkeleton width="25%" :height="22" rounded="small" />
-                <LoadingSkeleton width="100%" :height="26" rounded="small" />
-              </div>
-              <div class="right">
-                <LoadingSkeleton :width="48" :height="48" rounded="medium" />
-              </div>
-            </div>
-          </div>
-          <div class="cupon-item outline skeleton">
-            <div class="label">
-              <LoadingSkeleton width="40%" :height="22" rounded="small" />
-            </div>
-            <div class="content">
-              <div class="left">
-                <LoadingSkeleton width="25%" :height="22" rounded="small" />
-                <LoadingSkeleton width="100%" :height="26" rounded="small" />
-              </div>
-              <div class="right">
-                <LoadingSkeleton :width="48" :height="48" rounded="medium" />
-              </div>
-            </div>
-          </div>
-          <div class="cupon-item outline skeleton">
-            <div class="label">
-              <LoadingSkeleton width="40%" :height="22" rounded="small" />
-            </div>
-            <div class="content">
-              <div class="left">
-                <LoadingSkeleton width="25%" :height="22" rounded="small" />
-                <LoadingSkeleton width="100%" :height="26" rounded="small" />
-              </div>
-              <div class="right">
-                <LoadingSkeleton :width="48" :height="48" rounded="medium" />
-              </div>
-            </div>
-          </div>
-          <div class="cupon-item outline skeleton">
-            <div class="label">
-              <LoadingSkeleton width="40%" :height="22" rounded="small" />
-            </div>
-            <div class="content">
-              <div class="left">
-                <LoadingSkeleton width="25%" :height="22" rounded="small" />
-                <LoadingSkeleton width="100%" :height="26" rounded="small" />
-              </div>
-              <div class="right">
-                <LoadingSkeleton :width="48" :height="48" rounded="medium" />
-              </div>
-            </div>
-          </div>
-          <div class="cupon-item outline skeleton">
-            <div class="label">
-              <LoadingSkeleton width="40%" :height="22" rounded="small" />
-            </div>
-            <div class="content">
-              <div class="left">
-                <LoadingSkeleton width="25%" :height="22" rounded="small" />
-                <LoadingSkeleton width="100%" :height="26" rounded="small" />
-              </div>
-              <div class="right">
-                <LoadingSkeleton :width="48" :height="48" rounded="medium" />
-              </div>
-            </div>
-          </div>
-        </div>
-      </article>
-    </section>
-  </div>
-  <!-- E : 로딩중 스켈레톤 -->
-
-  <!-- 콘텐츠 영영 -->
-  <div class="sc-contents__body discount-coupon">
-    <!-- 혜택정보수신동의 X - case9 쿠폰북 띠배너(쿠폰북 다 닫았을 경우) -->
-    <div class="discount-coupon__banner" data-color="solid-same">
-      <!-- href="" 제공을 안하는 경우 role="link" tabindex="0" 추가 제공한 경우는 제거 접근성 초점 발생 해결하기 위함  -->
-      <a role="link" tabindex="0" class="banner-link">
-        <div class="discount-coupon__banner-contents" aria-hidden="true">
-          <strong>4월 쿠폰북 보기</strong>
-        </div>
-        <ScImage
-          :src="`${$cdnURL}/images/pages/benefits/coupon/img_coupon.png`"
-          alt=""
-          class="discount-coupon__banner-img"
-          aria-hidden="true"
-        />
-      </a>
-    </div>
-
-    <!-- 혜택정보수신동의 X - case9 쿠폰북 띠배너(쿠폰북 다 닫았을 경우) 영역자체 숨김 section class="bg-canvas_gray" -->
-    <section class="bg-canvas_gray">
-      <!-- 혜택정보수신동의 O - case4 상단 배너 있는 경우 노출 -->
-      <div class="discount-coupon__banner">
-        <!-- href="" 제공을 안하는 경우 role="link" tabindex="0" 추가 제공한 경우는 제거 접근성 초점 발생 해결하기 위함  -->
-        <a
-          role="link"
-          tabindex="0"
-          class="banner-link"
-          aria-label="곧 마감되는 쿠폰이 있어요! 바로 눌러서 확인해보세요"
-        >
-          <ScImage
-            :src="`${$cdnURL}/images/pages/benefits/coupon/img_coupon_icon02_color.png`"
-            alt=""
-            class="discount-coupon__banner-img"
-            aria-hidden="true"
-          />
-          <div class="discount-coupon__banner-contents" aria-hidden="true">
-            <strong>곧 마감되는 쿠폰이 있어요!</strong>
-            <p>바로 눌러서 확인해보세요</p>
-          </div>
-        </a>
-        <IconButton
-          :color="false"
-          :disabled="false"
-          size="small"
-          aria-label="배너 닫기"
-          class="circle-type"
-        >
-          <template #icon>
-            <Icon name="X" size="20" aria-hidden="true" />
-          </template>
-        </IconButton>
-      </div>
-
-      <!-- 혜택정보수신동의 O - 혜택 정보 수신동의 Y -->
-      <div class="couponbook-cards__area case1">
-        <div class="discount-coupon__header">
-          <h2 class="discount-coupon__title">맞춤 혜택 도착</h2>
-          <TextButton text="전체보기" color="secondary" size="small" showGoTo />
-        </div>
-        <article class="couponbook-cards">
-          <div class="couponbook-cards__body">
-            <div class="couponbook-cards__img">
-              <ScImage
-                :src="`${$cdnURL}/images/dummy/img_coupon01.png`"
-                alt="Mom's Touch"
-              />
-            </div>
-            <div class="couponbook-cards__content">
-              <strong>1,000 마이신한포인트</strong>
-              <p>맘스터치 X 신한SOL페이</p>
-            </div>
-          </div>
-          <div class="couponbook-cards__foot">
-            <BoxButtonGroup variant="100" class="column">
-              <BoxButton size="large" text="혜택 확인하기" color="primary" />
-              <TextButton size="small" text="다른 추천받기" color="secondary">
-                <template #leftIcon>
-                  <Icon name="Arrow_refresh" aria-hidden="true" />
-                </template>
-                <template #rightIcon>
-                  <em class="badge-count">3</em>
-                </template>
-              </TextButton>
-            </BoxButtonGroup>
-          </div>
-        </article>
-      </div>
-
-      <!-- 혜택정보수신동의 O - 혜택 정보 수신동의 Y 남은 맞춤 혜택 1개인 경우 -->
-      <div class="couponbook-cards__area case2">
-        <div class="discount-coupon__header">
-          <h2 class="discount-coupon__title">맞춤 혜택 도착</h2>
-          <TextButton text="전체보기" color="secondary" size="small" showGoTo />
-        </div>
-        <article class="couponbook-cards">
-          <div class="couponbook-cards__body">
-            <div class="couponbook-cards__img">
-              <ScImage
-                :src="`${$cdnURL}/images/dummy/img_coupon02.png`"
-                alt="GS25"
-              />
-            </div>
-            <div class="couponbook-cards__content">
-              <strong
-                >GS25 편의점택배 5천원권 모바일쿠폰 GS25 편의점택배 5천원권 GS25
-                편의점택배 5천원권</strong
-              >
-              <p>
-                신한카드 디저트Pick 신규 가입 이벤트 신한카드 디저트Pick 신규
-                가입 이벤트
-              </p>
-            </div>
-          </div>
-          <div class="couponbook-cards__foot">
-            <BoxButtonGroup variant="100" class="column">
-              <BoxButton size="large" text="혜택 확인하기" color="primary" />
-              <TextButtonUnderline
-                size="small"
-                text="맞춤 혜택 전체보기"
-                color="secondary"
-              />
-            </BoxButtonGroup>
-          </div>
-        </article>
-      </div>
-
-      <!-- 혜택정보수신동의 O - 혜택 정보 수신동의 Y 혜택명/쿠폰명 로드 실패시 -->
-      <div class="couponbook-cards__area case3">
-        <div class="discount-coupon__header">
-          <h2 class="discount-coupon__title">맞춤 혜택 도착</h2>
-          <TextButton text="전체보기" color="secondary" size="small" showGoTo />
-        </div>
-        <article class="couponbook-cards">
-          <div class="couponbook-cards__body">
-            <div class="couponbook-cards__img">
-              <ScImage
-                :src="`${$cdnURL}/images/pages/benefits/coupon/img_coupon_icon01.png`"
-                alt="쿠폰"
-              />
-            </div>
-            <div class="couponbook-cards__content">
-              <strong>바로 확인하기</strong>
-              <p>맞춤 혜택</p>
-            </div>
-          </div>
-          <div class="couponbook-cards__foot">
-            <BoxButtonGroup variant="100" class="column">
-              <BoxButton size="large" text="혜택 확인하기" color="primary" />
-              <TextButtonUnderline
-                size="small"
-                text="맞춤 혜택 전체보기"
-                color="secondary"
-              />
-            </BoxButtonGroup>
-          </div>
-        </article>
-      </div>
-
-      <!-- 혜택정보수신동의 O - 혜택 정보 수신동의 Y 상단 배너 있는 경우 -->
-      <div class="couponbook-cards__area case4">
-        <div class="discount-coupon__header">
-          <h2 class="discount-coupon__title">맞춤 혜택 도착</h2>
-          <TextButton text="전체보기" color="secondary" size="small" showGoTo />
-        </div>
-        <article class="couponbook-cards">
-          <div class="couponbook-cards__body">
-            <div class="couponbook-cards__img">
-              <ScImage
-                :src="`${$cdnURL}/images/dummy/img_coupon01.png`"
-                alt="Mom's Touch"
-              />
-            </div>
-            <div class="couponbook-cards__content">
-              <strong>1,000 마이신한포인트</strong>
-              <p>맘스터치 X 신한SOL페이</p>
-            </div>
-          </div>
-          <div class="couponbook-cards__foot">
-            <BoxButtonGroup variant="100" class="column">
-              <BoxButton size="large" text="혜택 확인하기" color="primary" />
-              <TextButton size="small" text="다른 추천받기" color="secondary">
-                <template #leftIcon>
-                  <Icon name="Arrow_refresh" aria-hidden="true" />
-                </template>
-                <template #rightIcon>
-                  <em class="badge-count">3</em>
-                </template>
-              </TextButton>
-            </BoxButtonGroup>
-          </div>
-        </article>
-      </div>
-
-      <!-- 혜택정보수신동의 X - 미동의&타겟 쿠폰 없을 시 -->
-      <div class="couponbook-cards__area case5">
-        <article class="couponbook-cards">
-          <div class="couponbook-cards__head">
-            <h2 class="couponbook-cards__title">맞춤 혜택 도착</h2>
-            <p class="couponbook-cards__description">
-              혜택정보수신에 동의하면 맞춤 혜택을 확인할 수 있어요
-            </p>
-          </div>
-          <div class="couponbook-cards__body">
-            <div class="couponbook-cards__img">
-              <ScImage
-                :src="`${$cdnURL}/images/pages/benefits/coupon/img_coupon_icon01.png`"
-                alt="쿠폰"
-              />
-            </div>
-          </div>
-          <div class="couponbook-cards__foot">
-            <BoxButtonGroup variant="35:65">
-              <BoxButton size="large" text="닫기" color="secondary" />
-              <BoxButton size="large" text="동의하러 가기" color="primary" />
-            </BoxButtonGroup>
-          </div>
-        </article>
-      </div>
-
-      <!-- 혜택정보수신동의 X - 미동의&타겟 쿠폰 있을 시 -->
-      <div class="couponbook-cards__area case6">
-        <article class="couponbook-cards">
-          <div class="couponbook-cards__head">
-            <h2 class="couponbook-cards__title">맞춤 혜택 도착</h2>
-            <p class="couponbook-cards__description">
-              혜택정보수신에 동의하면 맞춤 혜택을 확인할 수 있어요
-            </p>
-          </div>
-          <div class="couponbook-cards__body">
-            <div class="couponbook-cards__img">
-              <ScImage
-                :src="`${$cdnURL}/images/dummy/img_coupon02.png`"
-                alt="GS25"
-              />
-            </div>
-            <div class="couponbook-cards__content">
-              <strong
-                >GS25 편의점택배 5천원권 모바일쿠폰 GS25 편의점택배 5천원권 GS25
-                편의점택배 5천원권</strong
-              >
-              <p>
-                신한카드 디저트Pick 신규 가입 이벤트 신한카드 디저트Pick 신규
-                가입 이벤트
-              </p>
-            </div>
-          </div>
-          <div class="couponbook-cards__foot">
-            <BoxButtonGroup variant="35:65">
-              <BoxButton size="large" text="닫기" color="secondary" />
-              <BoxButton size="large" text="동의하러 가기" color="primary" />
-            </BoxButtonGroup>
-          </div>
-        </article>
-      </div>
-
-      <!-- 혜택정보수신동의 X - 마감임박 알림 배너 -->
-      <div class="couponbook-cards__area case7">
-        <article class="couponbook-cards">
-          <div class="couponbook-cards__head">
-            <h2 class="couponbook-cards__title">
-              곧 사라지는 쿠폰이<br />60장 있어요
-            </h2>
-          </div>
-          <div class="couponbook-cards__body">
-            <div class="couponbook-cards__img">
-              <ScImage
-                :src="`${$cdnURL}/images/pages/benefits/coupon/img_coupon_icon02.png`"
-                alt="쿠폰"
-              />
-            </div>
-          </div>
-          <div class="couponbook-cards__foot">
-            <BoxButtonGroup variant="35:65">
-              <BoxButton size="large" text="닫기" color="secondary" />
-              <BoxButton size="large" text="받은쿠폰 보기" color="primary" />
-            </BoxButtonGroup>
-          </div>
-        </article>
-      </div>
-
-      <!-- 혜택정보수신동의 X - 쿠폰북 배너 -->
-      <div class="couponbook-cards__area case8">
-        <article class="couponbook-cards">
-          <div class="couponbook-cards__head">
-            <h2 class="couponbook-cards__title">5월 쿠폰북 도착</h2>
-          </div>
-          <div class="couponbook-cards__body">
-            <div class="couponbook-cards__img">
-              <ScImage
-                :src="`${$cdnURL}/images/dummy/img_coupon01.png`"
-                alt="Mom's Touch"
-              />
-            </div>
-            <div class="couponbook-cards__content">
-              <strong>1,000 마이신한포인트</strong>
-              <p>맘스터치 X 신한SOL페이</p>
-            </div>
-          </div>
-          <div class="couponbook-cards__foot">
-            <BoxButtonGroup variant="35:65">
-              <BoxButton size="large" text="닫기" color="secondary" />
-              <BoxButton size="large" text="받은쿠폰 보기" color="primary" />
-            </BoxButtonGroup>
-          </div>
-        </article>
-      </div>
-    </section>
-
+  <div class="sc-contents__body sc-agree__page">
     <section class="section">
-      <div class="discount-coupon__header">
-        <h2 class="discount-coupon__title">진행 중인 쿠폰</h2>
-        <TextButton text="전체보기" color="secondary" size="small" showGoTo />
-      </div>
-      <div class="discount-coupon__search">
-        <InputField
-          id="couponSearch"
-          name="couponSearch"
-          v-model="searchKeyword"
-          placeholder="마이샵, 탑스, 맛있는 쿠폰 검색"
-          :show-label="false"
-          :show-helper="false"
-        >
-          <template #button>
-            <IconButton aria-label="쿠폰 검색">
-              <template #icon>
-                <Icon name="Search" size="16" aria-hidden="true" />
-              </template>
-            </IconButton>
-          </template>
-        </InputField>
-        <IconButton
-          :color="false"
-          :disabled="false"
-          size="small"
-          aria-label="조회조건 선택"
-          class="circle-type"
-          @click="isCategorySheetOpen = true"
-        >
-          <template #icon>
-            <Icon name="Sort" size="20" aria-hidden="true" />
-          </template>
-        </IconButton>
-      </div>
-      <article class="discount-coupon__body">
-        <div class="cupon-list__body">
-          <!-- 링크인 경우에만 role="link" tabindex="0" aria-label="쿠폰 정보" 추가 -->
+      <div class="sc-agree__list compound" role="region">
+        <div class="agree-list__group">
           <div
-            v-for="coupon in filteredCoupons"
-            :key="coupon.id"
-            :class="[
-              'cupon-item outline',
-              { 'is-label': coupon.label || coupon.expiryDate },
-            ]"
-            role="link"
-            :aria-label="
-              [
-                coupon.label ? `쿠폰 상태: ${coupon.label}` : null,
-                coupon.expiryDate ? `만료일: ${coupon.expiryDate}` : null,
-                coupon.sub,
-                coupon.main,
-              ]
-                .filter(Boolean)
-                .join(', ')
-            "
+            class="agree-item item-basic"
+            :class="{ 'is-checked': basicAgree4 }"
           >
-            <ListItem align="centered" :left="{ direction: 'reverse' }">
-              <template #label v-if="coupon.label || coupon.expiryDate">
-                <div class="flex gap-4">
-                  <!-- 쿠폰 상태 -->
-                  <SolidLabel
-                    v-if="coupon.label"
-                    :title="coupon.label"
-                    :color="coupon.labelColor || 'blue'"
-                    class="inline-flex"
-                  />
-                  <!-- 만료일 -->
-                  <TintLabel
-                    v-if="coupon.expiryDate"
-                    :title="coupon.expiryDate"
-                    :color="coupon.expiryDateColor || 'blue'"
-                  />
-                </div>
+            <Checkbox
+              v-model="basicAgree4"
+              class="agree-item__checkbox item-checkbox__basic"
+              variant="box"
+              align="left"
+            >
+              <template #label>
+                <span class="agree-item__label item-label__basic">{{
+                  basicItem4.label
+                }}</span>
               </template>
-              <template #leftSubText>
-                <span aria-hidden="true">{{ coupon.sub }}</span>
+            </Checkbox>
+          </div>
+
+          <!-- ======================================== -->
+          <!-- 1뎁스 영역: 약관 항목들 -->
+          <!-- ======================================== -->
+          <div class="agree-sublist" role="group">
+            <div
+              v-for="item in subItems4"
+              :key="item.value"
+              class="agree-subitem"
+              :class="{ 'agree-subitem__accordion': Boolean(item.accordion) }"
+            >
+              <template v-if="item.accordion">
+                <SolidListAccordion
+                  class="agree-subitem__accordion"
+                  :rowClickable="false"
+                  :value="item.value"
+                  v-model:isExpanded="subAccordionState4[item.value]"
+                >
+                  <template #title>
+                    <div
+                      class="agree-item agree-item__sub"
+                      :class="{
+                        'is-checked': subAgrees4.includes(item.value),
+                      }"
+                    >
+                      <Checkbox
+                        :value="item.value"
+                        variant="box"
+                        align="left"
+                        :model-value="subAgrees4.includes(item.value)"
+                        class="agree-item__checkbox item-checkbox__sub"
+                        @update:model-value="onToggleSub4(item.value, $event)"
+                        @click.stop
+                      >
+                        <template #label>
+                          <span class="agree-item__label item-label__sub">{{
+                            item.label
+                          }}</span>
+                        </template>
+                      </Checkbox>
+                    </div>
+                  </template>
+                  <div class="agree-subitem__panel">
+                    <div v-if="item.value === 's4-2'" class="agree-depth">
+                      <!-- ======================================== -->
+                      <!-- 2뎁스 영역: 개인(신용)정보 필수적 동의 -->
+                      <!-- ======================================== -->
+                      <ul class="agree-sublist agree-sublist__depth2">
+                        <li
+                          v-for="depth2Item in subItemsDepth2_s4_2"
+                          :key="depth2Item.value"
+                          class="agree-subitem agree-subitem__depth2"
+                        >
+                          <!-- 아코디언이 있는 항목 -->
+                          <template v-if="depth2Item.accordion">
+                            <SolidListAccordion
+                              class="agree-subitem__accordion accordion-depth2"
+                              :rowClickable="false"
+                              :value="depth2Item.value"
+                              v-model:isExpanded="
+                                subAccordionState4[depth2Item.value]
+                              "
+                            >
+                              <template #title>
+                                <div class="agree-item agree-item__sub">
+                                  <Checkbox
+                                    :value="depth2Item.value"
+                                    variant="mark"
+                                    align="left"
+                                    :model-value="
+                                      subAgrees4.includes(depth2Item.value)
+                                    "
+                                    class="agree-item__checkbox item-checkbox__sub"
+                                    @update:model-value="
+                                      onToggleSub4(depth2Item.value, $event)
+                                    "
+                                    @click.stop
+                                  >
+                                    <template #label>
+                                      <span
+                                        class="agree-item__label item-label__sub"
+                                        >{{ depth2Item.label }}</span
+                                      >
+                                    </template>
+                                  </Checkbox>
+                                </div>
+                              </template>
+                              <div class="agree-subitem__panel">
+                                <!-- 3뎁스 영역: 개인(신용)정보 수집∙이용에 관한 사항 -->
+                                <Card
+                                  v-if="depth2Item.value === 's4-2-1'"
+                                  variant="solid"
+                                  color="gray"
+                                  class="agree-details card-color__white"
+                                >
+                                  <ul class="agree-sublist" role="group">
+                                    <li
+                                      v-for="depth3Item in subItemsDepth3_s4_2_1"
+                                      :key="depth3Item.value"
+                                      class="agree-subitem agree-subitem__depth3"
+                                    >
+                                      <div class="agree-item agree-item__sub">
+                                        <Checkbox
+                                          :value="depth3Item.value"
+                                          variant="mark"
+                                          align="left"
+                                          :model-value="
+                                            subAgrees4.includes(
+                                              depth3Item.value
+                                            )
+                                          "
+                                          class="agree-item__checkbox item-checkbox__sub"
+                                          @update:model-value="
+                                            onToggleSub4(
+                                              depth3Item.value,
+                                              $event
+                                            )
+                                          "
+                                          @click.stop
+                                        >
+                                          <template #label>
+                                            <span
+                                              class="agree-item__label item-label__sub"
+                                              >{{ depth3Item.label }}</span
+                                            >
+                                          </template>
+                                        </Checkbox>
+                                      </div>
+                                    </li>
+                                  </ul>
+                                </Card>
+
+                                <!-- 자세히 보기 링크 -->
+                                <div class="agree-depth__link">
+                                  <TextButton
+                                    class="agree-depth__link"
+                                    color="secondary"
+                                    size="small"
+                                    text="자세히 보기"
+                                    showGoTo
+                                  />
+                                </div>
+                              </div>
+                            </SolidListAccordion>
+                          </template>
+
+                          <!-- 일반 항목 (아코디언 없음) -->
+                          <div v-else class="agree-item agree-item__sub">
+                            <Checkbox
+                              :value="depth2Item.value"
+                              variant="mark"
+                              align="left"
+                              :model-value="
+                                subAgrees4.includes(depth2Item.value)
+                              "
+                              class="agree-item__checkbox item-checkbox__sub"
+                              @update:model-value="
+                                onToggleSub4(depth2Item.value, $event)
+                              "
+                              @click.stop
+                            >
+                              <template #label>
+                                <span
+                                  class="agree-item__label item-label__sub"
+                                  >{{ depth2Item.label }}</span
+                                >
+                              </template>
+                            </Checkbox>
+                            <IconButton
+                              iconName="Chevron_right"
+                              size="small"
+                              :aria-label="`${depth2Item.label} 상세 보기`"
+                              class="agree-subitem__trigger"
+                            />
+                          </div>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </SolidListAccordion>
               </template>
-              <template #leftMainText>
-                <strong aria-hidden="true">{{ coupon.main }}</strong>
-              </template>
-              <template #rightIcon>
-                <img
-                  :src="coupon.icon.src"
-                  :alt="coupon.icon.alt"
-                  class="cupon-icon"
-                  aria-hidden="true"
-                />
-              </template>
-            </ListItem>
+            </div>
+
+            <!-- [필수] 회원 가입 및 발급신청 동의 항목 (s4-3) -->
+            <div class="agree-item agree-item__sub">
+              <Checkbox
+                value="s4-3"
+                variant="box"
+                align="left"
+                :model-value="subAgrees4.includes('s4-3')"
+                class="agree-item__checkbox item-checkbox__sub"
+                @update:model-value="onToggleSub4('s4-3', $event)"
+                @click.stop
+              >
+                <template #label>
+                  <span class="column-line">
+                    <span class="agree-item__label item-label__sub"
+                      >[필수] 회원 가입 및 발급신청 동의</span
+                    >
+                    <small class="agree-item-label__description">
+                      본인은 카드 실제 소유자와 동일하며, 위 기재된 사실과 다름이 없음을 확인하고 회원가입을 신청합니다.
+                    </small>
+                  </span>
+                </template>
+              </Checkbox>
+              <IconButton
+                iconName="Chevron_right"
+                size="small"
+                aria-label="[필수] 회원 가입 및 발급신청 동의 상세 보기"
+                class="agree-subitem__trigger"
+              />
+            </div>
           </div>
         </div>
-      </article>
+      </div>
     </section>
   </div>
 
-  <!-- 카테고리 선택 바텀시트 SBT128A02 -->
-  <BottomSheet
-    title="카테고리"
-    v-model="isCategorySheetOpen"
-    class="category-sheet"
-  >
-    <div class="category-sheet__content p-none">
-      <RadioCircleGroup
-        v-model="nextCategoryValue"
-        :items="categories"
-        orientation="horizontal"
-        labelKey="label"
-        valueKey="value"
-        class="category-sheet__radio-group"
-      />
-    </div>
-    <template #footer>
-      <BoxButtonGroup size="xlarge" variant="35:65">
-        <BoxButton text="초기화" color="secondary" @click="resetCategory" />
-        <BoxButton text="적용" @click="applyCategory" />
-      </BoxButtonGroup>
-    </template>
-  </BottomSheet>
+  <BottomActionContainer :scrollDim="true">
+    <BoxButtonGroup size="xlarge" variant="100">
+      <BoxButton text="발급하기" :disabled="!basicAgree4" />
+    </BoxButtonGroup>
+  </BottomActionContainer>
 </template>
 
 <script setup>
-import { AppContextKey } from "@/configs/inject/appContext";
-import { ScImage } from "@shc-nss/ui/shc";
 import {
-  BottomSheet,
+  BottomActionContainer,
   BoxButton,
   BoxButtonGroup,
-  Icon,
+  Card,
+  Checkbox,
   IconButton,
-  InputField,
-  ListItem,
-  LoadingSkeleton,
-  RadioCircleGroup,
+  Infobox,
   SolidLabel,
+  SolidListAccordion,
   TextButton,
-  TextButtonUnderline,
-  TintLabel,
+  UnorderedList,
+  UnorderedListItem,
 } from "@shc-nss/ui/solid";
-import { computed, inject, ref } from "vue";
+import { reactive, ref, watch } from "vue";
 
-const { $cdnURL } = inject(AppContextKey);
+/**
+ * 유형 4 : 약관동의 기본형
+ */
+const basicItem4 = {
+  label: "약관 전체 동의",
+};
 
-const searchKeyword = ref("");
-const isCategorySheetOpen = ref(false);
-const nextCategoryValue = ref("all");
-const selectedCategory = ref("all");
+// JavaScript/TypeScript 호환을 위한 타입 정의 (선택사항)
 
-const categories = [
+// JavaScript/TypeScript 호환 배열
+const subItems4 = [
   {
-    label: "전체",
-    value: "all",
-  },
-  {
-    label: "카페·다이닝",
-    value: "카페 다이닝",
-  },
-  {
-    label: "여가·스포츠",
-    value: "여가 스포츠",
-  },
-  {
-    label: "라이프서비스",
-    value: "라이프서비스",
-  },
-  {
-    label: "쇼핑",
-    value: "쇼핑",
-  },
-  {
-    label: "헬스",
-    value: "헬스",
-  },
-  {
-    label: "반려동물",
-    value: "반려동물",
-  },
-  {
-    label: "패션·뷰티",
-    value: "패션 뷰티",
-  },
-  {
-    label: "여행",
-    value: "여행",
-  },
-  {
-    label: "금융·렌탈",
-    value: "금융 렌탈",
-  },
-  {
-    label: "자동차",
-    value: "자동차",
-  },
-  {
-    label: "육아·교육",
-    value: "육아 교육",
-  },
-  {
-    label: "기타",
-    value: "기타",
+    label: "개인(신용)정보 필수적 동의",
+    value: "s4-2",
+    accordion: true,
   },
 ];
 
-function resetCategory() {
-  nextCategoryValue.value = "all";
-  selectedCategory.value = "all";
-}
+// 2뎁스 항목들 - 개인(신용)정보 필수적 동의 (s4-2)
+const subItemsDepth2_s4_2 = [
+  {
+    label: "[필수] 신한Pay머니 이용약관 동의",
+    value: "s4-2-0",
+    accordion: false,
+  },
+  {
+    label: "[필수] 개인(신용)정보 수집∙이용 동의",
+    value: "s4-2-1",
+    accordion: true,
+  },
+];
 
-function applyCategory() {
-  selectedCategory.value = nextCategoryValue.value;
-  isCategorySheetOpen.value = false;
-}
+// 3뎁스 항목들 - 개인(신용)정보 수집∙이용에 관한 사항 (s4-2-1)
+const subItemsDepth3_s4_2_1 = [
+  { label: "고유식별정보 수집∙이용 동의", value: "s4-2-1-1" },
+  { label: "개인신용정보 수집∙이용 동의", value: "s4-2-1-2" },
+];
 
-// 필터링된 쿠폰 리스트
-const filteredCoupons = computed(() => {
-  let filtered = couponItems;
-
-  // 카테고리 필터링
-  if (selectedCategory.value !== "all") {
-    filtered = filtered.filter(
-      (coupon) => coupon.categoryType === selectedCategory.value
-    );
-  }
-
-  // 검색어 필터링
-  if (searchKeyword.value.trim()) {
-    const keyword = searchKeyword.value.toLowerCase();
-    filtered = filtered.filter(
-      (coupon) =>
-        coupon.main.toLowerCase().includes(keyword) ||
-        coupon.sub.toLowerCase().includes(keyword)
-    );
-  }
-
-  return filtered;
+const basicAgree4 = ref(false);
+const subAgrees4 = ref([]);
+const subAccordionState4 = reactive({
+  "s4-2": false, // 개인(신용)정보 필수적 동의
+  "s4-2-1": false, // 개인(신용)정보 수집∙이용에 관한 사항
 });
 
-// 쿠폰 리스트 데이터 (이미지 참조)
-const couponItems = [
-  {
-    categoryType: "카페 다이닝",
-    id: 1,
-    icon: {
-      src: `${$cdnURL}/images/dummy/img_coupon_symbol01.png`,
-      alt: "",
-    },
-    label: "보유중",
-    labelColor: "blue",
-    expiryDate: "D-3",
-    expiryDateColor: "blue",
-    main: "5,000원 캐시백",
-    sub: "그리팅몰",
-  },
-  {
-    categoryType: "여가 스포츠",
-    id: 2,
-    icon: {
-      src: `${$cdnURL}/images/dummy/img_coupon_symbol02.png`,
-      alt: "",
-    },
-    main: "1,000원 캐시백",
-    sub: "CJ더마켓",
-  },
-  {
-    categoryType: "라이프서비스",
-    id: 3,
-    icon: {
-      src: `${$cdnURL}/images/dummy/img_coupon_symbol03.png`,
-      alt: "",
-    },
-    label: "보유중",
-    labelColor: "blue",
-    expiryDate: "D-3",
-    expiryDateColor: "blue",
-    main: "5% 캐시백",
-    sub: "크록스",
-  },
-  {
-    categoryType: "쇼핑",
-    id: 4,
-    icon: {
-      src: `${$cdnURL}/images/dummy/img_coupon_symbol04.png`,
-      alt: "",
-    },
-    main: "1,000원 캐시백",
-    sub: "파리바게트",
-  },
-  {
-    categoryType: "헬스",
-    id: 5,
-    icon: {
-      src: `${$cdnURL}/images/dummy/img_coupon_symbol01.png`,
-      alt: "",
-    },
-    expiryDate: "D-Day",
-    expiryDateColor: "blue",
-    main: "5,000원 캐시백",
-    sub: "그리팅몰",
-  },
-  {
-    categoryType: "반려동물",
-    id: 6,
-    icon: {
-      src: `${$cdnURL}/images/dummy/img_coupon_symbol02.png`,
-      alt: "",
-    },
-    main: "1,000원 캐시백",
-    sub: "CJ더마켓",
-  },
-  {
-    categoryType: "패션 뷰티",
-    id: 7,
-    icon: {
-      src: `${$cdnURL}/images/dummy/img_coupon_symbol03.png`,
-      alt: "",
-    },
-    label: "보유중",
-    labelColor: "blue",
-    expiryDate: "D-3",
-    expiryDateColor: "blue",
-    main: "5% 캐시백",
-    sub: "크록스",
-  },
-];
+/**
+ * 동작 로직
+ */
+function onToggleSub4(value, checked) {
+  const set = new Set(subAgrees4.value);
+  if (checked) set.add(value);
+  else set.delete(value);
+  subAgrees4.value = Array.from(set);
+
+  // 전체 항목 수 계산 (1뎁스 + 2뎁스 + 3뎁스)
+  const totalItems =
+    subItems4.length +
+    subItemsDepth2_s4_2.length +
+    subItemsDepth3_s4_2_1.length +
+    1; // 회원 가입 및 발급신청 동의 항목 (s4-3)
+  basicAgree4.value = set.size === totalItems;
+}
+
+watch(basicAgree4, (checked) => {
+  if (checked) {
+    // 1뎁스 항목들 + 아코디언 내부의 모든 하위 항목들 (2뎁스 + 3뎁스)
+    const allItems = [
+      ...subItems4.map((item) => item.value),
+      ...subItemsDepth2_s4_2.map((item) => item.value),
+      ...subItemsDepth3_s4_2_1.map((item) => item.value),
+      "s4-3", // 회원 가입 및 발급신청 동의 항목
+    ];
+    subAgrees4.value = allItems;
+  } else {
+    subAgrees4.value = [];
+  }
+});
 </script>
+
+<style scoped></style>
+
+
+
+<route lang="yaml">
+meta:
+  id: SPY155A01
+  title: 신한Pay머니 발급하기
+  menu: "페이 > 페이:결제/뱅킹 Tab > 신한 Pay 머니 신청: 약관동의 > 약관 자세히보기 (FP)"
+  layout: SubLayout
+  category: 페이
+  publish: 김대민
+  publishVersion: 0.8
+  status: 작업완료
+  header:
+    fixed: true
+    back: true
+    close: false
+</route>
+
+<template>
+  <FullPopup
+    v-model="isOpen"
+    title="개인(신용)정보 선택 수집·이용에 관한 동의(선택)"
+    class="terms-popup"
+  >
+    <!-- 약관 내용 영역 (탭 없음) -->
+    <div 
+      class="terms-panel"
+      role="region"
+      aria-label="약관 내용"
+    >
+      <!-- <div class="ondark-empty"> 감싸는 영역은 임시로 추가 실제 개발시 제거하고 사용 -->
+      <div class="ondark-empty" style="height: 800px;">
+        {{ termsContent }}
+      </div>
+    </div>
+    
+    <template #footer>
+      <BoxButton 
+        color="primary" 
+        size="xlarge" 
+        text="확인"
+        @click="handleConfirm"
+      />
+    </template>
+  </FullPopup>
+</template>
+
+<script setup>
+import { ref } from "vue";
+import { BoxButton, FullPopup } from "@shc-nss/ui/solid";
+
+const isOpen = defineModel({ default: true });
+
+// 약관 내용 데이터
+const termsContent = ref("약관 전문");
+
+// 확인 버튼 클릭 핸들러
+const handleConfirm = () => {
+  // 확인 로직 구현
+  console.log("약관 확인");
+  isOpen.value = false;
+};
+</script>
+
 
 
 
