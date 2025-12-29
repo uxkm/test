@@ -3,6 +3,456 @@
 ```js
 
 
+
+
+<template>
+  <!--
+    퀴즈팡팡 영역
+    - 어드민 > 이벤트 관리 > pLay전용 이벤트 관리에 등록된 퀴즈 이벤트가 있는 경우
+      해당 이벤트 기간동안 노출
+    - 진행되는 퀴즈 이벤트 없을 경우 해당 영역 히든
+    - 문제 풀기 전/후에 따라 UI 다르게 노출
+      : 문제 풀기 전: 당일 퀴즈 문항 + 퀴즈 버튼 노출
+      : 문제 풀기 후: 등급 현황 + 참여 현황 노출
+    - 미로그인 상태에서 퀴즈팡팡 영역 노출
+      : 디바이스 정보 DB가 있는 경우 정답 제출 Tap > 마지막 로그인 방식 화면 호출
+
+    [퀴즈 풀기 전]
+    1-1. 퀴즈 문제
+    - 어드민에 등록된 오늘날짜의 퀴즈유형(OX/객관식-2지선다, 3지선다) 및 문제 출력
+
+    1-2. 퀴즈 유형
+    - 이벤트 유형 중 '퀴즈_OX / 퀴즈_객관식'으로 등록된 이벤트가 노출
+    - 버튼 비활성화 default, 답 선택 시 선택된 항목 활성화
+    - 객관식 항목 텍스트 최대 2줄까지 노출
+      : Case1 OX: OX선택 버튼 제공
+      : Case2 / Case3 객관식: 라디오버튼+텍스트 제공, 중복선택 불가
+
+    1-3. 힌트 보기 버튼
+    - 힌트 보기 버튼 Tap > 어드민에서 해당 날짜, 퀴즈에 등록된 힌트 보기 유형으로 연결
+    - 힌트 보기 유형은 타입에 따라 텍스트 or 이미지 or URL방식으로 나뉨
+    - 힌트 보기 버튼 Tap > 문제 풀기 전 & 일 1회 & 최초에 한해 1P를 고정지급
+    - 힌트 URL 또는 바텀시트 종료 후에 퀴즈로 다시 돌아오면 Toast popup(1-3-1) 노출
+      토스트 내용 : 힌트 보너스를 1P 받았어요.
+    - 힌트 일 1회 이상 확인 후 1P 배지 미노출
+
+    1-4. 정답 제출 버튼
+    - 버튼 비활성화 default, 답 선택 시 버튼 활성화 전환
+    - 정답 제출 버튼 Tap > 어드민에 등록된 정답과 화면에서 선택값 일치여부 체크
+      : 정답 실패(불일치): 오답 Toast popup(1-4-1) 노출 & 퀴즈 푼 후 화면으로 변경 (화면 refresh)
+      토스트 내용 : 1P 획득! 내일은 정답에 도전하세요.
+      : 정답 성공(일치): 정답 Toast popup(1-4-2) 노출 & 퀴즈 푼 후 화면으로 변경,
+        지급 포인트 적립 (화면 refresh) (어드민 > 포인트 위에 등록된 포인트)
+        토스트 내용 : 정답을 맞춰 11P를 받았어요.
+      : 포인트 적립 실패: 내부 시스템 오류(인터페이스 실패)등으로 인해 포인트 적립 실패한 경우
+        Toast popup(1-4-3) 노출 & 퀴즈풀기 재노출
+        토스트 내용 : 앗, 문제가 생겼어요. 다시 해볼까요?
+
+    [퀴즈 푼 후]
+    1-1. 내 등급 + 참여 현황 문구
+    - 직전 참여일 기준 해당하는 등급 노출 (LV.퀴즈박사, LV.퀴즈왕, LV.퀴즈의 신)
+    - 등급 없는 경우 LV.0으로 노출
+    - 참여 현황 문구 노출
+      : 문구는 해상도에 따라 최대 2줄까지 노출
+      : 문제 풀기 전 정답횟수 +1 회 하여 다음 등급까지 남은 횟수 노출
+      : 등급 도달시에는 축하 문구 선 노출 후 남은 횟수 문구 노출
+    - 내 등급 Tap > [SBT159A01_퀴즈 등급별 혜택 B/S] 호출
+
+    1-2. 이번달 참여 현황 버튼
+    - 이번달 참여 현황 버튼에 텍스트로 노출
+      : 이번달 {{해당월 일 수}}일 중 {{참여일 수}}일 참여 중
+      : ex. 11월에 3번 참여한 경우, '이번달 30일 중 3일 참여 중' 표기
+    - 참여 현황 버튼 Tap > [SBT160A01_이달의 참여현황 B/S] 호출
+
+    1-3. 힌트 다시보기 버튼
+    - [힌트 다시보기] 버튼 Tap > 퀴즈 풀기 전 힌트보기 버튼과 기능 동일
+
+    1-4. 퀴즈 등급 달성 후 추가 포인트 버튼 <등급 보너스 획득 Case1~3 참고>
+    - 퀴즈 등급 달성 시 보너스 받기 버튼 노출
+      : 등급 미달성시에는 버튼 미노출
+    - {{달성한 등급명}} 보너스 받기 문구 노출
+    - 버튼 Tap > 토스트 메시지 노출 후 포인트 적립
+      (어드민에서 등록한 포인트 단위 중 랜덤 지급) 보너스 적립 후 버튼 사라짐
+    - 등급 도달 후 보너스 받기 버튼 누르지 않고 정답인 경우
+      버튼명 변경: 지난 {{달성한 등급명}} 보너스 받기
+    - 등급 도달 & 다음 등급 도달까지 보너스 받기 버튼 안누를 경우
+      최대 3번까지 연속으로 보너스 받기 가능 (단, 이전 등급 버튼명 분기)
+      ex) 퀴즈박사 보너스 안받은 상태로 퀴즈의 신 도달:
+        보너스 포인트 받기 버튼 노출 → 보너스 적립(퀴즈박사) →
+        보너스 포인트 받기 버튼 노출 → 보너스 적립(퀴즈왕) →
+        보너스 포인트 받기 버튼 노출 → 보너스 적립(퀴즈의신) → 버튼 사라짐 
+  -->
+  <section class="bf-quiz-pangpang">
+    <!-- S : 퀴즈팡팡 로딩 -->
+    <article
+      class="bf-quiz-pangpang__contents skeleton"
+      tabindex="0"
+      aria-label="로딩중"
+    >
+      <div class="bf-quiz-pangpang__contents-header" aria-hidden="true">
+        <LoadingSkeleton width="100%" :height="54" rounded="small" />
+      </div>
+      <div class="bf-quiz-pangpang__contents-body" aria-hidden="true">
+        <div class="bf-quiz-pangpang__contents-item">
+          <LoadingSkeleton width="100%" :height="100" rounded="small" />
+        </div>
+        <div class="bf-quiz-pangpang__contents-item">
+          <LoadingSkeleton width="100%" :height="100" rounded="small" />
+        </div>
+      </div>
+      <div class="bf-quiz-pangpang__contents-footer" aria-hidden="true">
+        <div class="bf-quiz-pangpang__contents-item">
+          <LoadingSkeleton width="100%" :height="48" rounded="small" />
+        </div>
+        <div class="bf-quiz-pangpang__contents-item">
+          <LoadingSkeleton width="100%" :height="48" rounded="small" />
+        </div>
+        <div class="bf-quiz-pangpang__contents-item">
+          <LoadingSkeleton width="100%" :height="22" rounded="small" />
+        </div>
+      </div>
+    </article>
+    <!-- E : 퀴즈팡팡 로딩 -->
+
+    <!-- S : 퀴즈팡팡 콘텐츠 - 문제 풀기 전 -->
+    <article class="bf-quiz-pangpang__contents">
+      <div class="bf-quiz-pangpang__contents-header">
+        <h2 class="bf-quiz-pangpang__title">퀴즈팡팡</h2>
+        <!-- 어드민에 등록된 오늘날짜의 퀴즈유형(OX/객관식-2지선다, 3지선다) 및 문제 출력 -->
+        <p class="bf-quiz-pangpang__problem-output">
+          보기만해도 포인트를 주는 서비스는<br />[포인트 팡팡]이다.
+        </p>
+        <!-- case 2 - 문제 풀기 전 객관식 3지선다, case 3 - 문제 풀기 전 객관식 2지선다 -->
+        <!-- <p class="bf-quiz-pangpang__problem-output">
+          보기만해도 포인트를 드리는 포인트<br />즉시적립 서비스명은 무엇일까요?
+        </p> -->
+      </div>
+
+      <!-- S : OX 퀴즈 -->
+      <div class="bf-quiz-pangpang__contents-body">
+        <div class="bf-quiz-pangpang__contents-item">
+          <SelectBox
+            value="true"
+            :selected="selectedAnswer === 'true'"
+            class="icon-button-true"
+            aria-label="그렇다"
+            @click="selectedAnswer = 'true'"
+          >
+            <template #contents>
+              <span class="icon-box" aria-hidden="true">
+                <ScImageIcon iconName="icon_o" size="32" />
+              </span>
+              <span class="sv-select-box__label" aria-hidden="true"
+                >그렇다</span
+              >
+            </template>
+          </SelectBox>
+        </div>
+        <div class="bf-quiz-pangpang__contents-item">
+          <SelectBox
+            value="false"
+            :selected="selectedAnswer === 'false'"
+            class="icon-button-false"
+            aria-label="아니다"
+            @click="selectedAnswer = 'false'"
+          >
+            <template #contents>
+              <span class="icon-box" aria-hidden="true">
+                <ScImageIcon iconName="icon_x" size="32" />
+              </span>
+              <span class="sv-select-box__label" aria-hidden="true"
+                >아니다</span
+              >
+            </template>
+          </SelectBox>
+        </div>
+      </div>
+      <!-- E : OX 퀴즈 -->
+
+      <!-- S : 문제 풀기 전 객관식 -->
+      <div class="bf-quiz-pangpang__contents-body question">
+        <RadioCircleGroup
+          v-model="selectedQuestion"
+          align="left"
+          :items="questionItems"
+          orientation="vertical"
+          class="question-radio__items"
+        />
+      </div>
+      <!-- E : 문제 풀기 전 객관식 -->
+
+      <div class="bf-quiz-pangpang__contents-footer">
+        <div class="bf-quiz-pangpang__contents-item">
+          <TextBadge
+            variant="tint"
+            color="gray"
+            class="hint-badge"
+            aria-label="포인트 1 지급"
+          >
+            <template #content>
+              <span class="hint-badge-image" aria-hidden="true">
+                <img
+                  :src="`${$cdnURL}/images/pages/base/Coin_Point.png`"
+                  alt="포인트"
+                />
+              </span>
+              <em class="hint-badge-text">1P</em>
+            </template>
+          </TextBadge>
+          <BoxButton color="quaternary" text="힌트 보기" />
+        </div>
+        <div class="bf-quiz-pangpang__contents-item">
+          <TextBadge
+            variant="tint"
+            color="gray"
+            class="hint-badge"
+            aria-label="포인트 5 지급"
+          >
+            <template #content>
+              <span class="hint-badge-image" aria-hidden="true">
+                <img
+                  :src="`${$cdnURL}/images/pages/base/Coin_Point.png`"
+                  alt="포인트"
+                />
+              </span>
+              <em class="hint-badge-text">5P</em>
+            </template>
+          </TextBadge>
+          <BoxButton
+            color="primary"
+            text="정답제출"
+            :disabled="selectedAnswer === null"
+          />
+        </div>
+        <div class="bf-quiz-pangpang__contents-item">
+          <Infobox
+            title="기회는 단 한번! 힌트를 꼭 확인해보세요."
+            color="info"
+            size="small"
+            :icon="false"
+          />
+        </div>
+      </div>
+    </article>
+    <!-- E : 퀴즈팡팡 콘텐츠 - 문제 풀기 전 -->
+
+    <!-- S : 퀴즈팡팡 콘텐츠 - 문제 풀기 후 -->
+    <article class="bf-quiz-pangpang__contents-result">
+      <div class="bf-quiz-pangpang__contents-header">
+        <h2 class="bf-quiz-pangpang__title">내일도 퀴즈에 도전하세요!</h2>
+        <TextButton
+          text="힌트 다시보기"
+          size="xsmall"
+          :rightIcon="{ iconName: 'Chevron_right' }"
+          color="secondary"
+        />
+      </div>
+      <!--
+        내 등급 이미지 경로 및 파일명
+        /images/pages/benefits/main/Property_level0_status.svg (LV.0)
+        /images/pages/benefits/main/Property_level1_status.svg (LV.10)
+        /images/pages/benefits/main/Property_level2_status.svg (LV.20)
+        /images/pages/benefits/main/Property_level3_status.svg (LV.30)
+        /images/pages/benefits/main/Property_level1_status_disabled.svg (LV.10 disabled)
+        /images/pages/benefits/main/Property_level2_status_disabled.svg (LV.20 disabled)
+        /images/pages/benefits/main/Property_level3_status_disabled.svg (LV.30 disabled)
+
+        .level-button 클릭시 퀴즈 등급별 혜택 BS 호출 SBT159A01
+      -->
+      <div class="bf-quiz-pangpang__contents-body">
+        <a
+          role="button"
+          class="level-button"
+          aria-label="내 등급 레벨 0, 퀴즈박사까지 2회 남았어요"
+        >
+          <ListItem align="centered" class="level-item" aria-hidden="true">
+            <template #leftIcon>
+              <img
+                :src="`${$cdnURL}/images/pages/benefits/main/Property_level0_status.svg`"
+                alt="레벨 0"
+              />
+            </template>
+            <template #leftMainText>
+              <span class="level-content">
+                <span class="level-label">
+                  <em>LV.0</em>
+                  <Icon name="Chevron_right" size="16" />
+                </span>
+                <span class="level-desc">퀴즈박사까지 2회 남았어요</span>
+              </span>
+            </template>
+          </ListItem>
+        </a>
+      </div>
+
+      <!-- 등급 달성 - 당일 -->
+      <div class="bf-quiz-pangpang__contents-body">
+        <a
+          role="button"
+          class="level-button"
+          aria-label="내 등급 레벨 10 퀴즈박사, 퀴즈박사에 등극했어요!"
+        >
+          <ListItem align="centered" class="level-item" aria-hidden="true">
+            <template #leftIcon>
+              <img
+                :src="`${$cdnURL}/images/pages/benefits/main/Property_level1_status.svg`"
+                alt="레벨 10"
+              />
+            </template>
+            <template #leftMainText>
+              <span class="level-content">
+                <span class="level-label">
+                  <em>LV.퀴즈박사</em>
+                  <Icon name="Chevron_right" size="16" />
+                </span>
+                <span class="level-desc">퀴즈박사에 등극했어요!</span>
+              </span>
+            </template>
+          </ListItem>
+        </a>
+      </div>
+
+      <!-- 등급 달성 - 달성 후 다음 날 -->
+      <div class="bf-quiz-pangpang__contents-body">
+        <a
+          role="button"
+          class="level-button"
+          aria-label="내 등급 레벨 10 퀴즈박사, 퀴즈왕까지 9회 남았어요"
+        >
+          <ListItem align="centered" class="level-item" aria-hidden="true">
+            <template #leftIcon>
+              <img
+                :src="`${$cdnURL}/images/pages/benefits/main/Property_level1_status.svg`"
+                alt="레벨 10"
+              />
+            </template>
+            <template #leftMainText>
+              <span class="level-content">
+                <span class="level-label">
+                  <em>LV.퀴즈박사</em>
+                  <Icon name="Chevron_right" size="16" />
+                </span>
+                <span class="level-desc">퀴즈왕까지 9회 남았어요</span>
+              </span>
+            </template>
+          </ListItem>
+        </a>
+      </div>
+
+      <!-- 등급 도달 후 보너스 받기 + 정답 맞춘 경우 -->
+      <div class="bf-quiz-pangpang__contents-body">
+        <a
+          role="button"
+          class="level-button"
+          aria-label="내 등급 레벨 20 퀴즈왕, 퀴즈신까지 9회 남았어요"
+        >
+          <ListItem align="centered" class="level-item" aria-hidden="true">
+            <template #leftIcon>
+              <img
+                :src="`${$cdnURL}/images/pages/benefits/main/Property_level2_status.svg`"
+                alt="레벨 20"
+              />
+            </template>
+            <template #leftMainText>
+              <span class="level-content">
+                <span class="level-label">
+                  <em>LV.퀴즈왕</em>
+                  <Icon name="Chevron_right" size="16" />
+                </span>
+                <span class="level-desc">퀴즈신까지 9회 남았어요</span>
+              </span>
+            </template>
+          </ListItem>
+        </a>
+      </div>
+      <div class="bf-quiz-pangpang__contents-footer">
+        <BoxButton color="quaternary" text="퀴즈박사 보너스 받기" />
+        <BoxButton color="quaternary" text="지난 퀴즈박사 보너스 받기" />
+        <BoxButton color="quaternary" text="이번달 30일 중 8일 참여" />
+      </div>
+    </article>
+    <!-- E : 퀴즈팡팡 콘텐츠 - 문제 풀기 후 -->
+
+    <!-- S : 퀴즈팡팡 IF 오류시 노출 -->
+    <div class="bf-if__error h344">
+      <div class="bf-if__error-inner">
+        <div class="bf-if__error-icon">
+          <ScImage
+            :src="`${$cdnURL}/images/pages/benefits/main/result_icon.png`"
+            alt="IF 오류"
+          />
+        </div>
+        <div class="bf-if__error-text">퀴즈정보를 불러오지 못했어요</div>
+        <CapsuleButton
+          text="다시 시도하기"
+          color="primary"
+          variant="outline"
+          size="small"
+        />
+      </div>
+    </div>
+    <!-- E : 퀴즈팡팡 IF 오류시 노출 -->
+  </section>
+</template>
+
+<script setup>
+import { inject, nextTick, onMounted, ref, watch } from "vue";
+import { AppContextKey } from "@/configs/inject/appContext";
+import {
+  BoxButton,
+  CapsuleButton,
+  Icon,
+  IconButton,
+  Infobox,
+  ListItem,
+  LoadingSkeleton,
+  RadioCircle,
+  RadioCircleGroup,
+  SelectBox,
+  TextBadge,
+  TextButton,
+} from "@shc-nss/ui/solid";
+import { ScImage, ScImageIcon } from "@shc-nss/ui/shc";
+
+const { $cdnURL } = inject(AppContextKey);
+// 퀴즈팡팡 섹션
+const selectedAnswer = ref(null);
+const questionItems = [
+  { label: "포인트 팡팡", value: 1 },
+  { label: "텍스트 한 줄 입니다", value: 2 },
+  {
+    label: "텍스트 입니다 텍스트 입니다 텍스트 입니다 텍스트 입니다",
+    value: 3,
+  },
+];
+const selectedQuestion = ref(questionItems[0].value);
+
+// 선택된 항목의 컨테이너에 is-checked 클래스 추가
+function updateCheckedClass() {
+  nextTick(() => {
+    const containers = document.querySelectorAll(
+      ".question-radio__items .sv-radio-group__item-container"
+    );
+    containers.forEach((container) => {
+      const radioItem = container.querySelector(
+        ".sv-radio-item[data-state='checked']"
+      );
+      if (radioItem) {
+        container.classList.add("is-checked");
+      } else {
+        container.classList.remove("is-checked");
+      }
+    });
+  });
+}
+
+watch(selectedQuestion, () => {
+  updateCheckedClass();
+});
+</script>
+
+
+
 <route lang="yaml">
 meta:
   id: SBT159A01
