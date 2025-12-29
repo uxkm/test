@@ -4,100 +4,247 @@
 
 <route lang="yaml">
 meta:
-  id: SBT001A01
-  title: 혜택
-  menu: "혜택 > 혜택"
-  layout: MainLayout
-  category: 혜택
+  id: SAT049A03
+  title: "약관동의"
+  menu: 자산 > 금융추천 > 대출 > 정보계좌 관리 > 금융사 연결현황 > 통합약관동의
+  layout: SubLayout
+  category: 자산
   publish: 김대민
   publishVersion: 0.8
-  status: 작업중
-  appClassList: "app_benefits"
-  mainClassList: "benefits_main"
+  status: 작업완료
+  header:
+    fixed: false
+    back: false
+    close: true
 </route>
+
 <template>
-  <!-- 스켈레톤 로딩이 로딩이 완료된 모듈부터 콘텐츠 제공  -->
-  <div class="sc-contents__body bf-main">
-    <!-- S: 혜택 대시보드 호출 -->
-    <SBT001A01Dashboard />
-    <!-- E: 혜택 대시보드 호출 -->
+  <ScTitle mainTitle="마이데이터 서비스 이용약관" />
+  <!-- 콘텐츠 영역 -->
+  <div class="sc-contents__body sc-agree__page">
+    <section class="section">
+      <div class="sc-agree__list compound" role="region">
+        <div class="agree-list__group">
+          <div
+            class="agree-item item-basic"
+            :class="{ 'is-checked': basicAgree4 }"
+          >
+            <Checkbox
+              v-model="basicAgree4"
+              class="agree-item__checkbox item-checkbox__basic"
+              variant="box"
+              align="left"
+            >
+              <template #label>
+                <span class="agree-item__label item-label__basic">{{
+                  basicItem4.label
+                }}</span>
+              </template>
+            </Checkbox>
+          </div>
 
-    <!-- S: 추천 혜택 호출 -->
-    <SBT001A01RecommendBenefit />
-    <!-- E: 추천 혜택 호출 -->
-
-    <!-- S: 배너 호출 -->
-    <SBT001A01Banner />
-    <!-- E: 배너 호출 -->
-
-    <!-- S: 퀴즈팡팡 호출 -->
-    <SBT001A01QuizPangpang />
-    <!-- E: 퀴즈팡팡 호출 -->
-
-    <!-- S: 포인트팡팡 호출 -->
-    <SBT001A01PointPangpang />
-    <!-- E: 포인트팡팡 호출 -->
-
-    <Divider color="tertiary" variant="group" />
-
-    <!-- S: 카테고리 호출 -->
-    <SBT001A01Category />
-    <!-- E: 카테고리 호출 -->
-
-    <Divider color="tertiary" variant="group" />
-
-    <!-- S: 앱테크 호출 -->
-    <SBT001A01Apptech />
-    <!-- E: 앱테크 호출 -->
-
-    <Divider color="tertiary" variant="group" />
-
-    <!-- S: 이벤트 호출 -->
-    <SBT001A01Event />
-    <!-- E: 이벤트 호출 -->
-
-    <Divider color="tertiary" variant="group" />
-
-    <!-- S: 프로모션 배너 호출 -->
-    <SBT001A01Promotion />
-    <!-- E: 프로모션 배너 호출 -->
-
-    <Divider color="tertiary" variant="group" />
-
-    <!-- S: 할인·쿠폰 호출 -->
-    <SBT001A01Discount />
-    <!-- E: 할인·쿠폰 호출 -->
-
-    <!-- S: 혜택 서비스 호출 -->
-    <SBT001A01Service />
-    <!-- E: 혜택 서비스 호출 -->
+          <!-- ======================================== -->
+          <!-- 1뎁스 영역: 기본 약관 항목들 -->
+          <!-- ======================================== -->
+          <div class="agree-sublist" role="group">
+            <div
+              v-for="item in subItems4"
+              :key="item.value"
+              class="agree-subitem"
+              :class="{ 'agree-subitem__accordion': Boolean(item.accordion) }"
+            >
+              <template v-if="item.accordion">
+                <SolidListAccordion
+                  class="agree-subitem__accordion"
+                  :rowClickable="false"
+                  :value="item.value"
+                  v-model:isExpanded="subAccordionState4[item.value]"
+                >
+                  <template #title>
+                    <div
+                      class="agree-item agree-item__sub"
+                      :class="{
+                        'is-checked': subAgrees4.includes(item.value),
+                      }"
+                    >
+                      <Checkbox
+                        :value="item.value"
+                        variant="box"
+                        align="left"
+                        :model-value="subAgrees4.includes(item.value)"
+                        class="agree-item__checkbox item-checkbox__sub"
+                        @update:model-value="onToggleSub4(item.value, $event)"
+                        @click.stop
+                      >
+                        <template #label>
+                          <span class="agree-item__label item-label__sub">{{
+                            item.label
+                          }}</span>
+                        </template>
+                      </Checkbox>
+                    </div>
+                  </template>
+                  <div class="agree-subitem__panel">
+                    <div v-if="item.value === 's4-1'" class="agree-depth">
+                      <!-- ======================================== -->
+                      <!-- 2뎁스 영역: 서비스 이용약관 -->
+                      <!-- ======================================== -->
+                      <ul class="agree-sublist agree-sublist__depth2">
+                        <li
+                          v-for="depth2Item in subItemsDepth2_s4_1"
+                          :key="depth2Item.value"
+                          class="agree-subitem agree-subitem__depth2"
+                        >
+                          <div class="agree-item agree-item__sub">
+                            <Checkbox
+                              :value="depth2Item.value"
+                              variant="mark"
+                              align="left"
+                              :model-value="
+                                subAgrees4.includes(depth2Item.value)
+                              "
+                              class="agree-item__checkbox item-checkbox__sub"
+                              @update:model-value="
+                                onToggleSub4(depth2Item.value, $event)
+                              "
+                              @click.stop
+                            >
+                              <template #label>
+                                <span
+                                  class="agree-item__label item-label__sub"
+                                  >{{ depth2Item.label }}</span
+                                >
+                              </template>
+                            </Checkbox>
+                          </div>
+                        </li>
+                      </ul>
+                      <!-- 개인정보 처리방침 링크 -->
+                      <div class="agree-depth__link">
+                        <TextButton
+                          class="agree-depth__link"
+                          color="secondary"
+                          size="small"
+                          text="개인정보 처리방침"
+                          showGoTo
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </SolidListAccordion>
+              </template>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
   </div>
+
+  <!-- 하단 고정으로 들어가는 부분 위치 수정 -->
+  <div class="sc-contents__foot">
+    <Divider variant="group" color="tertiary" />
+    <div class="sc-bottom-info__inner">
+      <h2 class="sc-bottom-info__title">마이데이터 서비스 안내</h2>
+      <div class="sc-bottom-info__details">
+        <UnorderedList>
+          <UnorderedListItem
+            variant="bullet"
+            text="잘 이용하지 않는 서비스는 탈퇴 후 내 정보를 삭제할 수 있어요."
+          />
+          <UnorderedListItem
+            variant="bullet"
+            text="나의 마이데이터 서비스 가입현황은 마이데이터 종합포털에서 확인할 수 있어요."
+          />
+        </UnorderedList>
+      </div>
+      <!-- [251027] 마이데이터 서비스 안내 하단 링크 추가 -->
+      <div class="agree-depth__link">
+        <TextButton
+          class="agree-depth__link"
+          color="secondary"
+          size="small"
+          text="종합포털 바로가기"
+          showGoTo
+        />
+      </div>
+    </div>
+  </div>
+
+  <BottomActionContainer :scrollDim="true">
+    <BoxButtonGroup size="xlarge" variant="100">
+      <BoxButton text="확인" :disabled="!basicAgree4" />
+    </BoxButtonGroup>
+  </BottomActionContainer>
 </template>
 
 <script setup>
-import { Divider } from "@shc-nss/ui/solid";
-// 1. 혜택 대시보드
-import SBT001A01Dashboard from "./section/SBT001A01-dashboard.vue";
-// 2. 추천 혜택
-import SBT001A01RecommendBenefit from "./section/SBT001A01-recommend-benefit.vue";
-// 3. 배너
-import SBT001A01Banner from "./section/SBT001A01-banner.vue";
-// 4. 퀴즈팡팡
-import SBT001A01QuizPangpang from "./section/SBT001A01-quiz-pangpang.vue";
-// 5. 포인트팡팡
-import SBT001A01PointPangpang from "./section/SBT001A01-point-pangpang.vue";
-// 6. 카테고리
-import SBT001A01Category from "./section/SBT001A01-category.vue";
-// 7. 앱테크
-import SBT001A01Apptech from "./section/SBT001A01-apptech.vue";
-// 8. 이벤트
-import SBT001A01Event from "./section/SBT001A01-event.vue";
-// 9. 프로모션 배너
-import SBT001A01Promotion from "./section/SBT001A01-promotion.vue";
-// 10. 할인·쿠폰
-import SBT001A01Discount from "./section/SBT001A01-discount.vue";
-// 11. 혜택 서비스
-import SBT001A01Service from "./section/SBT001A01-service.vue";
+import {
+  BottomActionContainer,
+  BoxButton,
+  BoxButtonGroup,
+  Checkbox,
+  Divider,
+  SolidListAccordion,
+  TextButton,
+  UnorderedList,
+  UnorderedListItem,
+} from "@shc-nss/ui/solid";
+import { ScTitle } from "@shc-nss/ui/shc";
+import { reactive, ref, watch } from "vue";
+
+/**
+ * 유형 4 : 약관동의 기본형
+ */
+const basicItem4 = {
+  label: "약관 전체 동의",
+};
+
+// JavaScript/TypeScript 호환 배열
+const subItems4 = [
+  {
+    label: "[필수] 마이데이터 서비스 이용약관",
+    value: "s4-1",
+    accordion: true,
+  },
+];
+
+// 2뎁스 항목들 - 서비스 이용약관 (s4-1)
+const subItemsDepth2_s4_1 = [
+  { label: "[필수] 마이데이터 서비스 개인(신용)정보의 수집 및 이용동의", value: "s4-1-1" },
+];
+
+const basicAgree4 = ref(false);
+const subAgrees4 = ref([]);
+const subAccordionState4 = reactive({
+  "s4-1": true, // 서비스 이용약관 1뎁스 아코디언 상태 (초기 펼침)
+});
+
+/**
+ * 동작 로직
+ */
+function onToggleSub4(value, checked) {
+  const set = new Set(subAgrees4.value);
+  if (checked) set.add(value);
+  else set.delete(value);
+  subAgrees4.value = Array.from(set);
+
+  // 전체 항목 수 계산 (1뎁스 + 2뎁스)
+  const totalItems = subItems4.length + subItemsDepth2_s4_1.length;
+  basicAgree4.value = set.size === totalItems;
+}
+
+watch(basicAgree4, (checked) => {
+  if (checked) {
+    // 1뎁스 항목들 + 2뎁스 항목들
+    const allItems = [
+      ...subItems4.map((item) => item.value),
+      ...subItemsDepth2_s4_1.map((item) => item.value),
+    ];
+    subAgrees4.value = allItems;
+  } else {
+    subAgrees4.value = [];
+  }
+});
 </script>
 
 
