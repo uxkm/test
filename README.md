@@ -695,6 +695,560 @@ img {
 
 ---
 
+
+## 📱 브라우저 지원 버전 및 디바이스 모델
+
+### 1. CSS 변수 (var())
+
+**지원 시작 버전:**
+
+- **iOS:** iOS 9 (Safari 9.1)
+- **Android:** Android 7.0 (Chrome 49)
+- **Chrome:** 49
+- **Firefox:** 31
+- **Safari:** 9.1
+- **Edge:** 15
+
+**지원 디바이스 모델:**
+
+- **iOS 9 이상:**
+  - iPhone 4s, iPhone 5, iPhone 5c, iPhone 5s, iPhone 6, iPhone 6 Plus, iPhone 6s, iPhone 6s Plus, iPhone SE (1세대)
+  - iPad 2, iPad (3세대), iPad (4세대), iPad Air, iPad Air 2, iPad mini, iPad mini 2, iPad mini 3, iPad mini 4
+- **Android 7.0 이상:**
+  - Google Pixel, Pixel XL
+  - Samsung Galaxy S7, Galaxy S7 Edge, Galaxy S8, Galaxy S8+, Galaxy Note 7, Galaxy Note 8
+  - LG G5, G6, V20
+  - OnePlus 3, 3T, 5
+
+---
+
+### 2. CSS Grid
+
+**지원 시작 버전:**
+
+- **iOS:** iOS 10.3 (Safari 10.1)
+- **Android:** Android 7.0 (Chrome 57)
+- **Chrome:** 57
+- **Firefox:** 52
+- **Safari:** 10.1
+- **Edge:** 16
+
+**지원 디바이스 모델:**
+
+- **iOS 10.3 이상:**
+  - iPhone 5, iPhone 5c, iPhone 5s, iPhone 6, iPhone 6 Plus, iPhone 6s, iPhone 6s Plus, iPhone SE (1세대), iPhone 7, iPhone 7 Plus
+  - iPad (4세대), iPad Air, iPad Air 2, iPad mini 2, iPad mini 3, iPad mini 4, iPad Pro (12.9인치), iPad Pro (9.7인치)
+- **Android 7.0 이상:**
+  - Google Pixel, Pixel XL, Pixel 2, Pixel 2 XL
+  - Samsung Galaxy S7, Galaxy S7 Edge, Galaxy S8, Galaxy S8+, Galaxy Note 7, Galaxy Note 8, Galaxy S9, Galaxy S9+
+  - LG G6, V20, G7 ThinQ
+  - OnePlus 5, 5T, 6
+
+---
+
+### 3. gap 속성 (Flexbox/Grid)
+
+**지원 시작 버전:**
+
+- **iOS:** iOS 14 (Safari 14)
+- **Android:** Android 10 (Chrome 84)
+- **Chrome:** 84
+- **Firefox:** 63
+- **Safari:** 14
+- **Edge:** 84
+
+**지원 디바이스 모델:**
+
+- **iOS 14 이상:**
+  - iPhone 6s, iPhone 6s Plus, iPhone SE (1세대), iPhone 7, iPhone 7 Plus, iPhone 8, iPhone 8 Plus, iPhone X, iPhone XS, iPhone XS Max, iPhone XR, iPhone 11, iPhone 11 Pro, iPhone 11 Pro Max, iPhone SE (2세대)
+  - iPad Air 2, iPad mini 4, iPad (5세대), iPad Pro (12.9인치, 2세대), iPad Pro (10.5인치), iPad Pro (12.9인치, 3세대), iPad Pro (11인치), iPad (6세대), iPad Air (3세대), iPad mini (5세대), iPad (7세대)
+- **Android 10 이상:**
+  - Google Pixel 2, Pixel 2 XL, Pixel 3, Pixel 3 XL, Pixel 3a, Pixel 3a XL, Pixel 4, Pixel 4 XL
+  - Samsung Galaxy S10, Galaxy S10+, Galaxy S10e, Galaxy Note 10, Galaxy Note 10+, Galaxy S20, Galaxy S20+, Galaxy S20 Ultra
+  - OnePlus 7, 7 Pro, 7T, 7T Pro
+
+---
+
+### 4. object-fit
+
+**지원 시작 버전:**
+
+- **iOS:** iOS 10 (Safari 10) / iOS 7.1 (Safari 7.1)
+- **Android:** Android 5.0 (Chrome 32)
+- **Chrome:** 32
+- **Firefox:** 36
+- **Safari:** 10
+- **Edge:** 16
+
+**지원 디바이스 모델:**
+
+- **iOS 10 이상:**
+  - iPhone 5, iPhone 5c, iPhone 5s, iPhone 6, iPhone 6 Plus, iPhone 6s, iPhone 6s Plus, iPhone SE (1세대), iPhone 7, iPhone 7 Plus
+  - iPad (4세대), iPad Air, iPad Air 2, iPad mini 2, iPad mini 3, iPad mini 4, iPad Pro (12.9인치), iPad Pro (9.7인치)
+- **Android 5.0 이상:**
+  - Nexus 5, Nexus 6, Nexus 9
+  - Samsung Galaxy S5, Galaxy S6, Galaxy S6 Edge, Galaxy Note 4
+  - LG G3, G4
+  - OnePlus One, 2
+
+---
+
+### 5. position: sticky
+
+**지원 시작 버전:**
+
+- **iOS:** iOS 7 (Safari 6.1)
+- **Android:** Android 7.0 (Chrome 56)
+- **Chrome:** 56
+- **Firefox:** 32
+- **Safari:** 6.1
+- **Edge:** 16
+
+**지원 디바이스 모델:**
+
+- **iOS 7 이상:**
+  - iPhone 4, iPhone 4s, iPhone 5, iPhone 5c, iPhone 5s, iPhone 6, iPhone 6 Plus
+  - iPad 2, iPad (3세대), iPad (4세대), iPad Air, iPad mini
+- **Android 7.0 이상:**
+  - Google Pixel, Pixel XL
+  - Samsung Galaxy S7, Galaxy S7 Edge, Galaxy S8, Galaxy S8+, Galaxy Note 7
+  - LG G5, G6
+
+---
+
+### 6. backdrop-filter
+
+**지원 시작 버전:**
+
+- **iOS:** iOS 9 (Safari 9)
+- **Android:** Android 9 (Chrome 76)
+- **Chrome:** 76
+- **Firefox:** 103
+- **Safari:** 9
+- **Edge:** 79
+
+**지원 디바이스 모델:**
+
+- **iOS 9 이상:**
+  - iPhone 4s, iPhone 5, iPhone 5c, iPhone 5s, iPhone 6, iPhone 6 Plus, iPhone 6s, iPhone 6s Plus, iPhone SE (1세대)
+  - iPad 2, iPad (3세대), iPad (4세대), iPad Air, iPad Air 2, iPad mini, iPad mini 2, iPad mini 3, iPad mini 4
+- **Android 9 이상:**
+  - Google Pixel, Pixel XL, Pixel 2, Pixel 2 XL, Pixel 3, Pixel 3 XL
+  - Samsung Galaxy S8, Galaxy S8+, Galaxy Note 8, Galaxy S9, Galaxy S9+
+
+---
+
+### 7. filter 속성
+
+**지원 시작 버전:**
+
+- **iOS:** iOS 6 (Safari 6)
+- **Android:** Android 4.0 (Chrome 18)
+- **Chrome:** 18
+- **Firefox:** 35
+- **Safari:** 6
+- **Edge:** 12
+
+**지원 디바이스 모델:**
+
+- **iOS 6 이상:**
+  - iPhone 3GS, iPhone 4, iPhone 4s, iPhone 5
+  - iPad, iPad 2, iPad (3세대), iPad (4세대), iPad mini
+- **Android 4.0 이상:**
+  - Nexus 4, Nexus 7, Nexus 10
+  - Samsung Galaxy S3, Galaxy S4, Galaxy Note 2, Galaxy Note 3
+  - HTC One X, One M7
+
+---
+
+### 8. :has() 선택자
+
+**지원 시작 버전:**
+
+- **iOS:** iOS 15.4 (Safari 15.4)
+- **Android:** Android 12 (Chrome 105)
+- **Chrome:** 105
+- **Firefox:** 103
+- **Safari:** 15.4
+- **Edge:** 105
+
+**지원 디바이스 모델:**
+
+- **iOS 15.4 이상:**
+  - iPhone 6s, iPhone 6s Plus, iPhone SE (1세대), iPhone 7, iPhone 7 Plus, iPhone 8, iPhone 8 Plus, iPhone X, iPhone XS, iPhone XS Max, iPhone XR, iPhone 11, iPhone 11 Pro, iPhone 11 Pro Max, iPhone SE (2세대), iPhone 12, iPhone 12 mini, iPhone 12 Pro, iPhone 12 Pro Max
+  - iPad Air 2, iPad mini 4, iPad (5세대), iPad Pro (12.9인치, 2세대), iPad Pro (10.5인치), iPad Pro (12.9인치, 3세대), iPad Pro (11인치), iPad (6세대), iPad Air (3세대), iPad mini (5세대), iPad (7세대), iPad (8세대), iPad (9세대), iPad Air (4세대), iPad Pro (11인치, 2세대), iPad Pro (12.9인치, 4세대)
+- **Android 12 이상:**
+  - Google Pixel 3, Pixel 3 XL, Pixel 4, Pixel 4 XL, Pixel 5, Pixel 5a, Pixel 6, Pixel 6 Pro
+  - Samsung Galaxy S20, Galaxy S20+, Galaxy S20 Ultra, Galaxy Note 20, Galaxy Note 20 Ultra, Galaxy S21, Galaxy S21+, Galaxy S21 Ultra
+
+---
+
+### 9. overscroll-behavior
+
+**지원 시작 버전:**
+
+- **iOS:** 미지원
+- **Android:** Android 8.0 (Chrome 63)
+- **Chrome:** 63
+- **Firefox:** 59
+- **Safari:** 미지원
+- **Edge:** 79
+
+**지원 디바이스 모델:**
+
+- **Android 8.0 이상:**
+  - Google Pixel, Pixel XL, Pixel 2, Pixel 2 XL
+  - Samsung Galaxy S8, Galaxy S8+, Galaxy Note 8, Galaxy S9, Galaxy S9+
+
+---
+
+### 10. scroll-snap
+
+**지원 시작 버전:**
+
+- **iOS:** iOS 11 (Safari 11.1)
+- **Android:** Android 9 (Chrome 69)
+- **Chrome:** 69
+- **Firefox:** 68
+- **Safari:** 11.1
+- **Edge:** 79
+
+**지원 디바이스 모델:**
+
+- **iOS 11 이상:**
+  - iPhone 5s, iPhone 6, iPhone 6 Plus, iPhone 6s, iPhone 6s Plus, iPhone SE (1세대), iPhone 7, iPhone 7 Plus, iPhone 8, iPhone 8 Plus, iPhone X
+  - iPad (5세대), iPad Pro (12.9인치, 2세대), iPad Pro (10.5인치), iPad Pro (12.9인치, 3세대), iPad Pro (11인치)
+- **Android 9 이상:**
+  - Google Pixel, Pixel XL, Pixel 2, Pixel 2 XL, Pixel 3, Pixel 3 XL
+  - Samsung Galaxy S8, Galaxy S8+, Galaxy Note 8, Galaxy S9, Galaxy S9+
+
+---
+
+### 11. mix-blend-mode
+
+**지원 시작 버전:**
+
+- **iOS:** iOS 8 (Safari 8)
+- **Android:** Android 5.0 (Chrome 41)
+- **Chrome:** 41
+- **Firefox:** 32
+- **Safari:** 8
+- **Edge:** 12
+
+**지원 디바이스 모델:**
+
+- **iOS 8 이상:**
+  - iPhone 4s, iPhone 5, iPhone 5c, iPhone 5s, iPhone 6, iPhone 6 Plus
+  - iPad 2, iPad (3세대), iPad (4세대), iPad Air, iPad Air 2, iPad mini, iPad mini 2, iPad mini 3
+- **Android 5.0 이상:**
+  - Nexus 5, Nexus 6, Nexus 9
+  - Samsung Galaxy S5, Galaxy S6, Galaxy S6 Edge
+  - LG G3, G4
+  - OnePlus One
+
+---
+
+### 12. will-change
+
+**지원 시작 버전:**
+
+- **iOS:** iOS 9 (Safari 9)
+- **Android:** Android 5.0 (Chrome 36)
+- **Chrome:** 36
+- **Firefox:** 36
+- **Safari:** 9
+- **Edge:** 12
+
+**지원 디바이스 모델:**
+
+- **iOS 9 이상:**
+  - iPhone 4s, iPhone 5, iPhone 5c, iPhone 5s, iPhone 6, iPhone 6 Plus, iPhone 6s, iPhone 6s Plus
+  - iPad 2, iPad (3세대), iPad (4세대), iPad Air, iPad Air 2, iPad mini, iPad mini 2, iPad mini 3, iPad mini 4
+- **Android 5.0 이상:**
+  - Nexus 5, Nexus 6, Nexus 9
+  - Samsung Galaxy S5, Galaxy S6, Galaxy S6 Edge
+
+---
+
+### 13. max(), min(), clamp()
+
+**지원 시작 버전:**
+
+- **iOS:** iOS 11 (Safari 11)
+- **Android:** Android 10 (Chrome 79)
+- **Chrome:** 79
+- **Firefox:** 75
+- **Safari:** 11
+- **Edge:** 79
+
+**지원 디바이스 모델:**
+
+- **iOS 11 이상:**
+  - iPhone 5s, iPhone 6, iPhone 6 Plus, iPhone 6s, iPhone 6s Plus, iPhone SE (1세대), iPhone 7, iPhone 7 Plus, iPhone 8, iPhone 8 Plus, iPhone X
+  - iPad (5세대), iPad Pro (12.9인치, 2세대), iPad Pro (10.5인치), iPad Pro (12.9인치, 3세대), iPad Pro (11인치)
+- **Android 10 이상:**
+  - Google Pixel, Pixel XL, Pixel 2, Pixel 2 XL, Pixel 3, Pixel 3 XL, Pixel 4, Pixel 4 XL
+  - Samsung Galaxy S8, Galaxy S8+, Galaxy Note 8, Galaxy S9, Galaxy S9+, Galaxy S10, Galaxy S10+
+
+---
+
+### 14. env() 함수
+
+**지원 시작 버전:**
+
+- **iOS:** iOS 11 (Safari 11)
+- **Android:** Android 9 (Chrome 67)
+- **Chrome:** 67
+- **Firefox:** 65
+- **Safari:** 11
+- **Edge:** 79
+
+**지원 디바이스 모델:**
+
+- **iOS 11 이상:**
+  - iPhone 5s, iPhone 6, iPhone 6 Plus, iPhone 6s, iPhone 6s Plus, iPhone SE (1세대), iPhone 7, iPhone 7 Plus, iPhone 8, iPhone 8 Plus, iPhone X
+  - iPad (5세대), iPad Pro (12.9인치, 2세대), iPad Pro (10.5인치), iPad Pro (12.9인치, 3세대), iPad Pro (11인치)
+- **Android 9 이상:**
+  - Google Pixel, Pixel XL, Pixel 2, Pixel 2 XL, Pixel 3, Pixel 3 XL
+
+---
+
+### 15. @supports
+
+**지원 시작 버전:**
+
+- **iOS:** iOS 9 (Safari 9)
+- **Android:** Android 5.0 (Chrome 28)
+- **Chrome:** 28
+- **Firefox:** 22
+- **Safari:** 9
+- **Edge:** 12
+
+**지원 디바이스 모델:**
+
+- **iOS 9 이상:**
+  - iPhone 4s, iPhone 5, iPhone 5c, iPhone 5s, iPhone 6, iPhone 6 Plus, iPhone 6s, iPhone 6s Plus
+  - iPad 2, iPad (3세대), iPad (4세대), iPad Air, iPad Air 2, iPad mini, iPad mini 2, iPad mini 3, iPad mini 4
+- **Android 5.0 이상:**
+  - Nexus 5, Nexus 6
+  - Samsung Galaxy S5, Galaxy S6
+
+---
+
+### 16. @media (prefers-reduced-motion)
+
+**지원 시작 버전:**
+
+- **iOS:** iOS 10.2 (Safari 10.1)
+- **Android:** Android 9 (Chrome 74)
+- **Chrome:** 74
+- **Firefox:** 103
+- **Safari:** 10.1
+- **Edge:** 79
+
+**지원 디바이스 모델:**
+
+- **iOS 10.2 이상:**
+  - iPhone 5, iPhone 5c, iPhone 5s, iPhone 6, iPhone 6 Plus, iPhone 6s, iPhone 6s Plus, iPhone SE (1세대), iPhone 7, iPhone 7 Plus
+  - iPad (4세대), iPad Air, iPad Air 2, iPad mini 2, iPad mini 3, iPad mini 4, iPad Pro (12.9인치), iPad Pro (9.7인치)
+- **Android 9 이상:**
+  - Google Pixel, Pixel XL, Pixel 2, Pixel 2 XL, Pixel 3, Pixel 3 XL
+
+---
+
+### 17. transform (접두사 필요)
+
+**지원 시작 버전:**
+
+- **iOS:** iOS 3.2 (Safari 3.2) - `-webkit-` 접두사 필요
+- **Android:** Android 4.0 (Chrome 36) - `-webkit-` 접두사 필요
+- **Chrome:** 36
+- **Firefox:** 16
+- **Safari:** 9 (접두사 불필요), 3.2 (접두사 필요)
+- **Edge:** 12
+
+**지원 디바이스 모델:**
+
+- **iOS 3.2 이상:**
+  - iPhone 3G, iPhone 3GS, iPhone 4, iPhone 4s, iPhone 5
+  - iPad, iPad 2, iPad (3세대)
+- **Android 4.0 이상:**
+  - Nexus 4, Nexus 7
+  - Samsung Galaxy S2, Galaxy S3, Galaxy Note
+
+---
+
+### 18. transition (접두사 필요)
+
+**지원 시작 버전:**
+
+- **iOS:** iOS 3.2 (Safari 3.2) - `-webkit-` 접두사 필요
+- **Android:** Android 4.0 (Chrome 26) - `-webkit-` 접두사 필요
+- **Chrome:** 26
+- **Firefox:** 16
+- **Safari:** 6.1 (접두사 불필요), 3.2 (접두사 필요)
+- **Edge:** 12
+
+**지원 디바이스 모델:**
+
+- **iOS 3.2 이상:**
+  - iPhone 3G, iPhone 3GS, iPhone 4, iPhone 4s, iPhone 5
+  - iPad, iPad 2, iPad (3세대)
+- **Android 4.0 이상:**
+  - Nexus 4, Nexus 7
+  - Samsung Galaxy S2, Galaxy S3
+
+---
+
+### 19. animation / @keyframes (접두사 필요)
+
+**지원 시작 버전:**
+
+- **iOS:** iOS 4 (Safari 4) - `-webkit-` 접두사 필요
+- **Android:** Android 4.0 (Chrome 43) - `-webkit-` 접두사 필요
+- **Chrome:** 43
+- **Firefox:** 16
+- **Safari:** 9 (접두사 불필요), 4 (접두사 필요)
+- **Edge:** 12
+
+**지원 디바이스 모델:**
+
+- **iOS 4 이상:**
+  - iPhone 3GS, iPhone 4, iPhone 4s, iPhone 5
+  - iPad, iPad 2, iPad (3세대)
+- **Android 4.0 이상:**
+  - Nexus 4, Nexus 7
+  - Samsung Galaxy S2, Galaxy S3
+
+---
+
+### 20. linear-gradient / radial-gradient (접두사 필요)
+
+**지원 시작 버전:**
+
+- **iOS:** iOS 4 (Safari 4) - `-webkit-` 접두사 필요
+- **Android:** Android 2.1 (Chrome 26) - `-webkit-` 접두사 필요
+- **Chrome:** 26
+- **Firefox:** 16
+- **Safari:** 6.1 (접두사 불필요), 4 (접두사 필요)
+- **Edge:** 12
+
+**지원 디바이스 모델:**
+
+- **iOS 4 이상:**
+  - iPhone 3GS, iPhone 4, iPhone 4s, iPhone 5
+  - iPad, iPad 2, iPad (3세대)
+- **Android 2.1 이상:**
+  - Nexus One, Nexus S
+  - HTC Desire
+  - Samsung Galaxy S
+
+---
+
+### 21. calc() 함수
+
+**지원 시작 버전:**
+
+- **iOS:** iOS 6 (Safari 6)
+- **Android:** Android 4.1 (Chrome 19)
+- **Chrome:** 19
+- **Firefox:** 4
+- **Safari:** 6
+- **Edge:** 12
+
+**지원 디바이스 모델:**
+
+- **iOS 6 이상:**
+  - iPhone 3GS, iPhone 4, iPhone 4s, iPhone 5
+  - iPad, iPad 2, iPad (3세대), iPad (4세대), iPad mini
+- **Android 4.1 이상:**
+  - Nexus 7
+  - Samsung Galaxy S3, Galaxy Note 2
+  - HTC One X
+
+---
+
+### 22. viewport 단위 (vw, vh, vmin, vmax)
+
+**지원 시작 버전:**
+
+- **iOS:** iOS 6 (Safari 6)
+- **Android:** Android 4.4 (Chrome 20)
+- **Chrome:** 20
+- **Firefox:** 19
+- **Safari:** 6
+- **Edge:** 12
+
+**주의사항:** iOS 7에서 `vh` 단위는 주소창 크기 변화에 따른 버그가 있습니다.
+
+**지원 디바이스 모델:**
+
+- **iOS 6 이상:**
+  - iPhone 3GS, iPhone 4, iPhone 4s, iPhone 5
+  - iPad, iPad 2, iPad (3세대), iPad (4세대), iPad mini
+- **Android 4.4 이상:**
+  - Nexus 5, Nexus 7 (2013)
+  - Samsung Galaxy S4, Galaxy Note 3
+
+---
+
+### 23. Flexbox (접두사 필요)
+
+**지원 시작 버전:**
+
+- **iOS:** iOS 7 (Safari 7) - `-webkit-` 접두사 필요
+- **Android:** Android 4.4 (Chrome 29) - `-webkit-` 접두사 필요
+- **Chrome:** 29
+- **Firefox:** 22
+- **Safari:** 9 (접두사 불필요), 7 (접두사 필요)
+- **Edge:** 12
+
+**지원 디바이스 모델:**
+
+- **iOS 7 이상:**
+  - iPhone 4, iPhone 4s, iPhone 5, iPhone 5c, iPhone 5s, iPhone 6, iPhone 6 Plus
+  - iPad 2, iPad (3세대), iPad (4세대), iPad Air, iPad mini
+- **Android 4.4 이상:**
+  - Nexus 5, Nexus 7 (2013), Nexus 10
+  - Samsung Galaxy S4, Galaxy Note 3
+  - LG G2
+  - HTC One M7
+
+---
+
+## 📊 지원 요약 표
+
+| 기능                   | iOS 최소 버전 | Android 최소 버전 | Chrome 버전 | Safari 버전 |
+| ---------------------- | ------------- | ----------------- | ----------- | ----------- |
+| CSS 변수 (var())       | iOS 9         | Android 7.0       | 49          | 9.1         |
+| CSS Grid               | iOS 10.3      | Android 7.0       | 57          | 10.1        |
+| gap 속성               | iOS 14        | Android 10        | 84          | 14          |
+| object-fit             | iOS 10 / 7.1  | Android 5.0       | 32          | 10          |
+| position: sticky       | iOS 7         | Android 7.0       | 56          | 6.1         |
+| backdrop-filter        | iOS 9         | Android 9         | 76          | 9           |
+| filter                 | iOS 6         | Android 4.0       | 18          | 6           |
+| :has()                 | iOS 15.4      | Android 12        | 105         | 15.4        |
+| overscroll-behavior    | 미지원        | Android 8.0       | 63          | 미지원      |
+| scroll-snap            | iOS 11        | Android 9         | 69          | 11.1        |
+| mix-blend-mode         | iOS 8         | Android 5.0       | 41          | 8           |
+| will-change            | iOS 9         | Android 5.0       | 36          | 9           |
+| max/min/clamp          | iOS 11        | Android 10        | 79          | 11          |
+| env()                  | iOS 11        | Android 9         | 67          | 11          |
+| @supports              | iOS 9         | Android 5.0       | 28          | 9           |
+| prefers-reduced-motion | iOS 10.2      | Android 9         | 74          | 10.1        |
+| transform              | iOS 3.2\*     | Android 4.0\*     | 36          | 9/3.2\*     |
+| transition             | iOS 3.2\*     | Android 4.0\*     | 26          | 6.1/3.2\*   |
+| animation              | iOS 4\*       | Android 4.0\*     | 43          | 9/4\*       |
+| gradient               | iOS 4\*       | Android 2.1\*     | 26          | 6.1/4\*     |
+| calc()                 | iOS 6         | Android 4.1       | 19          | 6           |
+| viewport 단위          | iOS 6         | Android 4.4       | 20          | 6           |
+| Flexbox                | iOS 7\*       | Android 4.4\*     | 29          | 9/7\*       |
+
+\* = 접두사 필요
+
+
+---
+
 ## 테스트 체크리스트
 
 - [ ] CSS Variables가 모든 브라우저에서 동작하는지 확인
