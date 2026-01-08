@@ -7,56 +7,60 @@
 {
   "version": "2.0.0",
   "tasks": [
+    /* =====================
+       SWITCH
+    ====================== */
+
     {
       "label": "Git: switch → pub",
       "type": "shell",
       "command": "zsh -lc 'git switch pub'",
-      "problemMatcher": [],
       "group": "git",
-      "presentation": {
-        "reveal": "always",
-        "panel": "shared",
-        "focus": true
-      }
+      "problemMatcher": []
     },
 
     {
-      "label": "Git: switch → feature (prompt)",
+      "label": "Git: switch → feature/S09126",
       "type": "shell",
-      "command": "zsh -lc 'read -r \"ticket?Ticket (ex: S09126): \"; git switch \"feature/${ticket}\"'",
-      "problemMatcher": [],
+      "command": "zsh -lc 'git switch feature/S09126'",
       "group": "git",
-      "presentation": {
-        "reveal": "always",
-        "panel": "shared",
-        "focus": true
-      }
+      "problemMatcher": []
     },
+
+    {
+      "label": "Git: switch → feature/S09127",
+      "type": "shell",
+      "command": "zsh -lc 'git switch feature/S09127'",
+      "group": "git",
+      "problemMatcher": []
+    },
+
+    /* =====================
+       MERGE
+    ====================== */
 
     {
       "label": "Git: merge ← origin/pub",
       "type": "shell",
       "command": "zsh -lc 'git merge origin/pub'",
-      "problemMatcher": [],
       "group": "git",
-      "presentation": {
-        "reveal": "always",
-        "panel": "shared",
-        "focus": true
-      }
+      "problemMatcher": []
     },
 
     {
-      "label": "Git: merge ← origin/feature (prompt)",
+      "label": "Git: merge ← origin/feature/S09126",
       "type": "shell",
-      "command": "zsh -lc 'read -r \"ticket?Ticket (ex: S09126): \"; git merge \"origin/feature/${ticket}\"'",
-      "problemMatcher": [],
+      "command": "zsh -lc 'git merge origin/feature/S09126'",
       "group": "git",
-      "presentation": {
-        "reveal": "always",
-        "panel": "shared",
-        "focus": true
-      }
+      "problemMatcher": []
+    },
+
+    {
+      "label": "Git: merge ← origin/feature/S09127",
+      "type": "shell",
+      "command": "zsh -lc 'git merge origin/feature/S09127'",
+      "group": "git",
+      "problemMatcher": []
     }
   ]
 }
