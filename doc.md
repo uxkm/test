@@ -1,9 +1,3 @@
-# test
-
-{% raw %}
-```scss
-
-// .vscode/tasks.json 
 {
   "version": "2.0.0",
   "tasks": [
@@ -15,9 +9,9 @@
       "group": "git"
     },
     {
-      "label": "Git: switch → feature (input)",
+      "label": "Git: switch → feature (prompt)",
       "type": "shell",
-      "command": "git switch feature/${input:ticket}",
+      "command": "zsh -lc 'read -r \"ticket?Ticket (ex: S09126): \"; git switch \"feature/${ticket}\"'",
       "problemMatcher": [],
       "group": "git"
     },
@@ -29,23 +23,11 @@
       "group": "git"
     },
     {
-      "label": "Git: merge ← origin/feature (input)",
+      "label": "Git: merge ← origin/feature (prompt)",
       "type": "shell",
-      "command": "git merge origin/feature/${input:ticket}",
+      "command": "zsh -lc 'read -r \"ticket?Ticket (ex: S09126): \"; git merge \"origin/feature/${ticket}\"'",
       "problemMatcher": [],
       "group": "git"
     }
-  ],
-  "inputs": [
-    {
-      "id": "ticket",
-      "type": "promptString",
-      "description": "사번 입력 (예: S09126)"
-    }
   ]
 }
-
-```
-{% endraw %}
-
----
