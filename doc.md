@@ -4,13 +4,9 @@
 ```scss
 
 // .vscode/tasks.json 
-{
+{{
   "version": "2.0.0",
   "tasks": [
-    /* =====================
-       SWITCH
-    ====================== */
-
     {
       "label": "Git: switch → pub",
       "type": "shell",
@@ -26,18 +22,6 @@
       "group": "git",
       "problemMatcher": []
     },
-
-    {
-      "label": "Git: switch → feature/S09127",
-      "type": "shell",
-      "command": "zsh -lc 'git switch feature/S09127'",
-      "group": "git",
-      "problemMatcher": []
-    },
-
-    /* =====================
-       MERGE
-    ====================== */
 
     {
       "label": "Git: merge ← origin/pub",
@@ -56,9 +40,9 @@
     },
 
     {
-      "label": "Git: merge ← origin/feature/S09127",
+      "label": "Git: push → feature/S09126",
       "type": "shell",
-      "command": "zsh -lc 'git merge origin/feature/S09127'",
+      "command": "zsh -lc 'git push -u origin feature/S09126'",
       "group": "git",
       "problemMatcher": []
     }
