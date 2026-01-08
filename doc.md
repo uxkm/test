@@ -49,6 +49,22 @@
   ]
 }
 
+
+
+{
+  "label": "Git: pub ← feature/S09126 (pull + merge)",
+  "type": "shell",
+  "command": "zsh -lc 'set -e; git switch pub && git pull && git merge origin/feature/S09126'",
+  "group": "git",
+  "problemMatcher": []
+},
+{
+  "label": "Git: feature/S09126 ← pub (merge + commit + push)",
+  "type": "shell",
+  "command": "zsh -lc 'set -e; git switch feature/S09126 && git merge origin/pub && git commit -m \"chore: merge pub into feature/S09126\" || true && git push origin feature/S09126'",
+  "group": "git",
+  "problemMatcher": []
+}
 ```
 {% endraw %}
 
