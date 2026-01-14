@@ -5,6 +5,14 @@
 
 
 
+  .sc-contents__foot {
+    [data-color="quaternary"] {
+      li {
+        color: var(--text-quaternary);
+      }
+    }
+  }
+
 // bottom sheet
 .sv-bottom-sheet {
   &.px-none {
