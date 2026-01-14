@@ -11,12 +11,12 @@
     opacity: 0;
   }
 
-  #{percentage(math.div($fade-time, $total-duration))} {
+  #{math.percentage(math.div($fade-time, $total-duration))} {
     transform: translateY(0);
     opacity: 1;
   }
 
-  #{percentage(math.div($fade-time + $stay-time, $total-duration))} {
+  #{math.percentage(math.div($fade-time + $stay-time, $total-duration))} {
     transform: translateY(0);
     opacity: 1;
   }
@@ -26,7 +26,6 @@
     opacity: 0;
   }
 }
-
 
 
 ```
