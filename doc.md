@@ -3,27 +3,18 @@
 {% raw %}
 ```scss
 
-@use "sass:math";
 
-@keyframes slideFade {
-  0% {
-    transform: translateY(100%);
-    opacity: 0;
-  }
 
-  #{math.percentage(math.div($fade-time, $total-duration))} {
-    transform: translateY(0);
-    opacity: 1;
-  }
-
-  #{math.percentage(math.div($fade-time + $stay-time, $total-duration))} {
-    transform: translateY(0);
-    opacity: 1;
-  }
-
-  100% {
-    transform: translateY(-100%);
-    opacity: 0;
+// bottom sheet
+.sv-bottom-sheet {
+  &.px-none {
+    .sv-bottom-sheet__body {
+      padding-right: 0;
+      padding-left: 0;
+      .pr-2xl {
+        padding-right: var(--spacing-2xl);
+      }
+    }
   }
 }
 
