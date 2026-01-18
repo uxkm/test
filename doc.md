@@ -4,6 +4,18 @@
 ```scss
 
 
+
+  --env-t: env(safe-area-inset-top, 0px);
+  --env-l: env(safe-area-inset-left, 0px);
+  --env-r: env(safe-area-inset-right, 0px);
+  --env-b: env(safe-area-inset-bottom, 0px);
+
+
+  padding-top: var(--env-t);
+  padding-left: var(--env-l);
+  padding-right: var(--env-r);
+  padding-bottom: var(--env-b);
+
 .promotion-banner__button.sv-button--rounded.sv-button--variant-outline {
     position: absolute;
     bottom: var(--spacing-2xl);
