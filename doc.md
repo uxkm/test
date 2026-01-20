@@ -3,6 +3,14 @@
 {% raw %}
 ```scss
 
+
+        .img-feedback-nodata {
+          width: 56px;
+          height: 56px;
+          object-fit: contain;
+        }
+
+
 // benefits
 .cupon-top__btngroup {
   padding: 0 var(--container-padding-mobile);
