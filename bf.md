@@ -1,741 +1,888 @@
 
 {% raw %}
 ```js
-// 아이콘이 없을 때 (has-icon 클래스가 있을 때)
-          &.has-icon {
-            .sc-popover__custom[data-placement="bottom-left"] {
-              left: calc((73px / 2) - 34px);
-            }
-            @media (max-width: 369px) {
-              .sc-popover__custom[data-placement="bottom-right"] {
-                right: calc((98px / 2) - 6px);
-              }
-            }
-          }
 
 
+<route lang="yaml">
+meta:
+  id: SBT021A01
+  title: 받은 쿠폰
+  menu: "혜택​ > 받은 쿠폰"
+  layout: SubLayout
+  category: 혜택
+  publish: 김대민
+  publishVersion: 0.8
+  status: 재작업
+  etc: "251210: 이미지 ScImage 로 수정"
+  header:
+    variant: sub
+    fixed: true
+    back: true
+    close: false
+    home: true
+  qa2: 퍼블완료
+  ui: |  
+    [완료]260120: 마크업 (TBD 아이콘 수정 및 UI 확인용 페이지 추가, SBT021A01-a, SBT021A01-b),
+</route>
 <template>
-  <section class="bf-benefit-dashboard" aria-label="혜택 대시보드">
-    <!-- S : 로딩 스켈레톤-->
-    <div class="dashboard-box">
-      <div class="dashboard-box__inner">
-        <div class="dashboard-body">
-          <div class="dashboard-body__link">
-            <span class="dashboard-body__label" aria-hidden="true">
-              마이신한포인트
-            </span>
-            <div class="dashboard-body__value">
-              <LoadingSkeleton :width="127" :height="29" rounded="small" />
-            </div>
-          </div>
-          <Divider
-            color="tertiary"
-            orientation="vertical"
-            variant="basic"
-            class="dashboard-divider-vertical"
-          />
-          <div class="dashboard-body__link">
-            <span class="dashboard-body__label" aria-hidden="true">
-              {{ benefitLabel }}
-            </span>
-            <div class="dashboard-body__value">
-              <LoadingSkeleton :width="127" :height="29" rounded="small" />
-            </div>
-          </div>
+  <div class="sc-contents__body">
+    <div class="cupon-contents">
+      <!-- S : 모바일상품권 + 할인쿠폰이 있을 경우 -->
+      <template v-if="couponItems.length > 0">
+        <div
+          class="cupon-head"
+          tabindex="0"
+          aria-label="총 {{ couponItems.length }}개의 쿠폰을 보유중이에요."
+        >
+          <p aria-hidden="true">
+            총 <em class="cupon-count">{{ couponItems.length }}</em
+            >개의 쿠폰을 보유중이에요.
+          </p>
         </div>
-        <Divider color="tertiary" variant="basic" class="dashboard-divider" />
-        <div class="dashboard-footer">
-          <div class="dashboard-footer__list">
-            <div class="dashboard-footer__item">
-              <TextButton
-                text="멤버십"
-                color="secondary"
-                size="small"
-                class="dashboard-footer__link"
+        <div class="cupon-chip">
+          <BasicChipGroup
+            :control="chipControl"
+            :items="items"
+            variant="solid"
+            v-model="selectedValue"
+          />
+        </div>
+      </template>
+      <!-- E : 모바일상품권 + 할인쿠폰이 있을 경우 -->
+
+      <!-- S : 모바일상품권 0 + 할인쿠폰 0 인 경우(기존 유지, 변경예정) -->
+      <template v-else>
+        <div class="cupon-top__btngroup">
+          <BoxButtonGroup variant="50:50">
+            <BoxButton size="large" color="tertiary" text="스탬프쿠폰">
+              <template #icon>
+                <!-- 아이콘 TBD 추 후 변경 -->
+                <!-- 260120: 이미지 변경 -->
+                <!-- <Icon name="sample-icon" width="34px" height="34px" /> -->
+              <img :src="`${$cdnURL}/images/pages/base/img_shinhan.png`" alt="" aria-hidden="true" />
+              </template>
+            </BoxButton>
+            <BoxButton size="large" color="tertiary" text="기프트샵">
+              <template #icon>
+                <!-- 아이콘 TBD 추 후 변경 -->
+                <!-- 260120: 이미지 변경 -->
+                <!-- <Icon name="sample-icon" width="34px" height="34px" /> -->
+                <img :src="`${$cdnURL}/images/pages/base/img_giftshop.png`" alt="" aria-hidden="true" />
+              </template>
+            </BoxButton>
+          </BoxButtonGroup>
+
+          <Divider
+            variant="basic"
+            color="tertiary"
+            size="full"
+            orientation="horizontal"
+          />
+        </div>
+      </template>
+      <!-- E : 모바일상품권 0 + 할인쿠폰 0 인 경우(기존 유지, 변경예정) -->
+
+      <!-- S : 모바일상품권 + 할인쿠폰이 있을 경우 -->
+      <template v-if="couponItems.length > 0">
+        <div class="cupon-list__wrap">
+          <div class="cupon-list__head">
+            <strong
+              class="cupon-head__text"
+              aria-label="전체쿠폰 {{ couponItems.length }}개"
+              tabindex="0"
+            >
+              <span aria-hidden="true"
+                >전체쿠폰 <em class="cupon-count">{{ couponItems.length }}</em
+                >개</span
               >
+            </strong>
+            <Tooltip
+              :open="false"
+              placement="top-left"
+              :showClose="true"
+              :size="20"
+              class="select-type__tooltip"
+            >
+              <template #content>
+                <div class="sc-tooltip__content">
+                  <strong class="sc-tooltip-content__title"
+                    >쿠폰 개수가 다르다면?</strong
+                  >
+                  <p>
+                    쿠폰별로 받기 또는 사용 반영까지 최대 하루정도 소요될 수
+                    있어요
+                  </p>
+                </div>
+              </template>
+            </Tooltip>
+          </div>
+          <div class="cupon-list__body">
+            <div
+              v-for="coupon in couponItems"
+              :key="coupon.id"
+              class="cupon-item"
+              tabindex="0"
+            >
+              <ListItem align="centered">
                 <template #leftIcon>
-                  <div class="dashboard-membership__icon">
-                    <LoadingSkeleton :width="16" :height="16" rounded="small" />
-                  </div>
+                  <ScImage
+                    :src="coupon.icon.src"
+                    :alt="coupon.icon.alt"
+                    class="cupon-icon"
+                    aria-hidden="true"
+                  />
                 </template>
-              </TextButton>
-            </div>
-            <Divider
-              color="tertiary"
-              orientation="vertical"
-              variant="basic"
-              class="dashboard-divider-vertical"
-            />
-            <div class="dashboard-footer__item">
-              <TextButton
-                text="내 쿠폰"
-                color="secondary"
-                size="small"
-                class="dashboard-footer__link"
-              />
-            </div>
-            <Divider
-              color="tertiary"
-              orientation="vertical"
-              variant="basic"
-              class="dashboard-divider-vertical"
-            />
-            <div class="dashboard-footer__item">
-              <TextButton
-                text="참여한 이벤트"
-                color="secondary"
-                size="small"
-                class="dashboard-footer__link"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- E : 로딩 스켈레톤-->
-
-    <!-- 
-      2-1. 마이신한포인트 영역
-        - 로그인 시 현재 마이신한포인트 잔액 노출
-        - 포인트 Tap > 홈페이지 [TBM004_포인트 조회] 화면으로 이동 
-    -->
-    <!-- case 1 - 금액 기본 멤버십 툴팁 노출 -->
-    <div class="dashboard-box">
-      <div class="dashboard-box__inner">
-        <div class="dashboard-body">
-          <a
-            rold="link"
-            tabindex="0"
-            class="dashboard-body__link"
-            :aria-label="`마이신한포인트 ${pointValue} 포인드, 더보기`"
-          >
-            <span class="dashboard-body__label" aria-hidden="true">
-              마이신한포인트
-              <Icon name="Chevron_right" size="16" />
-            </span>
-            <p
-              class="dashboard-body__value"
-              :class="valuteSizeClass"
-              aria-hidden="true"
-            >
-              <em>{{ pointValue }}</em
-              >P
-            </p>
-          </a>
-          <Divider
-            color="tertiary"
-            orientation="vertical"
-            variant="basic"
-            class="dashboard-divider-vertical"
-          />
-          <a
-            rold="link"
-            tabindex="0"
-            class="dashboard-body__link"
-            :aria-label="`${benefitLabel} ${amountValue} 원, 더보기`"
-          >
-            <span class="dashboard-body__label" aria-hidden="true">
-              {{ benefitLabel }}
-              <Icon name="Chevron_right" size="16" />
-            </span>
-            <p
-              class="dashboard-body__value"
-              :class="valuteSizeClass"
-              aria-hidden="true"
-            >
-              <em>{{ amountValue }}</em
-              >원
-            </p>
-          </a>
-        </div>
-        <Divider color="tertiary" variant="basic" class="dashboard-divider" />
-        <div class="dashboard-footer">
-          <div
-            class="dashboard-footer__list"
-            :class="{ 'has-icon': !hasMembershipIcon }"
-          >
-            <div class="dashboard-footer__item">
-              <TextButton
-                text="멤버십"
-                color="secondary"
-                size="small"
-                class="dashboard-footer__link"
-                @click="isMembershipOpen = true"
-              >
-                <template #leftIcon v-if="hasMembershipIcon">
-                  <div class="dashboard-membership__icon">
-                    <ScImage
-                      :src="`${$cdnURL}/images/pages/benefits/main/icon_membership_b.png`"
-                      alt="등급"
-                    />
-                  </div>
+                <template #leftMainText>
+                  <span>{{ coupon.mainsub }}</span>
+                  <strong>{{ coupon.main }}</strong>
                 </template>
-              </TextButton>
-
-              <!-- 툴팁 - 활성화 시 hidden 속성 제거 -->
-              <div class="sc-popover__custom" data-placement="bottom-left">
-                <div class="sc-popover__custom-content">
-                  <span>멤버십 등급이 변경됐어요.</span>
-                </div>
-              </div>
-            </div>
-            <Divider
-              color="tertiary"
-              orientation="vertical"
-              variant="basic"
-              class="dashboard-divider-vertical"
-            />
-            <div class="dashboard-footer__item">
-              <TextButton
-                text="내 쿠폰"
-                color="secondary"
-                size="small"
-                class="dashboard-footer__link"
-              />
-
-              <!-- 툴팁 - 활성화 시 hidden 속성 제거 -->
-              <div
-                class="sc-popover__custom"
-                data-placement="bottom-center"
-                hidden
-              >
-                <div class="sc-popover__custom-content">
-                  <span>유효기간이 곧 끝나는 쿠폰이 있어요!</span>
-                </div>
-              </div>
-            </div>
-            <Divider
-              color="tertiary"
-              orientation="vertical"
-              variant="basic"
-              class="dashboard-divider-vertical"
-            />
-            <div class="dashboard-footer__item">
-              <TextButton
-                text="참여한 이벤트"
-                color="secondary"
-                size="small"
-                class="dashboard-footer__link"
-              />
-
-              <!-- 툴팁 - 활성화 시 hidden 속성 제거 -->
-              <div
-                class="sc-popover__custom"
-                data-placement="bottom-right"
-                hidden
-              >
-                <div class="sc-popover__custom-content">
-                  <span>이벤트 결과를 확인해보세요.</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- case 2 - 금액 18px 내 쿠폰 툴팁 노출 -->
-    <div class="dashboard-box">
-      <div class="dashboard-box__inner">
-        <div class="dashboard-body">
-          <a
-            rold="link"
-            tabindex="0"
-            class="dashboard-body__link"
-            :aria-label="`마이신한포인트 ${pointValue2} 포인드, 더보기`"
-          >
-            <span class="dashboard-body__label" aria-hidden="true">
-              마이신한포인트
-              <Icon name="Chevron_right" size="16" />
-            </span>
-            <p
-              class="dashboard-body__value"
-              :class="valuteSizeClass2"
-              aria-hidden="true"
-            >
-              <em>{{ pointValue2 }}</em
-              >P
-            </p>
-          </a>
-          <Divider
-            color="tertiary"
-            orientation="vertical"
-            variant="basic"
-            class="dashboard-divider-vertical"
-          />
-          <a
-            rold="link"
-            tabindex="0"
-            class="dashboard-body__link"
-            :aria-label="`${benefitLabel} ${amountValue2} 원, 더보기`"
-          >
-            <span class="dashboard-body__label" aria-hidden="true">
-              {{ benefitLabel }}
-              <Icon name="Chevron_right" size="16" />
-            </span>
-            <p
-              class="dashboard-body__value"
-              :class="valuteSizeClass2"
-              aria-hidden="true"
-            >
-              <em>{{ amountValue2 }}</em
-              >원
-            </p>
-          </a>
-        </div>
-        <Divider color="tertiary" variant="basic" class="dashboard-divider" />
-        <div class="dashboard-footer">
-          <div
-            class="dashboard-footer__list"
-            :class="{ 'has-icon': !hasMembershipIcon2 }"
-          >
-            <div class="dashboard-footer__item">
-              <TextButton
-                text="멤버십"
-                color="secondary"
-                size="small"
-                class="dashboard-footer__link"
-              >
-                <template #leftIcon v-if="hasMembershipIcon2">
-                  <div class="dashboard-membership__icon">
-                    <ScImage
-                      :src="`${$cdnURL}/images/pages/benefits/main/icon_membership_b.png`"
-                      alt="등급"
-                    />
-                  </div>
+                <template #leftSubText>
+                  {{ coupon.sub }}
                 </template>
-              </TextButton>
-
-              <!-- 툴팁 - 활성화 시 hidden 속성 제거 -->
-              <div
-                class="sc-popover__custom"
-                data-placement="bottom-left"
-                hidden
-              >
-                <div class="sc-popover__custom-content">
-                  <span>멤버십 등급이 변경됐어요.</span>
-                </div>
-              </div>
-            </div>
-            <Divider
-              color="tertiary"
-              orientation="vertical"
-              variant="basic"
-              class="dashboard-divider-vertical"
-            />
-            <div class="dashboard-footer__item">
-              <TextButton
-                text="내 쿠폰"
-                color="secondary"
-                size="small"
-                class="dashboard-footer__link"
-              />
-
-              <!-- 툴팁 - 활성화 시 hidden 속성 제거 -->
-              <div class="sc-popover__custom" data-placement="bottom-center">
-                <div class="sc-popover__custom-content">
-                  <span>유효기간이 곧 끝나는 쿠폰이 있어요!</span>
-                </div>
-              </div>
-            </div>
-            <Divider
-              color="tertiary"
-              orientation="vertical"
-              variant="basic"
-              class="dashboard-divider-vertical"
-            />
-            <div class="dashboard-footer__item">
-              <TextButton
-                text="참여한 이벤트"
-                color="secondary"
-                size="small"
-                class="dashboard-footer__link"
-              />
-
-              <!-- 툴팁 - 활성화 시 hidden 속성 제거 -->
-              <div
-                class="sc-popover__custom"
-                data-placement="bottom-right"
-                hidden
-              >
-                <div class="sc-popover__custom-content">
-                  <span>이벤트 결과를 확인해보세요.</span>
-                </div>
-              </div>
+              </ListItem>
             </div>
           </div>
         </div>
-      </div>
-    </div>
-    <!-- case 3 - 금액 14px 참여한 이벤트 툴팁 노출 -->
-    <div class="dashboard-box">
-      <div class="dashboard-box__inner">
-        <div class="dashboard-body">
-          <a
-            rold="link"
-            tabindex="0"
-            class="dashboard-body__link"
-            :aria-label="`마이신한포인트 ${pointValue3} 포인드, 더보기`"
-          >
-            <span class="dashboard-body__label" aria-hidden="true">
-              마이신한포인트
-              <Icon name="Chevron_right" size="16" />
-            </span>
-            <p
-              class="dashboard-body__value"
-              :class="valuteSizeClass3"
-              aria-hidden="true"
-            >
-              <em>{{ pointValue3 }}</em
-              >P
-            </p>
-          </a>
-          <Divider
-            color="tertiary"
-            orientation="vertical"
-            variant="basic"
-            class="dashboard-divider-vertical"
-          />
-          <a
-            rold="link"
-            tabindex="0"
-            class="dashboard-body__link"
-            :aria-label="`${benefitLabel} ${amountValue3} 원, 더보기`"
-          >
-            <span class="dashboard-body__label" aria-hidden="true">
-              {{ benefitLabel }}
-              <Icon name="Chevron_right" size="16" />
-            </span>
-            <p
-              class="dashboard-body__value"
-              :class="valuteSizeClass3"
-              aria-hidden="true"
-            >
-              <em>{{ amountValue3 }}</em
-              >원
-            </p>
-          </a>
-        </div>
-        <Divider color="tertiary" variant="basic" class="dashboard-divider" />
-        <div class="dashboard-footer">
-          <div
-            class="dashboard-footer__list"
-            :class="{ 'has-icon': !hasMembershipIcon3 }"
-          >
-            <div class="dashboard-footer__item">
-              <TextButton
-                text="멤버십"
-                color="secondary"
-                size="small"
-                class="dashboard-footer__link"
-              >
-                <template #leftIcon v-if="hasMembershipIcon3">
-                  <div class="dashboard-membership__icon">
-                    <ScImage
-                      :src="`${$cdnURL}/images/pages/benefits/main/icon_membership_b.png`"
-                      alt="등급"
-                    />
-                  </div>
-                </template>
-              </TextButton>
+      </template>
+      <!-- E : 모바일상품권 + 할인쿠폰이 있을 경우 -->
 
-              <!-- 툴팁 - 활성화 시 hidden 속성 제거 -->
-              <div
-                class="sc-popover__custom"
-                data-placement="bottom-left"
-                hidden
-              >
-                <div class="sc-popover__custom-content">
-                  <span>멤버십 등급이 변경됐어요.</span>
-                </div>
-              </div>
+      <template v-else>
+        <!-- S : 모바일상품권 5장 + 할인쿠폰 0장 인 경우 & 모바일상품권 0 + 할인쿠폰 0 인 경우(기존 유지, 변경예정) -->
+        <div class="sc-empty-case">
+          <div class="empty-type">
+            <div class="empty__img fg-informative" aria-hidden="true">
+              <!-- 260120: 이미지 변경 -->
+              <!-- <ScIcon
+                iconName="icon-error-coalition"
+                width="68px"
+                height="68px"
+              /> -->
+              <img :src="`${$cdnURL}/images/pages/base/noData.png`" alt="" class="img-feedback-nodata" />
             </div>
-            <Divider
-              color="tertiary"
-              orientation="vertical"
-              variant="basic"
-              class="dashboard-divider-vertical"
-            />
-            <div class="dashboard-footer__item">
-              <TextButton
-                text="내 쿠폰"
-                color="secondary"
-                size="small"
-                class="dashboard-footer__link"
-              />
-
-              <!-- 툴팁 - 활성화 시 hidden 속성 제거 -->
-              <div
-                class="sc-popover__custom"
-                data-placement="bottom-center"
-                hidden
-              >
-                <div class="sc-popover__custom-content">
-                  <span>유효기간이 곧 끝나는 쿠폰이 있어요!</span>
-                </div>
-              </div>
+            <div class="empty__main">
+              <p>받은 쿠폰이 없습니다.</p>
             </div>
-            <Divider
-              color="tertiary"
-              orientation="vertical"
-              variant="basic"
-              class="dashboard-divider-vertical"
-            />
-            <div class="dashboard-footer__item">
-              <TextButton
-                text="참여한 이벤트"
-                color="secondary"
-                size="small"
-                class="dashboard-footer__link"
-              />
-
-              <!-- 툴팁 - 활성화 시 hidden 속성 제거 -->
-              <div class="sc-popover__custom" data-placement="bottom-right">
-                <div class="sc-popover__custom-content">
-                  <span>이벤트 결과를 확인해보세요.</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- S : IF 오류시 - 멤버십 아이콘 노출 X -->
-    <div class="dashboard-box">
-      <div class="dashboard-box__inner">
-        <div class="dashboard-body__error">
-          <span class="dashboard-body__error-text"
-            >정보를 불러오지 못했어요</span
-          >
-          <CapsuleButton
-            text="내 포인트 확인하기"
-            color="primary"
-            variant="outline"
-            size="small"
-          />
-        </div>
-        <Divider color="tertiary" variant="basic" class="dashboard-divider" />
-        <div class="dashboard-footer">
-          <div class="dashboard-footer__list has-icon">
-            <div class="dashboard-footer__item">
-              <TextButton
-                text="멤버십"
-                color="secondary"
-                size="small"
-                class="dashboard-footer__link"
-              /><!-- 툴팁 - 활성화 시 hidden 속성 제거 -->
-              <div class="sc-popover__custom" data-placement="bottom-left">
-                <div class="sc-popover__custom-content">
-                  <span>멤버십 등급이 변경됐어요.</span>
-                </div>
-              </div>
-            </div>
-            <Divider
-              color="tertiary"
-              orientation="vertical"
-              variant="basic"
-              class="dashboard-divider-vertical"
-            />
-            <div class="dashboard-footer__item">
-              <TextButton
-                text="내 쿠폰"
-                color="secondary"
-                size="small"
-                class="dashboard-footer__link"
-              />
-            </div>
-            <Divider
-              color="tertiary"
-              orientation="vertical"
-              variant="basic"
-              class="dashboard-divider-vertical"
-            />
-            <div class="dashboard-footer__item">
-              <TextButton
-                text="참여한 이벤트"
-                color="secondary"
-                size="small"
-                class="dashboard-footer__link"
+            <div class="empty__btn">
+              <BoxButton
+                color="quaternary"
+                size="medium"
+                text="쿠폰 받으러 가기"
               />
             </div>
           </div>
         </div>
-      </div>
-    </div>
-    <!-- E : IF 오류시 -->
+        <!-- E : 모바일상품권 5장 + 할인쿠폰 0장 인 경우 & 모바일상품권 0 + 할인쿠폰 0 인 경우(기존 유지, 변경예정) -->
 
-    <!-- S : 로그아웃 -->
-    <div class="bf-if__login">
-      <div class="bf-if__error-inner">
-        <div class="bf-if__error-icon">
-          <ScImage
-            :src="`${$cdnURL}/images/pages/benefits/main/result_icon.png`"
-            alt="IF 오류"
-          />
+        <!-- S : 모바일상품권 0 + 할인쿠폰 3장 인 경우 -->
+        <div class="sc-empty-case">
+          <div class="empty-type">
+            <div class="empty__img fg-informative" aria-hidden="true">
+              <!-- 260120: 이미지 변경 -->
+              <!-- <ScIcon
+                iconName="icon-error-coalition"
+                width="68px"
+                height="68px"
+              /> -->
+              <img :src="`${$cdnURL}/images/pages/base/noData.png`" alt="" class="img-feedback-nodata" />
+            </div>
+            <div class="empty__main">
+              <p>보유한 모바일상품권이 없습니다.</p>
+            </div>
+            <div class="empty__btn">
+              <BoxButton
+                color="quaternary"
+                size="medium"
+                text="기프트샵 가기"
+              />
+            </div>
+          </div>
         </div>
-        <div class="bf-if__error-text">로그인하고 내 혜택을 확인해보세요!</div>
-        <CapsuleButton
-          text="로그인하기"
-          color="primary"
-          variant="outline"
-          size="small"
-        />
-      </div>
+        <!-- E : 모바일상품권 0 + 할인쿠폰 3장 인 경우 -->
+      </template>
     </div>
-    <!-- E : 로그아웃 -->
-  </section>
-
-  <!-- 멤버십 BottomSheet 
-   - SBT031A01.vue 개발시 기존 모달 호출하는 형식으로 호출 현재는 UI확인용으로 임시 호출
-  -->
-  <BottomSheet
-    closableDimm
-    dimmed
-    title="멤버십·리워드​"
-    v-model="isMembershipOpen"
-    class="sc-membership__bs"
-  >
-    <div class="sc-membership__list">
-      <BasicList
-        v-for="item in membershipItems"
-        :key="item.id"
-        as="div"
-        class="sc-membership__item"
-      >
-        <span class="sc-membership__label">{{ item.label }}</span>
-        <template #icon>
-          <BoxButton
-            color="quaternary"
-            size="small"
-            text="보기"
-            @click.stop="handleViewClick(item)"
-          />
-        </template>
-      </BasicList>
-    </div>
-  </BottomSheet>
+  </div>
 </template>
 
 <script setup>
-import { computed, inject, ref, watch, onUnmounted } from "vue";
 import { AppContextKey } from "@/configs/inject/appContext";
-import { ScImage } from "@shc-nss/ui/shc";
+import { inject } from "vue";
+import { ref, computed } from "vue";
 import {
-  BasicList,
-  BottomSheet,
+  BasicChipGroup,
+  Tooltip,
+  ListItem,
   BoxButton,
-  CapsuleButton,
-  Divider,
+  BoxButtonGroup,
   Icon,
-  LoadingSkeleton,
-  TextButton,
+  Divider,
 } from "@shc-nss/ui/solid";
+import { ScIcon, ScImage } from "@shc-nss/ui/shc";
 
 const { $cdnURL } = inject(AppContextKey);
-
-// 마이신한포인트 값 (실제 데이터로 교체 필요)
-const pointValue = ref("123,000");
-// 이번달 받은 혜택 값 (실제 데이터로 교체 필요)
-const amountValue = ref("117,000");
-// 혜택 라벨 (이번달/지난달 구분, 실제 데이터로 교체 필요)
-const benefitLabel = ref("이번달 받은 혜택"); // 또는 "지난달 받은 혜택"
-
-// 금액 기준으로 폰트 사이즈 클래스 반환
-// 둘 중 하나라도 조건에 해당하면 둘 다 같은 폰트 사이즈 적용
-// 천만원대 이하 (10,000,000 미만): 18px (large)
-// 기본 (10,000,000 ~ 99,999,999): 16px (기본값)
-// 1억 이상 (100,000,000 이상): 14px (small)
-const getNumericValue = (value) => {
-  if (!value) return 0;
-  return parseInt(value.toString().replace(/,/g, ""), 10);
-};
-
-const getValuteSizeClass = (point, amount) => {
-  // 둘 중 하나라도 1억 이상이면 둘 다 small (14px)
-  if (point >= 100000000 || amount >= 100000000) {
-    return { "dashboard-body__value--small": true };
-  }
-  // 둘 중 하나라도 천만원대 이하면 둘 다 large (18px)
-  if (point < 10000000 || amount < 10000000) {
-    return { "dashboard-body__value--large": true };
-  }
-  // 둘 다 천만원대 이상 1억 미만이면 기본 (16px, 클래스 없음)
-  return {};
-};
-
-const valuteSizeClass = computed(() => {
-  const point = getNumericValue(pointValue.value);
-  const amount = getNumericValue(amountValue.value);
-  return getValuteSizeClass(point, amount);
-});
-
-// 테스트용 데이터 (UI 확인용)
-// 기본 금액 (16px) - 천만원대 이상 1억 미만
-const pointValue2 = ref("10,000,000");
-const amountValue2 = ref("50,000,000");
-const pointValue3 = ref("123,000");
-const amountValue3 = ref("1,000,000,000");
-
-// 테스트용 폰트 사이즈 클래스 (valuteSizeClass와 별도)
-const valuteSizeClass2 = computed(() => {
-  const point = getNumericValue(pointValue2.value);
-  const amount = getNumericValue(amountValue2.value);
-  return getValuteSizeClass(point, amount);
-});
-
-const valuteSizeClass3 = computed(() => {
-  const point = getNumericValue(pointValue3.value);
-  const amount = getNumericValue(amountValue3.value);
-  return getValuteSizeClass(point, amount);
-});
-
-// case 1 멤버십 아이콘 표시 여부 (실제 데이터로 교체 필요)
-const hasMembershipIcon = ref(true);
-// case 2 멤버십 아이콘 표시 여부 (실제 데이터로 교체 필요)
-const hasMembershipIcon2 = ref(true);
-// case 3 멤버십 아이콘 표시 여부 (실제 데이터로 교체 필요)
-const hasMembershipIcon3 = ref(false);
-
-// 멤버십 BottomSheet 상태
-const isMembershipOpen = ref(false);
-
-// html overflow 제어
-watch(isMembershipOpen, (isOpen) => {
-  if (typeof document !== "undefined") {
-    const htmlElement = document.documentElement;
-    if (isOpen) {
-      htmlElement.style.overflow = "hidden";
-    } else {
-      htmlElement.style.overflow = "";
-    }
-  }
-});
-
-// 컴포넌트 언마운트 시 overflow 제거
-onUnmounted(() => {
-  if (typeof document !== "undefined") {
-    document.documentElement.style.overflow = "";
-  }
-});
-
-// 멤버십 리스트 아이템들
-const membershipItems = [
-  { id: "sol-membership", label: "SOL 멤버십" },
-  { id: "d-club", label: "D-Club" },
-  { id: "tops-club", label: "Tops Club" },
-  { id: "welcome-gift", label: "웰컴 기프트팩" },
-  { id: "friend-referral", label: "친구추천 기프트팩" },
-  { id: "welcome-checkin", label: "웰컴체크인" },
+// 첫 번째 칩을 선택된 상태로 초기화
+const selectedValue = ref("1");
+const items = [
+  {
+    text: "전체",
+    value: "1",
+  },
+  {
+    text: "모바일 상품권",
+    value: "2",
+  },
+  {
+    text: "할인쿠폰",
+    value: "3",
+  },
 ];
 
-// 보기 버튼 클릭 핸들러
-const handleViewClick = (item) => {
-  console.log(`${item.label} 보기 클릭됨`);
-  // TODO: 각 항목별 상세 페이지로 이동하는 로직 구현
-};
+// 칩 개수에 따라 control 설정 (기본: none, 많으면: expand)
+const chipControl = computed(() => {
+  return items.length >= 4 ? "expand" : "none";
+});
+
+// 쿠폰 리스트 데이터 (이미지 참조)
+const couponItems = [
+  {
+    id: 1,
+    icon: {
+      src: `${$cdnURL}/images/dummy/thumb_benefit_cupon1.png`,
+      alt: "",
+    },
+    mainsub: "2025.01.01까지",
+    main: "마이카플러스 신규 가입 이벤트",
+    sub: "배달의 민족 5,000원건",
+  },
+  {
+    id: 2,
+    icon: {
+      src: `${$cdnURL}/images/dummy/thumb_benefit_cupon2.png`,
+      alt: "",
+    },
+    mainsub: "2025.01.01까지",
+    main: "스타벅스",
+    sub: "[이벤트] 아이스 카페 아메리카노",
+  },
+  {
+    id: 3,
+    icon: {
+      src: `${$cdnURL}/images/dummy/thumb_benefit_cupon2.png`,
+      alt: "",
+    },
+    mainsub: "2025.01.01까지",
+    main: "서브웨이",
+    sub: "[이벤트] 아이스 카페 아메리카노",
+  },
+  {
+    id: 4,
+    icon: {
+      src: `${$cdnURL}/images/dummy/thumb_benefit_cupon3.png`,
+      alt: "",
+    },
+    main: "스탬프 쿠폰을 찾고 계세요?",
+    sub: "신한 Super SOL",
+  },
+  {
+    id: 5,
+    icon: {
+      src: `${$cdnURL}/images/dummy/thumb_benefit_cupon4.png`,
+      alt: "",
+    },
+    mainsub: "관리비 자동납부하고",
+    main: "최대 20만원 캐시백 받기",
+  },
+  {
+    id: 6,
+    icon: {
+      src: `${$cdnURL}/images/dummy/thumb_benefit_cupon5.png`,
+      alt: "",
+    },
+    mainsub: "캐시백부터 할인까지 꼼꼼히 준비했ZIP",
+    main: "Tops 쿠폰",
+  },
+  {
+    id: 7,
+    icon: {
+      src: `${$cdnURL}/images/dummy/thumb_benefit_cupon6.png`,
+      alt: "",
+    },
+    mainsub: "결제계좌 변경하고",
+    main: "신세계 백화점 상품권 포함 5가지 혜택 받기",
+  },
+  {
+    id: 8,
+    icon: {
+      src: `${$cdnURL}/images/dummy/thumb_benefit_cupon2.png`,
+      alt: "",
+    },
+    mainsub: "결제계좌 변경하고",
+    main: "스타벅스 쿠폰 받기",
+  },
+  {
+    id: 9,
+    icon: {
+      src: `${$cdnURL}/images/dummy/thumb_benefit_cupon7.png`,
+      alt: "",
+    },
+    mainsub: "캐시백부터 할인까지 여기 다 있ZIP",
+    main: "해외여행 필수템",
+  },
+  {
+    id: 10,
+    icon: {
+      src: `${$cdnURL}/images/dummy/thumb_benefit_cupon3.png`,
+      alt: "",
+    },
+    mainsub: "SOL페이에 티머니 등록하고",
+    main: "1등 당첨되면 발뮤다 더 토스트",
+  },
+];
+
 </script>
 
 
+
+
+<route lang="yaml">
+meta:
+  id: SBT021A01-a
+  title: 받은 쿠폰
+  menu: "혜택​ > 받은 쿠폰"
+  layout: SubLayout
+  category: 혜택
+  publish: 김대민
+  publishVersion: 0.8
+  status: 재작업
+  header:
+    variant: sub
+    fixed: true
+    back: true
+    close: false
+    home: true
+  qa2: 퍼블완료
+  ui: |  
+    [완료]260120: 마크업 (디자인 요청에 따라 UI 확인용 페이지 작업),
+</route>
+<template>
+  <div class="sc-contents__body">
+    <div class="cupon-contents">
+      <!-- S : 모바일상품권 + 할인쿠폰이 있을 경우 -->
+      <template v-if="couponItems.length > 0">
+        <div
+          class="cupon-head"
+          tabindex="0"
+          aria-label="총 {{ couponItems.length }}개의 쿠폰을 보유중이에요."
+        >
+          <p aria-hidden="true">
+            총 <em class="cupon-count">{{ couponItems.length }}</em
+            >개의 쿠폰을 보유중이에요.
+          </p>
+        </div>
+        <div class="cupon-chip">
+          <BasicChipGroup
+            :control="chipControl"
+            :items="items"
+            variant="solid"
+            v-model="selectedValue"
+          />
+        </div>
+      </template>
+      <!-- E : 모바일상품권 + 할인쿠폰이 있을 경우 -->
+
+      <!-- S : 모바일상품권 0 + 할인쿠폰 0 인 경우(기존 유지, 변경예정) -->
+      <template v-else>
+        <div class="cupon-top__btngroup">
+          <BoxButtonGroup variant="50:50">
+            <BoxButton size="large" color="tertiary" text="스탬프쿠폰">
+              <template #icon>
+                <!-- 아이콘 TBD 추 후 변경 -->
+                <!-- 260120: 이미지 변경 -->
+                <!-- <Icon name="sample-icon" width="34px" height="34px" /> -->
+              <img :src="`${$cdnURL}/images/pages/base/img_shinhan.png`" alt="" aria-hidden="true" />
+              </template>
+            </BoxButton>
+            <BoxButton size="large" color="tertiary" text="기프트샵">
+              <template #icon>
+                <!-- 아이콘 TBD 추 후 변경 -->
+                <!-- 260120: 이미지 변경 -->
+                <!-- <Icon name="sample-icon" width="34px" height="34px" /> -->
+                <img :src="`${$cdnURL}/images/pages/base/img_giftshop.png`" alt="" aria-hidden="true" />
+              </template>
+            </BoxButton>
+          </BoxButtonGroup>
+
+          <Divider
+            variant="basic"
+            color="tertiary"
+            size="full"
+            orientation="horizontal"
+          />
+        </div>
+      </template>
+      <!-- E : 모바일상품권 0 + 할인쿠폰 0 인 경우(기존 유지, 변경예정) -->
+
+      <!-- S : 모바일상품권 + 할인쿠폰이 있을 경우 -->
+      <template v-if="couponItems.length > 0">
+        <div class="cupon-list__wrap">
+          <div class="cupon-list__head">
+            <strong
+              class="cupon-head__text"
+              aria-label="전체쿠폰 {{ couponItems.length }}개"
+              tabindex="0"
+            >
+              <span aria-hidden="true"
+                >전체쿠폰 <em class="cupon-count">{{ couponItems.length }}</em
+                >개</span
+              >
+            </strong>
+            <Tooltip
+              :open="false"
+              placement="top-left"
+              :showClose="true"
+              :size="20"
+              class="select-type__tooltip"
+            >
+              <template #content>
+                <div class="sc-tooltip__content">
+                  <strong class="sc-tooltip-content__title"
+                    >쿠폰 개수가 다르다면?</strong
+                  >
+                  <p>
+                    쿠폰별로 받기 또는 사용 반영까지 최대 하루정도 소요될 수
+                    있어요
+                  </p>
+                </div>
+              </template>
+            </Tooltip>
+          </div>
+          <div class="cupon-list__body">
+            <div
+              v-for="coupon in couponItems"
+              :key="coupon.id"
+              class="cupon-item"
+              tabindex="0"
+            >
+              <ListItem align="centered">
+                <template #leftIcon>
+                  <ScImage
+                    :src="coupon.icon.src"
+                    :alt="coupon.icon.alt"
+                    class="cupon-icon"
+                    aria-hidden="true"
+                  />
+                </template>
+                <template #leftMainText>
+                  <span>{{ coupon.mainsub }}</span>
+                  <strong>{{ coupon.main }}</strong>
+                </template>
+                <template #leftSubText>
+                  {{ coupon.sub }}
+                </template>
+              </ListItem>
+            </div>
+          </div>
+        </div>
+      </template>
+      <!-- E : 모바일상품권 + 할인쿠폰이 있을 경우 -->
+
+      <template v-else>
+        <!-- S : 받은 쿠폰 없음 -->
+        <div v-if="emptyType === 'coupon'" class="sc-empty-case">
+          <div class="empty-type">
+            <div class="empty__img fg-informative" aria-hidden="true">
+              <!-- 260120: 이미지 변경 -->
+              <!-- <ScIcon
+                iconName="icon-error-coalition"
+                width="68px"
+                height="68px"
+              /> -->
+              <img :src="`${$cdnURL}/images/pages/base/noData.png`" alt="" class="img-feedback-nodata" />
+            </div>
+            <div class="empty__main">
+              <p>받은 쿠폰이 없습니다.</p>
+            </div>
+            <div class="empty__btn">
+              <BoxButton
+                color="quaternary"
+                size="medium"
+                text="쿠폰 받으러 가기"
+              />
+            </div>
+          </div>
+        </div>
+        <!-- E : 받은 쿠폰 없음 -->
+
+        <!-- S : 보유한 모바일상품권 없음 -->
+        <div v-else-if="emptyType === 'gift'" class="sc-empty-case">
+          <div class="empty-type">
+            <div class="empty__img fg-informative" aria-hidden="true">
+              <!-- 260120: 이미지 변경 -->
+              <!-- <ScIcon
+                iconName="icon-error-coalition"
+                width="68px"
+                height="68px"
+              /> -->
+              <img :src="`${$cdnURL}/images/pages/base/noData.png`" alt="" class="img-feedback-nodata" />
+            </div>
+            <div class="empty__main">
+              <p>보유한 모바일상품권이 없습니다.</p>
+            </div>
+            <div class="empty__btn">
+              <BoxButton
+                color="quaternary"
+                size="medium"
+                text="기프트샵 가기"
+              />
+            </div>
+          </div>
+        </div>
+        <!-- E : 보유한 모바일상품권 없음 -->
+      </template>
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { AppContextKey } from "@/configs/inject/appContext";
+import { inject } from "vue";
+import { ref, computed } from "vue";
+import {
+  BasicChipGroup,
+  Tooltip,
+  ListItem,
+  BoxButton,
+  BoxButtonGroup,
+  Icon,
+  Divider,
+} from "@shc-nss/ui/solid";
+import { ScIcon, ScImage } from "@shc-nss/ui/shc";
+
+const { $cdnURL } = inject(AppContextKey);
+const emptyType = ref("coupon");
+// 첫 번째 칩을 선택된 상태로 초기화
+const selectedValue = ref("1");
+const items = [
+  {
+    text: "전체",
+    value: "1",
+  },
+  {
+    text: "모바일 상품권",
+    value: "2",
+  },
+  {
+    text: "할인쿠폰",
+    value: "3",
+  },
+];
+
+// 칩 개수에 따라 control 설정 (기본: none, 많으면: expand)
+const chipControl = computed(() => {
+  return items.length >= 4 ? "expand" : "none";
+});
+
+// 쿠폰 리스트 데이터 (이미지 참조)
+const couponItems = [];
+</script>
+
+
+
+
+
+
+<route lang="yaml">
+meta:
+  id: SBT021A01-b
+  title: 받은 쿠폰
+  menu: "혜택​ > 받은 쿠폰"
+  layout: SubLayout
+  category: 혜택
+  publish: 김대민
+  publishVersion: 0.8
+  status: 재작업
+  header:
+    variant: sub
+    fixed: true
+    back: true
+    close: false
+    home: true
+  qa2: 퍼블완료
+  ui: |  
+    [완료]260120: 마크업 (디자인 요청에 따라 UI 확인용 페이지 작업),
+</route>
+<template>
+  <div class="sc-contents__body">
+    <div class="cupon-contents">
+      <!-- S : 모바일상품권 + 할인쿠폰이 있을 경우 -->
+      <template v-if="couponItems.length > 0">
+        <div
+          class="cupon-head"
+          tabindex="0"
+          aria-label="총 {{ couponItems.length }}개의 쿠폰을 보유중이에요."
+        >
+          <p aria-hidden="true">
+            총 <em class="cupon-count">{{ couponItems.length }}</em
+            >개의 쿠폰을 보유중이에요.
+          </p>
+        </div>
+        <div class="cupon-chip">
+          <BasicChipGroup
+            :control="chipControl"
+            :items="items"
+            variant="solid"
+            v-model="selectedValue"
+          />
+        </div>
+      </template>
+      <!-- E : 모바일상품권 + 할인쿠폰이 있을 경우 -->
+
+      <!-- S : 모바일상품권 0 + 할인쿠폰 0 인 경우(기존 유지, 변경예정) -->
+      <template v-else>
+        <div class="cupon-top__btngroup">
+          <BoxButtonGroup variant="50:50">
+            <BoxButton size="large" color="tertiary" text="스탬프쿠폰">
+              <template #icon>
+                <!-- 아이콘 TBD 추 후 변경 -->
+                <!-- 260120: 이미지 변경 -->
+                <!-- <Icon name="sample-icon" width="34px" height="34px" /> -->
+              <img :src="`${$cdnURL}/images/pages/base/img_shinhan.png`" alt="" aria-hidden="true" />
+              </template>
+            </BoxButton>
+            <BoxButton size="large" color="tertiary" text="기프트샵">
+              <template #icon>
+                <!-- 아이콘 TBD 추 후 변경 -->
+                <!-- 260120: 이미지 변경 -->
+                <!-- <Icon name="sample-icon" width="34px" height="34px" /> -->
+                <img :src="`${$cdnURL}/images/pages/base/img_giftshop.png`" alt="" aria-hidden="true" />
+              </template>
+            </BoxButton>
+          </BoxButtonGroup>
+
+          <Divider
+            variant="basic"
+            color="tertiary"
+            size="full"
+            orientation="horizontal"
+          />
+        </div>
+      </template>
+      <!-- E : 모바일상품권 0 + 할인쿠폰 0 인 경우(기존 유지, 변경예정) -->
+
+      <!-- S : 모바일상품권 + 할인쿠폰이 있을 경우 -->
+      <template v-if="visibleItems.length > 0">
+        <div class="cupon-list__wrap">
+          <div class="cupon-list__head">
+            <strong
+              class="cupon-head__text"
+              aria-label="전체쿠폰 {{ visibleItems.length }}개"
+              tabindex="0"
+            >
+              <span aria-hidden="true"
+                >전체쿠폰 <em class="cupon-count">{{ visibleItems.length }}</em
+                >개</span
+              >
+            </strong>
+            <Tooltip
+              :open="false"
+              placement="top-left"
+              :showClose="true"
+              :size="20"
+              class="select-type__tooltip"
+            >
+              <template #content>
+                <div class="sc-tooltip__content">
+                  <strong class="sc-tooltip-content__title"
+                    >쿠폰 개수가 다르다면?</strong
+                  >
+                  <p>
+                    쿠폰별로 받기 또는 사용 반영까지 최대 하루정도 소요될 수
+                    있어요
+                  </p>
+                </div>
+              </template>
+            </Tooltip>
+          </div>
+          <div class="cupon-list__body">
+            <div
+              v-for="coupon in visibleItems"
+              :key="coupon.id"
+              class="cupon-item"
+              tabindex="0"
+            >
+              <ListItem align="centered">
+                <template #leftIcon>
+                  <ScImage
+                    :src="coupon.icon.src"
+                    :alt="coupon.icon.alt"
+                    class="cupon-icon"
+                    aria-hidden="true"
+                  />
+                </template>
+                <template #leftMainText>
+                  <span>{{ coupon.mainsub }}</span>
+                  <strong>{{ coupon.main }}</strong>
+                </template>
+                <template #leftSubText>
+                  {{ coupon.sub }}
+                </template>
+              </ListItem>
+            </div>
+          </div>
+        </div>
+      </template>
+      <!-- E : 모바일상품권 + 할인쿠폰이 있을 경우 -->
+
+      <template v-else>
+        <!-- S : 모바일상품권 5장 + 할인쿠폰 0장 인 경우 & 모바일상품권 0 + 할인쿠폰 0 인 경우(기존 유지, 변경예정) -->
+        <div v-if="selectedValue === '3'" class="sc-empty-case">
+          <div class="empty-type">
+            <div class="empty__img fg-informative" aria-hidden="true">
+              <!-- <ScIcon
+                iconName="icon-error-coalition"
+                width="68px"
+                height="68px"
+              /> -->
+              <img :src="`${$cdnURL}/images/pages/base/noData.png`" alt="" class="img-feedback-nodata" />
+            </div>
+            <div class="empty__main">
+              <p>받은 쿠폰이 없습니다.</p>
+            </div>
+            <div class="empty__btn">
+              <BoxButton
+                color="quaternary"
+                size="medium"
+                text="쿠폰 받으러 가기"
+              />
+            </div>
+          </div>
+        </div>
+        <!-- E : 모바일상품권 5장 + 할인쿠폰 0장 인 경우 & 모바일상품권 0 + 할인쿠폰 0 인 경우(기존 유지, 변경예정) -->
+
+        <!-- S : 모바일상품권 0 + 할인쿠폰 3장 인 경우 -->
+        <div v-else-if="selectedValue === '2'" class="sc-empty-case">
+          <div class="empty-type">
+            <div class="empty__img fg-informative" aria-hidden="true">
+              <!-- <ScIcon
+                iconName="icon-error-coalition"
+                width="68px"
+                height="68px"
+              /> -->
+              <img :src="`${$cdnURL}/images/pages/base/noData.png`" alt="" class="img-feedback-nodata" />
+            </div>
+            <div class="empty__main">
+              <p>보유한 모바일상품권이 없습니다.</p>
+            </div>
+            <div class="empty__btn">
+              <BoxButton
+                color="quaternary"
+                size="medium"
+                text="기프트샵 가기"
+              />
+            </div>
+          </div>
+        </div>
+        <!-- E : 모바일상품권 0 + 할인쿠폰 3장 인 경우 -->
+      </template>
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { AppContextKey } from "@/configs/inject/appContext";
+import { inject } from "vue";
+import { ref, computed } from "vue";
+import {
+  BasicChipGroup,
+  Tooltip,
+  ListItem,
+  BoxButton,
+  BoxButtonGroup,
+  Icon,
+  Divider,
+} from "@shc-nss/ui/solid";
+import { ScIcon, ScImage } from "@shc-nss/ui/shc";
+
+const { $cdnURL } = inject(AppContextKey);
+// 첫 번째 칩을 선택된 상태로 초기화
+const selectedValue = ref("2");
+const items = [
+  {
+    text: "전체",
+    value: "1",
+  },
+  {
+    text: "모바일 상품권",
+    value: "2",
+  },
+  {
+    text: "할인쿠폰",
+    value: "3",
+  },
+];
+
+// 칩 개수에 따라 control 설정 (기본: none, 많으면: expand)
+const chipControl = computed(() => {
+  return items.length >= 4 ? "expand" : "none";
+});
+
+// 쿠폰 리스트 데이터 (이미지 참조)
+const couponItems = [
+  {
+    id: 1,
+    icon: {
+      src: `${$cdnURL}/images/dummy/thumb_benefit_cupon1.png`,
+      alt: "",
+    },
+    mainsub: "2025.01.01까지",
+    main: "마이카플러스 신규 가입 이벤트",
+    sub: "배달의 민족 5,000원건",
+  },
+  {
+    id: 2,
+    icon: {
+      src: `${$cdnURL}/images/dummy/thumb_benefit_cupon2.png`,
+      alt: "",
+    },
+    mainsub: "2025.01.01까지",
+    main: "스타벅스",
+    sub: "[이벤트] 아이스 카페 아메리카노",
+  },
+  {
+    id: 3,
+    icon: {
+      src: `${$cdnURL}/images/dummy/thumb_benefit_cupon2.png`,
+      alt: "",
+    },
+    mainsub: "2025.01.01까지",
+    main: "서브웨이",
+    sub: "[이벤트] 아이스 카페 아메리카노",
+  },
+  {
+    id: 4,
+    icon: {
+      src: `${$cdnURL}/images/dummy/thumb_benefit_cupon3.png`,
+      alt: "",
+    },
+    main: "스탬프 쿠폰을 찾고 계세요?",
+    sub: "신한 Super SOL",
+  },
+  {
+    id: 5,
+    icon: {
+      src: `${$cdnURL}/images/dummy/thumb_benefit_cupon4.png`,
+      alt: "",
+    },
+    mainsub: "관리비 자동납부하고",
+    main: "최대 20만원 캐시백 받기",
+  },
+];
+
+const visibleItems = computed(() => {
+  return selectedValue.value === "1" ? couponItems : [];
+});
+
+</script>
+  
 
 
 ```

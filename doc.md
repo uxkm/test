@@ -3,7 +3,29 @@
 {% raw %}
 ```scss
 
-
+// benefits
+.cupon-top__btngroup {
+  padding: 0 var(--container-padding-mobile);
+  .sv-divider {
+    // margin-block: var(--spacing-2xl);
+    margin-top: var(--spacing-2xl);
+    margin-bottom: var(--spacing-2xl);
+  }
+  .sv-button {
+    .sv-button__left-icon {
+      width: auto !important;
+      height: auto !important;
+    }
+    .sv-button__label {
+      color: var(--text-secondary);
+    }
+    img {
+      width: 34px;
+      height: 34px;
+      object-fit: contain;
+    }
+  }
+}
 
   --env-t: env(safe-area-inset-top, 0px);
   --env-l: env(safe-area-inset-left, 0px);
