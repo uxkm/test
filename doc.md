@@ -4,6 +4,27 @@
 ```scss
 
 
+    isolation: isolate;
+
+    // shadow 영역 (59x80) - 핸들 영역 오른쪽 정렬
+    &::after {
+      content: "";
+      position: absolute;
+      inset: -27px auto auto -12px;
+      width: 59px;
+      height: 80px;
+      border-radius: 0;
+      // box-shadow: 0 4px 16px 0 rgba(12, 17, 29, 0.06);
+      box-shadow:
+        0 1px 1px -1px rgba(0, 0, 0, 0.06),
+        0 2px 2px -2px rgba(0, 0, 0, 0.05),
+        0 3px 3px -3px rgba(0, 0, 0, 0.04),
+        0 4px 4px -4px rgba(0, 0, 0, 0.03),
+        0 5px 5px -5px rgba(0, 0, 0, 0.02),
+        0 6px 6px -6px rgba(0, 0, 0, 0.01);
+      pointer-events: none;
+    }
+
         .img-feedback-nodata {
           width: 56px;
           height: 56px;
