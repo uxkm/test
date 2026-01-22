@@ -25,6 +25,27 @@
       pointer-events: none;
     }
 
+
+        0 1px 1px -1px rgba(12, 17, 29, 0.06),
+        0 1.2px 1.2px -1.33px rgba(12, 17, 29, 0.057),
+        0 1.4px 1.4px -1.67px rgba(12, 17, 29, 0.053),
+        0 1.6px 1.6px -2px rgba(12, 17, 29, 0.05),
+        0 1.8px 1.8px -2.33px rgba(12, 17, 29, 0.047),
+        0 2px 2px -2.67px rgba(12, 17, 29, 0.043),
+        0 2.2px 2.2px -3px rgba(12, 17, 29, 0.04),
+        0 2.4px 2.4px -3.33px rgba(12, 17, 29, 0.037),
+        0 2.6px 2.6px -3.67px rgba(12, 17, 29, 0.033),
+        0 2.8px 2.8px -4px rgba(12, 17, 29, 0.03),
+        0 3px 3px -4.33px rgba(12, 17, 29, 0.027),
+        0 3.2px 3.2px -4.67px rgba(12, 17, 29, 0.023),
+        0 3.4px 3.4px -5px rgba(12, 17, 29, 0.02),
+        0 3.6px 3.6px -5.33px rgba(12, 17, 29, 0.017),
+        0 3.8px 3.8px -5.67px rgba(12, 17, 29, 0.013),
+        0 4px 4px -6px rgba(12, 17, 29, 0.01);
+
+
+
+
         .img-feedback-nodata {
           width: 56px;
           height: 56px;
