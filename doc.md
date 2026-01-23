@@ -4,6 +4,47 @@
 ```scss
 
 
+.category-list {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      > .category-list__item + .category-list__item {
+        margin-left: var(--spacing-2xl);
+      }
+      > .category-list__item:first-child:nth-last-child(2) ~ .category-list__item {
+        margin-left: var(--spacing-6xl);
+      }
+      &__item {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex: 1 1 auto;
+        max-width: 90px;
+      }
+      &__link {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: var(--spacing-md);
+        width: 100%;
+        max-width: 90px;
+        padding: var(--spacing-lg) var(--spacing-sm);
+      }
+      &__icon {
+        width: 36px;
+        height: 36px;
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: contain;
+        }
+      }
+
+
+
+
+
     isolation: isolate;
 
     // shadow 영역 (59x80) - 핸들 영역 오른쪽 정렬
