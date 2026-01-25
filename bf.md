@@ -13,6 +13,7 @@ meta:
   publishVersion: 0.9
 </route>
 <template>
+  <teleport to="body">
   <div class="floating-treasure target-C2025070460731">
     <div class="btn-treasure">
       <a
