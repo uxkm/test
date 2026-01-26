@@ -2,6 +2,8 @@
 
 {% raw %}
 ```js
+
+
 <route lang="yaml">
 meta:
   id: publish-index
@@ -2166,6 +2168,7 @@ body {
   }
 }
 </style>
+
 
 
 ```
