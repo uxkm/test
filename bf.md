@@ -2,7 +2,22 @@
 {% raw %}
 ```js
 
-
+<BoxButton
+    size="xlarge"
+    ariaLabel="공유하기"
+  >
+    <template #label>
+      <Popover
+        placement="bottom-center"
+        content="친구에게 자랑해보세요!"
+        :open="true"
+        color="gray"
+      >
+        <span>공유하기</span>
+      </Popover>
+    </template>
+  </BoxButton>
+</template>
 
 // 보물찾기
 .floating-treasure {
