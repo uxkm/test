@@ -3,6 +3,39 @@
 {% raw %}
 ```js
 
+// tabs.vue
+
+
+// Swiper event handlers
+const onSwiperInit = (swiper: SwiperType): void => {
+  swiperInstance.value = swiper;
+
+  // 초기 슬라이드를 activeTab에 맞게 설정
+  slideSwiperToActiveTab();
+
+  // 초기 렌더 직후 높이를 다시 계산
+  nextTick(() => {
+    updateSwiperAutoHeight();
+  });
+};
+
+const onSlideChange = (swiper: SwiperType): void => {
+  // Swiper 슬라이드 변경 시 탭 활성화 업데이트
+  const targetValue = findValueBySlideIndex(swiper.activeIndex);
+
+  if (targetValue !== undefined && targetValue !== activeTab.value) {
+    setActiveTab(targetValue);
+  }
+
+  // 슬라이드 변경 후 높이를 다시 계산
+  nextTick(() => {
+    updateSwiperAutoHeight();
+  });
+};
+
+
+
+
 
 <!doctype html>
 <html lang="ko">
