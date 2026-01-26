@@ -4,7 +4,26 @@
 ```js
 
 // tabs.vue
+// Swiper refs
+const swiperInstance = ref<SwiperType | null>(null);
+// 활성 슬라이드 엘리먼트(높이 변화 감지용)
+const activeSlideEl = computed<HTMLElement | null>(() => {
+  if (!props.enablePanelSwipe || !swiperInstance.value) return null;
 
+  return (swiperInstance.value.slides?.[swiperInstance.value.activeIndex] as HTMLElement) ?? null;
+});
+
+// 초기 로드/콘텐츠 추가 시 높이 고정 문제 방지
+const updateSwiperAutoHeight = (): void => {
+  if (!props.enablePanelSwipe || !swiperInstance.value) return;
+
+  swiperInstance.value.updateAutoHeight(0);
+};
+
+// 활성 슬라이드 높이 변경 시 autoHeight 재계산
+useResizeObserver(activeSlideEl, () => {
+  updateSwiperAutoHeight();
+});
 
 // Swiper event handlers
 const onSwiperInit = (swiper: SwiperType): void => {
