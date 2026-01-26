@@ -6,113 +6,66 @@
 // 보물찾기
 .floating-treasure {
   position: fixed;
-  top: 9.5rem;
-  right: 2.9rem;
+  bottom: calc(160px + var(--env-b));
+  right: 36px;
   z-index: 100;
-  .btn-delete {
+  .treasure-container {
+    position: relative;
+    width: 118px;
+    height: 134px;
+  } 
+  .treasure-close {
     position: absolute;
-    top: 1.7rem;
-    right: -2.2rem;
+    top: 29px;
+    right: 0;
     z-index: 1;
-    display: block;
-    width: 3.8rem;
-    height: 3.8rem;
-    // background: url(#{$img-path}/payfan/visual/etc/btn_delete.png) no-repeat;
-    background-size: 3.8rem auto;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    width: 40px;
+    height: 40px;
+    text-align: right;
+    line-height: 1;
+    .treasure-close-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 20px;
+      background-color: var(--bg-white);
+      border-radius: var(--radius-full);
+      color: var(--fg-primary);
+      box-shadow: 0px 2px 4px 0px #16192433;
+    }
   }
-  .btn-treasure {
+  .treasure-trigger {
     position: relative;
     display: block;
-    width: 11.0rem;
-    height: 11.0rem;
+    width: 118px;
+    height: 134px;
   }
-  .anibox {
-    display: block;
-    width: 11.0rem;
-    height: 11.0rem;
-  }
-  .text {
+  .treasure-tooltip {
     position: absolute;
-    top: -3.1rem;
-    left: 50%;
+    top: -5px;
+    left: 50%;  
+    transform: translateX(-50%);
     display: block;
-    width: 11.7rem;
-    height: 6.3rem;
-    margin-left: -5.6rem;
-    padding-top: 1.7rem;
-    padding-right: 0.5rem;
-    font-size: 1.3rem;
-    line-height: 1.8rem;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100% auto;
+    background-image: url("#{$cdn-url}/images/pages/benefits/main/bg_treasure_tooltip.png");
+    width: 83px;
+    height: 36px;
+    padding-top: 4px;
+    @include font-set(body-s, 500);
+    font-weight: 500;
+    color: var(--white);
     text-align: center;
-    color: $white;
-    // background: url(#{$img-path}/payfan/visual/etc/bg_treasure_tooltip.png) no-repeat;
-    background-size: 11.7rem auto;
-    animation: 0.4s ease-in-out 0.7s backwards lottie-text;
+    animation: .8s ease-in-out infinite lottie-text2;
     /* @keyframes duration | timing-function | delay | iteration-count | direction | fill-mode | play-state | name */
   }
-
-  //250805 target-C2025070460731 보물팡팡
-  &.target-C2025070460731{
-    top: auto;
-    bottom: 16rem;
-    .text{
-      width: 9.3rem;//8.3rem;
-      height: 4.6rem;//3.6rem;
-      // background: url(#{$img-path}/payfan/visual/etc/bg_treasure_tooltip2.png) no-repeat;
-      background-size: 100% auto;
-      top: -1.8rem;//-1.1rem;
-      margin-left: -4.3rem;//-3.9rem;
-      padding: .8rem 1rem 0;
-      animation: .8s ease-in-out infinite lottie-text2;
-    }
-  }
 }
 
-// 보물찾기 풀팝업 닫기 버튼 숨김
-.treasure-modal.sv-popup {
-  background: rgba(0, 0, 0, 0.9);
-  .sv-popup__close {
-    display: none;
-  }
-}
-
-.modal-area {
-  &.ios-top{
-    > .full > .modal-dialog > .modal-content{
-      > .modal-header {
-        padding-top: 3.5rem;
-        &+.modal-body {
-          padding-top: 9.1rem !important;
-        }
-      }
-    }
-  }
-  // 하단 floating 버튼 고정시 content height100%로 생기는 스크롤 방지
-  &.with-btn {
-    .modal .modal-content.no-scroll .modal-body{
-      height: calc(100% - 8rem) !important;
-    }
-  }
-  .wide {
-    margin: 0 -1rem;
-  }
-  .footer-shadow {
-    .modal-footer {
-      box-shadow: 0 0.6rem 1.2rem 0 rgba(22, 25, 36, .5);
-    }
-  }
-  .scroll-move {
-    .modal.full .modal-content {
-      overflow-y: hidden;
-    }
-    .scroll-move-area {
-      height: calc(100vh - 7.1rem);
-      overflow-y: auto;
-      margin: 0 -2.4rem;
-      padding: 0 2.4rem;
-    }
-  }
-}
 
 // tooltip-recommend-benefit 바운스 애니메이션
 @keyframes tooltipBouncy {
@@ -157,84 +110,87 @@
   }
 }
 
-// animation
+// treasure(보물찾기) animation
 @keyframes lottie-text2 {
-  0% { transform: translateY(0); }
-  50% { transform: translateY(15%); }
-  100% { transform: translateY(0); }
+  0% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(-5px); }
+  100% { transform: translateX(-50%) translateY(0); }
 }
 @keyframes lottie-text {
   0% {
     opacity: 0;
-    transform: translateY(20%);
+    transform: translateX(-50%) translateY(0);
+  }
+  50% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(-20%);
   }
   100% {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateX(-50%) translateY(0);
   }
 }
 
 
 
 
-
-<route lang="yaml">
-meta:
-  id: SBT178A01
-  title: 
-  menu: "혜택 > 보물찾기"
-  layout: EmptyLayout
-  category: 혜택
-  publish: 김대민
-  publishVersion: 0.9
-</route>
 <template>
+  <!-- 모달처럼 body 하위 요소에 추가 -->
   <teleport to="body">
-  <div class="floating-treasure target-C2025070460731">
-    <div class="btn-treasure">
-      <a
-        href="javascript:;"
-        class="anibox"
-      >
-        <!-- 등장 로티 -->
-        <div>
-          <ScLottie
-            v-if="prevShow"
-            :animation-link="`${cdnURL}/images/lottie/common/treasure_hunt_trigger_coin_01.json`"
-            :width="118"
-            :height="134"
-            :loop="false"
-            :autoPlay="true"
-            @onAnimationLoaded="handleAnimation1"
-          />
+    <!-- 상황에 맞게 z-index 조절 필요 -->
+    <div class="floating-treasure" style="z-index: 100;">
+      <div class="treasure-container">
+        <div class="treasure-content">
+          <a role="link" class="treasure-trigger" tabindex="0" aria-label="보물이에요!">
+            <!-- 등장 로티 -->
+            <ScLottie
+              v-if="prevShow"
+              :animation-link="`${cdnURL}/images/lottie/common/treasure_hunt_trigger_coin_01.json`"
+              :width="118"
+              :height="134"
+              :loop="false"
+              :autoPlay="true"
+              @onAnimationLoaded="handleAnimation1"
+              aria-hidden="true"
+            />
+            <!-- 대기 로티 -->
+            <ScLottie
+              v-if="nextShow"
+              :animation-link="`${cdnURL}/images/lottie/common/treasure_hunt_trigger_coin_02.json`"
+              :width="118"
+              :height="134"
+              :loop="true"
+              :autoPlay="true"
+              @onAnimationLoaded="handleAnimation2"
+              aria-hidden="true"
+            />
+            <span v-if="nextShow" class="treasure-tooltip" aria-hidden="true">보물이에요!</span>
+          </a>
         </div>
-        <!-- 대기 로티 -->
-        <div>
-          <ScLottie
-            v-if="nextShow"
-            :animation-link="`${cdnURL}/images/lottie/common/treasure_hunt_trigger_coin_02.json`"
-            :width="118"
-            :height="134"
-            :loop="true"
-            :autoPlay="true"
-            @onAnimationLoaded="handleAnimation2"
-          />
-        </div>
-      </a>
-      <span v-if="nextShow" class="text">보물이에요!</span>
+        <button
+          type="button"
+          aria-label="닫기"
+          class="treasure-close"
+        >
+          <span
+            class="treasure-close-icon"
+            aria-hidden="true"
+          >
+            <ScIcon
+              iconName="X"
+              width="12"
+              height="12"
+            />
+          </span>
+        </button>
+      </div>
     </div>
-    <button
-      type="button"
-      class="btn-delete"
-    >
-      <span class="sr-only">삭제</span>
-    </button>
-  </div>
+  </teleport>
 </template>
 
 <script setup>
 import { inject, onBeforeUnmount, onMounted, ref } from "vue";
-import { ScLottie } from "@shc-nss/ui/shc";
+import { ScIcon, ScLottie } from "@shc-nss/ui/shc";
 import { AppContextKey } from "@/configs/inject/appContext";
 
 const appContext = inject(AppContextKey, null);
