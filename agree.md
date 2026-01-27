@@ -4,6 +4,19 @@
 
 
 
+// v0.9 또는 0.8에서 신규로 추가된 부분부터 1뎁스 항목체크 모양은 box->mark로 수정 2뎁스항목은 좌측 들여쓰기 구조 class agree_new 추가
+.sc-agree__list.agree_new {
+  .agree-subitem {
+    .sv-accordion-item--variant-solid  {
+      > .sv-accordion-panel {
+        > .sv-accordion-panel__content {
+          padding-left: calc(var(--spacing-3xl) + var(--spacing-2xl));
+        }
+      }
+    }
+  }
+}
+
 
 // 체크항목 없는 유형
 <template>
