@@ -3,6 +3,193 @@
 ```js
 
 
+// sbt101a02
+<template>
+  <FullPopup
+    v-model="isOpen"
+    :title="bodyTitle"
+    :closeable="true"
+    @close="handleClose"
+  >
+    <ScTitle mainTitle="서비스 이용을 위한 약관에<br />동의해주세요." />
+    <!-- 콘텐츠 영역 -->
+    <div class="sc-contents__body sc-agree__page">
+      <section class="section">
+        <div
+          class="sc-agree__list compound"
+          role="region"
+        >
+          <div class="agree-list__group">
+            <div
+              class="agree-item item-basic"
+              :class="{ 'is-checked': basicAgree4 }"
+            >
+              <Checkbox
+                v-model="basicAgree4"
+                class="agree-item__checkbox item-checkbox__basic"
+                variant="box"
+                align="left"
+              >
+                <template #label>
+                  <span class="agree-item__label item-label__basic">{{ basicItem4.label }}</span>
+                </template>
+              </Checkbox>
+            </div>
+
+            <!-- ======================================== -->
+            <!-- 1뎁스 영역: 기본 약관 항목들 -->
+            <!-- ======================================== -->
+            <div
+              class="agree-sublist"
+              role="group"
+            >
+              <div
+                v-for="item in subItems4"
+                :key="item.value"
+                class="agree-subitem"
+              >
+                <div
+                  class="agree-item agree-item__sub"
+                  :class="{ 'is-checked': subAgrees4.includes(item.value) }"
+                >
+                  <Checkbox
+                    :value="item.value"
+                    variant="box"
+                    align="left"
+                    :model-value="subAgrees4.includes(item.value)"
+                    class="agree-item__checkbox item-checkbox__sub"
+                    @update:model-value="onToggleSub4(item.value, $event)"
+                    @click.stop
+                  >
+                    <template #label>
+                      <span class="agree-item__label item-label__sub">{{ item.label }}</span>
+                    </template>
+                  </Checkbox>
+                  <IconButton
+                    iconName="Chevron_right"
+                    size="small"
+                    :aria-label="`${item.label} 상세 보기`"
+                    class="agree-subitem__trigger"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <Divider
+        variant="group"
+        color="tertiary"
+      />
+      <div class="sc-bottom-info__inner">
+        <h2 class="sc-bottom-info__title">이용 꿀팁</h2>
+        <ListCard variant="solid" as="div" color="gray">
+          <ListItem 
+            :left="{ 
+              mainText: '앱 알림', 
+              subText: '적립예정포인트 정보를 실시간으로 받아보세요.',
+              direction: 'column'
+            }"
+          >
+            <template #rightControl>
+              <ToggleSwitch 
+                v-model="appNotificationEnabled"
+                @update:modelValue="handleToggleChange('appNotification', $event)"
+              />
+            </template>
+          </ListItem>
+        </ListCard>
+      </div>
+    </div>
+
+    <BottomActionContainer :scrollDim="true">
+      <BoxButtonGroup
+        size="xlarge"
+        variant="100"
+      >
+        <BoxButton
+          text="확인"
+          :disabled="!basicAgree4"
+        />
+      </BoxButtonGroup>
+    </BottomActionContainer>
+  </FullPopup>
+</template>
+
+<script setup>
+import {
+  BottomActionContainer,
+  BoxButton,
+  BoxButtonGroup,
+  Checkbox,
+  Divider,
+  FullPopup,
+  IconButton,
+  ListCard,
+  ListItem,
+  ToggleSwitch,
+} from "@shc-nss/ui/solid";
+import { computed, ref, watch } from "vue";
+import { useRoute } from "vue-router";
+import { ScTitle } from "@shc-nss/ui/shc";
+
+const route = useRoute();
+const bodyTitle = computed(() => route.meta?.title || "");
+const isOpen = defineModel({ default: true });
+
+const handleClose = () => {
+  isOpen.value = false;
+};
+
+/**
+ * 유형 4 : 약관동의 기본형
+ */
+const basicItem4 = {
+  label: "약관 전체 동의",
+};
+
+// JavaScript/TypeScript 호환을 위한 타입 정의 (선택사항)
+
+// JavaScript/TypeScript 호환 배열
+const subItems4 = [
+  { label: "[필수] 개인정보 수집·이용 동의", value: "s4-1" },
+  { label: "[필수] 개인정보 제3자 제공동의", value: "s4-2" },
+];
+
+const basicAgree4 = ref(false);
+const subAgrees4 = ref([]);
+
+// 앱 알림 토글 상태
+const appNotificationEnabled = ref(true);
+
+/**
+ * 동작 로직
+ */
+function handleToggleChange(type, value) {
+  console.log(`${type} toggle changed:`, value);
+  // 여기에 토글 변경 시 처리할 로직 추가
+}
+function onToggleSub4(value, checked) {
+  const set = new Set(subAgrees4.value);
+  if (checked) set.add(value);
+  else set.delete(value);
+  subAgrees4.value = Array.from(set);
+
+  // 전체 항목 수 계산
+  basicAgree4.value = set.size === subItems4.length;
+}
+
+watch(basicAgree4, (checked) => {
+  if (checked) {
+    subAgrees4.value = subItems4.map((item) => item.value);
+  } else {
+    subAgrees4.value = [];
+  }
+});
+</script>
+
+
 <template>
   <div class="payment-panel payment-panel__daily" aria-label="매일결제">
     <section class="section-head">
