@@ -16,6 +16,39 @@
   color: var(--text-tertiary);
 }
 
+<template>
+  <BottomSheet
+    disableMinHeight
+    v-model="isOpen"
+    closableDimm
+    dimmed
+    title="힌트 보기"
+    class="bs-hintview__sheet"
+  >
+    <picture class="picture">
+      <img :src="`${$cdnURL}/images/dummy/img_promotion_sample.png`" alt="" />
+    </picture>
+    <div class="hintview-text">
+      터치결제로 결제하면 타임라인에서 랜덤 포인트를 지급하는 페이팡팡 서비스를 이용해보세요.<br />
+      결제할 때마다 3P~3,000P까지 랜덤 지급돼요.
+    </div>
+    <template #footer>
+      <BoxButton
+        text="확인"
+        size="xlarge"
+        @click="isOpen = false"
+      />
+    </template>
+  </BottomSheet>
+</template>
+
+<script setup>
+import { BottomSheet, BoxButton } from "@shc-nss/ui/solid";
+import { defineModel } from "vue";
+
+const isOpen = defineModel({ default: true });
+</script>
+
 // sbt101a02
 <template>
   <FullPopup
