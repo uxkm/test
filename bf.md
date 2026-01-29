@@ -2,6 +2,19 @@
 {% raw %}
 ```js
 
+// 힌트 보기 BottomSheet
+.picture {
+  img {
+    max-width: 100%;
+    height: auto;
+    object-fit: contain;
+  }
+} 
+.hintview-text {
+  @include font-set(body-m, 300);
+  font-weight: 300;
+  color: var(--text-tertiary);
+}
 
 // sbt101a02
 <template>
