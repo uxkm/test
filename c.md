@@ -3,54 +3,118 @@
 {% raw %}
 ```js
 
-// tabs.vue
-// Swiper refs
-const swiperInstance = ref<SwiperType | null>(null);
-// 활성 슬라이드 엘리먼트(높이 변화 감지용)
-const activeSlideEl = computed<HTMLElement | null>(() => {
-  if (!props.enablePanelSwipe || !swiperInstance.value) return null;
 
-  return (swiperInstance.value.slides?.[swiperInstance.value.activeIndex] as HTMLElement) ?? null;
-});
 
-// 초기 로드/콘텐츠 추가 시 높이 고정 문제 방지
-const updateSwiperAutoHeight = (): void => {
-  if (!props.enablePanelSwipe || !swiperInstance.value) return;
+// 로티 재생/정지 테스트
+<route lang="yaml">
+meta:
+  id: SBT178A01
+  title:
+  menu: "혜택 > 앱테크 메인화면 > 지역타겟팅 보물팡팡 플로팅(로띠)"
+  layout: EmptyLayout
+  category: 혜택
+  publish: 김대민
+  publishVersion: 0.9
+</route>
+<template>
+  <!-- 모달처럼 body 하위 요소에 추가 -->
+  <teleport to="body">
+    <!-- 상황에 맞게 z-index 조절 필요 -->
+    <div class="floating-treasure" style="--z-index: 100">
+      <div class="treasure-container">
+        <div class="treasure-content">
+          <a
+            role="link"
+            class="treasure-trigger"
+            tabindex="0"
+            aria-label="보물이에요!"
+          >
+            <!-- 등장 로티 -->
+            <ScLottie
+              v-if="prevShow"
+              :key="`treasure-enter-${isPaused ? 'paused' : 'play'}`"
+              :animation-link="`${cdnURL}/images/lottie/common/treasure_hunt_trigger_coin_01.json`"
+              :width="118"
+              :height="134"
+              :loop="false"
+              :autoPlay="!isPaused"
+              aria-hidden="true"
+            />
+            <!-- 대기 로티 -->
+            <ScLottie
+              v-if="nextShow"
+              :key="`treasure-wait-${isPaused ? 'paused' : 'play'}`"
+              :animation-link="`${cdnURL}/images/lottie/common/treasure_hunt_trigger_coin_02.json`"
+              :width="118"
+              :height="134"
+              :loop="true"
+              :autoPlay="!isPaused"
+              aria-hidden="true"
+            />
+            <span v-if="nextShow" class="treasure-tooltip" aria-hidden="true"
+              >보물이에요!</span
+            >
+          </a>
+        </div>
+        <button
+          type="button"
+          class="treasure-control"
+          :aria-pressed="isPaused"
+          :aria-label="isPaused ? '로티 재생' : '로티 정지'"
+          @click.stop.prevent="togglePlayback"
+        >
+          <span class="treasure-control-text" aria-hidden="true">
+            {{ isPaused ? "재생" : "정지" }}
+          </span>
+        </button>
+        <button type="button" aria-label="닫기" class="treasure-close">
+          <span class="treasure-close-icon" aria-hidden="true">
+            <ScIcon iconName="X" size="12" />
+          </span>
+        </button>
+      </div>
+    </div>
+  </teleport>
+</template>
 
-  swiperInstance.value.updateAutoHeight(0);
-};
+<script setup>
+import { inject, onBeforeUnmount, onMounted, ref } from "vue";
+import { ScIcon, ScLottie } from "@shc-nss/ui/shc";
+import { AppContextKey } from "@/configs/inject/appContext";
 
-// 활성 슬라이드 높이 변경 시 autoHeight 재계산
-useResizeObserver(activeSlideEl, () => {
-  updateSwiperAutoHeight();
-});
+const appContext = inject(AppContextKey, null);
+const cdnURL = appContext?.$cdnURL ?? "";
 
-// Swiper event handlers
-const onSwiperInit = (swiper: SwiperType): void => {
-  swiperInstance.value = swiper;
+const prevShow = ref(true);
+const nextShow = ref(false);
+const isPaused = ref(true);
+let swapTimer = null;
 
-  // 초기 슬라이드를 activeTab에 맞게 설정
-  slideSwiperToActiveTab();
+function togglePlayback() {
+  isPaused.value = !isPaused.value;
+}
 
-  // 초기 렌더 직후 높이를 다시 계산
-  nextTick(() => {
-    updateSwiperAutoHeight();
-  });
-};
-
-const onSlideChange = (swiper: SwiperType): void => {
-  // Swiper 슬라이드 변경 시 탭 활성화 업데이트
-  const targetValue = findValueBySlideIndex(swiper.activeIndex);
-
-  if (targetValue !== undefined && targetValue !== activeTab.value) {
-    setActiveTab(targetValue);
+function scheduleSwap() {
+  if (swapTimer) {
+    return;
   }
+  swapTimer = setTimeout(() => {
+    prevShow.value = false;
+    nextShow.value = true;
+  }, 1000);
+}
 
-  // 슬라이드 변경 후 높이를 다시 계산
-  nextTick(() => {
-    updateSwiperAutoHeight();
-  });
-};
+onMounted(() => {
+  scheduleSwap();
+});
+
+onBeforeUnmount(() => {
+  if (swapTimer) {
+    clearTimeout(swapTimer);
+  }
+});
+</script>
+
 
 
 
