@@ -2,6 +2,40 @@
 {% raw %}
 ```js
 
+<!-- S : 로딩중 스켈레톤 -->
+<div
+  class="card-grid__skeleton coupon-book"
+  aria-label="로딩중"
+  tabindex="0"
+>
+  <div class="coupon-book__title">
+    <LoadingSkeleton :width="150" :height="33" rounded="small" />
+  </div>
+  <section
+    v-for="skeletonSectionIndex in 3"
+    :key="`skeleton-section-${skeletonSectionIndex}`"
+  >
+    <div class="coupon-book__title-sub">
+      <LoadingSkeleton :width="195" :height="29" rounded="small" />
+    </div>
+    <article>
+      <ul class="coupon-book__carousel">
+        <li
+          v-for="cardIndex in 3"
+          :key="`skeleton-card-${skeletonSectionIndex}-${cardIndex}`"
+          class="coupon-book__card"
+        >
+          <LoadingSkeleton width="100%" height="100%" />
+        </li>
+      </ul>
+    </article>
+  </section>
+</div>
+<!-- E : 로딩중 스켈레톤 -->
+
+
+
+
 // 힌트 보기 BottomSheet
 .picture {
   img {
