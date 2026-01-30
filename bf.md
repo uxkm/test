@@ -2,6 +2,10 @@
 {% raw %}
 ```js
 
+<li v-for="skeletonIndex in 3" :key="`skeleton-${skeletonIndex}`">
+  <LoadingSkeleton width="100%" height="100%" />
+</li>
+
 <!-- S : 로딩중 스켈레톤 -->
 <div
   class="card-grid__skeleton coupon-book"
