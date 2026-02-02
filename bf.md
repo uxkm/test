@@ -2,6 +2,297 @@
 {% raw %}
 ```js
 
+
+
+
+      // 조건 충족시
+      &.is-satisfied {
+        border: 1px solid var(--border-secondary);
+        background-color: var(--bg-canvas_white);
+      }
+
+
+
+// sbt160a01
+<route lang="yaml">
+meta:
+  id: SBT160A01
+  title: 혜택
+  menu: "혜택 > 혜택 > 이달의 참여현황 (BS)"
+  layout: MainLayout
+  category: 혜택
+  publish: 김대민
+  publishVersion: 0.8
+  status: 작업중
+  appClassList: "app_benefits"
+  mainClassList: "benefits_main"
+</route>
+<template>
+  <!--
+    이달의 참여현황
+
+    [X] 버튼 Tap > 바텀시트 닫힘
+
+    해당 월 일자 별 참여 현황 노출
+    - 지난 일자 중 미참여한 경우 미참여 표시 적용
+    - 지나지 않은 일자는 참여 여부 미표시 적용
+    - 참여 일에 정답, 오답 여부 표시 적용
+    - 등급 달성한 날짜에 획득한 등급 메달 노출
+
+    1-1. 퀴즈 정답 시
+      - 해당일 표기
+      - 문구: 정답
+
+    1-2. 퀴즈 오답 시
+      - 해당일 표기
+      - 문구: 오답
+
+    1-3. 퀴즈 미참여 시
+      - 해당일 표기
+      - 문구: 미참여
+      - 미참여 조건: 당일 23시59분까지 미참여인 경우, 익일 00시00분에 현황판 미참여 표기
+        ex) 22일 23시59분까지 미참여일때 23일 00시00분에 22일 날짜 현황판에 미참여 표기
+
+    1-4. 퀴즈 등급 조건 충족 시
+      - 해당일 표기
+      - 월 10회 충족 시 동메달 아이콘 노출
+      - 월 20회 충족 시 은메달 아이콘 노출
+      - 월 30회 충족 시 금메달 아이콘 노출
+
+    1-5. 미도래일
+      - 해당일 표기
+      - 미도래일 시 비활성화 및 문구 노출 안함
+
+    1-6. 당월 총 적립 포인트 노출
+      - 퀴즈팡팡 관련 모든 포인트 합산한 값을 노출
+      - (정답 포인트, 오답 포인트, 힌트보기 포인트, 등급별 포인트)
+
+    1-7. 당월 총 정답 일수 노출
+  -->
+  <BottomSheet
+    v-model="isOpen"
+    closableDimm
+    dimmed
+    :title="`${currentMonth}월 참여현황`"
+    class="participation-status__sheet"
+  >
+    <div class="month-schedule__container">
+      <div
+        v-for="item in scheduleData"
+        :key="item.day"
+        class="month-schedule__item"
+        :class="{
+          'is-not-participated': item.status === 'not-participated',
+          'is-incorrect': item.status === 'incorrect',
+          'is-correct': item.status === 'correct',
+          'is-satisfied': item.medal,
+          'is-empty': item.status === null && !item.medal,
+        }"
+        tabindex="0"
+        :aria-label="getAriaLabel(item)"
+      >
+        <!-- 
+          v0.9 2600202: 퀴즈 등급 조건 충족 시 추가
+          퀴즈 등급 조건 충족 시 이미지만 노출 
+          월 10회 참여 시
+          월 20회 참여 시
+          월 30회 참여 시
+        -->
+        <div v-if="item.medal" class="month-schedule__medal" aria-hidden="true">
+          <img :src="`${$cdnURL}${item.medal.src}`" alt="" />
+        </div>
+        <template v-else>
+          <div class="month-schedule__number" aria-hidden="true">
+            {{ item.day }}
+          </div>
+          <div
+            v-if="item.status"
+            class="month-schedule__label"
+            :class="`is-${item.status}`"
+            aria-hidden="true"
+          >
+            {{ item.label }}
+          </div>
+        </template>
+      </div>
+    </div>
+    <div class="month-schedule__total">
+      <div
+        class="month-schedule__total-item"
+        tabindex="0"
+        aria-label="당월 총 적립 포인트: 239 포인트"
+      >
+        <strong class="month-schedule__total-label" aria-hidden="true">
+          적립 포인트
+        </strong>
+        <em class="month-schedule__total-value" aria-hidden="true"> 239P </em>
+      </div>
+      <Divider
+        variant="basic"
+        color="tertiary"
+        size="full"
+        orientation="vertical"
+      />
+      <div
+        class="month-schedule__total-item"
+        tabindex="0"
+        aria-label="당월 총 정답 일수: 24일"
+      >
+        <strong class="month-schedule__total-label" aria-hidden="true">
+          정답 일수
+        </strong>
+        <em class="month-schedule__total-value" aria-hidden="true"> 24일 </em>
+      </div>
+    </div>
+  </BottomSheet>
+</template>
+
+<script setup>
+// ==========================================
+// Import
+// ==========================================
+import { BottomSheet, Divider } from "@shc-nss/ui/solid";
+import { AppContextKey } from "@/configs/inject/appContext";
+import { defineModel, ref, computed, inject } from "vue";
+
+// ==========================================
+// 바텀시트 제어
+// ==========================================
+// 이미지 경로는 CDN URL을 사용
+const { $cdnURL } = inject(AppContextKey);
+const isOpen = defineModel({ default: true });
+
+// ==========================================
+// Props / 데이터
+// ==========================================
+// 년도와 달
+const currentYear = ref(2025);
+const currentMonth = ref(12);
+
+// 실제 참여 데이터
+// 상태: 'not-participated' | 'incorrect' | 'correct'
+const participationData = ref({
+  1: { status: "not-participated", label: "미참여" },
+  2: { status: "incorrect", label: "오답" },
+  3: { status: "correct", label: "정답" },
+  4: { status: "correct", label: "정답" },
+  5: { status: "correct", label: "정답" },
+  6: { status: "not-participated", label: "미참여" },
+  7: { status: "incorrect", label: "오답" },
+  8: { status: "correct", label: "정답" },
+  9: { status: "not-participated", label: "미참여" },
+  // 월 10/20/30회 달성일에는 메달 이미지 노출
+  10: {
+    status: null,
+    label: null,
+    medal: {
+      src: "/images/pages/benefits/main/Property_level1_status.svg",
+      alt: "월 10회 참여 달성",
+    },
+  },
+  11: { status: "correct", label: "정답" },
+  12: { status: "correct", label: "정답" },
+  13: { status: "not-participated", label: "미참여" },
+  14: { status: "not-participated", label: "미참여" },
+  15: { status: "not-participated", label: "미참여" },
+  16: { status: "not-participated", label: "미참여" },
+  17: { status: "correct", label: "정답" },
+  18: { status: "correct", label: "정답" },
+  19: { status: "correct", label: "정답" },
+  20: {
+    status: null,
+    label: null,
+    medal: {
+      src: "/images/pages/benefits/main/Property_level2_status.svg",
+      alt: "월 20회 참여 달성",
+    },
+  },
+  21: { status: "not-participated", label: "미참여" },
+  22: { status: "not-participated", label: "미참여" },
+  23: { status: "not-participated", label: "미참여" },
+  30: {
+    status: null,
+    label: null,
+    medal: {
+      src: "/images/pages/benefits/main/Property_level3_status.svg",
+      alt: "월 30회 참여 달성",
+    },
+  },
+});
+
+// ==========================================
+// Computed
+// ==========================================
+// 해당 달의 마지막 날짜 계산
+const daysInMonth = computed(() => {
+  // 예: currentMonth가 11이면 new Date(2025, 12, 0) = 2026년 1월의 0일 = 2025년 12월의 마지막 날
+  // new Date(year, month, 0)는 month월의 이전 달 마지막 날을 반환
+  // 따라서 new Date(2025, 11, 0) = 2025년 11월의 마지막 날 = 30일
+  return new Date(currentYear.value, currentMonth.value, 0).getDate();
+});
+
+// 현재 날짜
+const today = computed(() => {
+  const now = new Date();
+  return {
+    year: now.getFullYear(),
+    month: now.getMonth() + 1,
+    day: now.getDate(),
+  };
+});
+
+// 해당 날짜가 미래인지 확인
+const isFutureDate = (day) => {
+  if (currentYear.value > today.value.year) return true;
+  if (currentYear.value < today.value.year) return false;
+  if (currentMonth.value > today.value.month) return true;
+  if (currentMonth.value < today.value.month) return false;
+  return day > today.value.day;
+};
+
+// 스케줄 데이터 생성
+const scheduleData = computed(() => {
+  const days = [];
+
+  for (let day = 1; day <= daysInMonth.value; day++) {
+    // 미래 날짜는 참여현황 없음
+    if (isFutureDate(day)) {
+      days.push({ day, status: null, label: null });
+    } else {
+      // 참여 데이터가 있으면 사용, 없으면 null
+      const data = participationData.value[day];
+      if (data) {
+        days.push({
+          day,
+          status: data.status,
+          label: data.label,
+          medal: data.medal,
+        });
+      } else {
+        days.push({ day, status: null, label: null });
+      }
+    }
+  }
+
+  return days;
+});
+
+// 메달 여부에 따라 접근성 라벨을 분기
+const getAriaLabel = (item) => {
+  if (item.medal) {
+    return `${currentYear.value}년 ${currentMonth.value}월 ${item.day}일 ${item.medal.alt}`;
+  }
+  return `${currentYear.value}년 ${currentMonth.value}월 ${item.day}일 참여현황: ${
+    item.label || "없음"
+  }`;
+};
+</script>
+
+
+
+
+
+
 <li v-for="skeletonIndex in 3" :key="`skeleton-${skeletonIndex}`">
   <LoadingSkeleton width="100%" height="100%" />
 </li>
