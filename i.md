@@ -21,10 +21,7 @@ meta:
 </route>
 <template>
   <!-- 로딩 인디케이터 -->
-  <div
-    v-if="isLoading"
-    class="loading-container"
-  >
+  <div v-if="isLoading" class="loading-container">
     <LoadingSpinner
       size="large"
       text="데이터를 불러오는 중..."
@@ -33,10 +30,7 @@ meta:
   </div>
 
   <!-- 메인 콘텐츠 -->
-  <div
-    v-else
-    class="main-content"
-  >
+  <div v-else class="main-content">
     <div class="deviceinfo px-2xl">
       <ul class="device-list">
         <li v-if="deviceInfo.deviceType">
@@ -75,10 +69,7 @@ meta:
         aria-label="작업자별 페이지 총개수"
         style="display: none"
       >
-        <li
-          v-for="grp in workerGroups"
-          :key="grp.name"
-        >
+        <li v-for="grp in workerGroups" :key="grp.name">
           <span class="name">{{ grp.title }}</span>
           <span class="count">{{ grp.items.length }}</span>
         </li>
@@ -96,10 +87,7 @@ meta:
           (디버깅) 팝업이 0개입니다. 콘솔을 확인해주세요.
         </small>
       </div>
-      <div
-        ref="searchSection"
-        class="section worker-search"
-      >
+      <div ref="searchSection" class="section worker-search">
         <div class="search-container">
           <div
             class="search-input-wrapper"
@@ -126,11 +114,7 @@ meta:
               ✕
             </button>
           </div>
-          <div
-            class="filter-buttons"
-            role="group"
-            aria-label="검색 필터"
-          >
+          <div class="filter-buttons" role="group" aria-label="검색 필터">
             <button
               v-for="filter in searchFilters"
               :key="filter.value"
@@ -154,10 +138,7 @@ meta:
         </div>
       </div>
 
-      <div
-        v-if="shouldShowResults"
-        class="worker-search__results"
-      >
+      <div v-if="shouldShowResults" class="worker-search__results">
         <section>
           <h2>
             카테고리
@@ -170,32 +151,20 @@ meta:
               class="accordion-item"
               :class="{ 'is-open': openPrimaryItems.includes(grp.name) }"
             >
-              <div
-                class="accordion-header"
-                @click="togglePrimary(grp.name)"
-              >
+              <div class="accordion-header" @click="togglePrimary(grp.name)">
                 <span class="accordion-title"
                   >{{ grp.title }} ({{ getPageCount(grp.name) }},
                   {{ getPopupCount(grp.name) }})</span
                 >
-                <Icon
-                  class="accordion-icon"
-                  name="Chevron_down"
-                />
+                <Icon class="accordion-icon" name="Chevron_down" />
               </div>
               <div
                 v-if="openPrimaryItems.includes(grp.name)"
                 class="accordion-content"
               >
                 <!-- Guide는 2뎁스 없이 바로 링크 리스트 -->
-                <ul
-                  v-if="grp.items"
-                  class="link-list"
-                >
-                  <li
-                    v-for="item in grp.items"
-                    :key="item.path"
-                  >
+                <ul v-if="grp.items" class="link-list">
+                  <li v-for="item in grp.items" :key="item.path">
                     <a
                       class="link-item"
                       :href="item.path"
@@ -205,9 +174,13 @@ meta:
                     >
                       <span>
                         {{ item.label }}
-                        <template v-if="item.worker"><br />( {{ item.worker }} )</template>
+                        <template v-if="item.worker"
+                          ><br />( {{ item.worker }} )</template
+                        >
                       </span>
-                      <span class="body-s text-secondary">{{ prettyPath(item.path) }}</span>
+                      <span class="body-s text-secondary">{{
+                        prettyPath(item.path)
+                      }}</span>
                     </a>
                   </li>
                 </ul>
@@ -221,7 +194,9 @@ meta:
                     v-for="subGrp in grp.subGroups"
                     :key="subGrp.name"
                     class="accordion-item"
-                    :class="{ 'is-open': openSecondaryItems.includes(subGrp.name) }"
+                    :class="{
+                      'is-open': openSecondaryItems.includes(subGrp.name),
+                    }"
                   >
                     <div
                       class="accordion-header"
@@ -231,20 +206,14 @@ meta:
                         >{{ subGrp.title }} ({{ getSubGroupPageCount(subGrp) }},
                         {{ getSubGroupPopupCount(subGrp) }})</span
                       >
-                      <Icon
-                        class="accordion-icon"
-                        name="Chevron_down"
-                      />
+                      <Icon class="accordion-icon" name="Chevron_down" />
                     </div>
                     <div
                       v-if="openSecondaryItems.includes(subGrp.name)"
                       class="accordion-content"
                     >
                       <ul class="link-list">
-                        <li
-                          v-for="item in subGrp.items"
-                          :key="item.path"
-                        >
+                        <li v-for="item in subGrp.items" :key="item.path">
                           <a
                             class="link-item"
                             :href="item.path"
@@ -255,9 +224,13 @@ meta:
                             <div class="link-content">
                               <span>
                                 {{ item.label }}
-                                <template v-if="item.worker"><br />( {{ item.worker }} )</template>
+                                <template v-if="item.worker"
+                                  ><br />( {{ item.worker }} )</template
+                                >
                               </span>
-                              <span class="body-s text-secondary">{{ prettyPath(item.path) }}</span>
+                              <span class="body-s text-secondary">{{
+                                prettyPath(item.path)
+                              }}</span>
                             </div>
                             <div
                               class="meta-menu"
@@ -289,17 +262,12 @@ meta:
               class="accordion-item"
               :class="{ 'is-open': openStatusItems.includes(grp.name) }"
             >
-              <div
-                class="accordion-header"
-                @click="toggleStatus(grp.name)"
-              >
+              <div class="accordion-header" @click="toggleStatus(grp.name)">
                 <span class="accordion-title"
-                  >{{ grp.title }} ({{ grp.pageCount }}, {{ grp.popupCount }})</span
+                  >{{ grp.title }} ({{ grp.pageCount }},
+                  {{ grp.popupCount }})</span
                 >
-                <Icon
-                  class="accordion-icon"
-                  name="Chevron_down"
-                />
+                <Icon class="accordion-icon" name="Chevron_down" />
               </div>
               <div
                 v-if="openStatusItems.includes(grp.name)"
@@ -315,25 +283,28 @@ meta:
                     class="accordion-item"
                     :class="{
                       'is-open': openStatusCategoryItems.includes(
-                        `${grp.name}-${categoryGrp.name}`
+                        `${grp.name}-${categoryGrp.name}`,
                       ),
                     }"
                   >
                     <div
                       class="accordion-header"
-                      @click="toggleStatusCategory(`${grp.name}-${categoryGrp.name}`)"
+                      @click="
+                        toggleStatusCategory(`${grp.name}-${categoryGrp.name}`)
+                      "
                     >
                       <span class="accordion-title"
                         >{{ categoryGrp.title }} ({{ categoryGrp.pageCount }},
                         {{ categoryGrp.popupCount }})</span
                       >
-                      <Icon
-                        class="accordion-icon"
-                        name="Chevron_down"
-                      />
+                      <Icon class="accordion-icon" name="Chevron_down" />
                     </div>
                     <div
-                      v-if="openStatusCategoryItems.includes(`${grp.name}-${categoryGrp.name}`)"
+                      v-if="
+                        openStatusCategoryItems.includes(
+                          `${grp.name}-${categoryGrp.name}`,
+                        )
+                      "
                       class="accordion-content"
                     >
                       <!-- 3뎁스 아코디언 구조 (auth, pay, benefits 등) -->
@@ -344,38 +315,34 @@ meta:
                           class="accordion-item"
                           :class="{
                             'is-open': openStatusSubGroupItems.includes(
-                              `${grp.name}-${categoryGrp.name}-${subGrp.name}`
+                              `${grp.name}-${categoryGrp.name}-${subGrp.name}`,
                             ),
                           }"
                         >
                           <div
                             class="accordion-header"
                             @click="
-                              toggleStatusSubGroup(`${grp.name}-${categoryGrp.name}-${subGrp.name}`)
+                              toggleStatusSubGroup(
+                                `${grp.name}-${categoryGrp.name}-${subGrp.name}`,
+                              )
                             "
                           >
                             <span class="accordion-title"
                               >{{ subGrp.title }} ({{ subGrp.pageCount }},
                               {{ subGrp.popupCount }})</span
                             >
-                            <Icon
-                              class="accordion-icon"
-                              name="Chevron_down"
-                            />
+                            <Icon class="accordion-icon" name="Chevron_down" />
                           </div>
                           <div
                             v-if="
                               openStatusSubGroupItems.includes(
-                                `${grp.name}-${categoryGrp.name}-${subGrp.name}`
+                                `${grp.name}-${categoryGrp.name}-${subGrp.name}`,
                               )
                             "
                             class="accordion-content"
                           >
                             <ul class="link-list">
-                              <li
-                                v-for="item in subGrp.items"
-                                :key="item.path"
-                              >
+                              <li v-for="item in subGrp.items" :key="item.path">
                                 <a
                                   class="link-item"
                                   :href="item.path"
@@ -427,25 +394,18 @@ meta:
               class="accordion-item"
               :class="{ 'is-open': openWorkerItems.includes(grp.name) }"
             >
-              <div
-                class="accordion-header"
-                @click="toggleWorker(grp.name)"
-              >
-                <span class="accordion-title">{{ grp.title }} ({{ grp.items.length }})</span>
-                <Icon
-                  class="accordion-icon"
-                  name="Chevron_down"
-                />
+              <div class="accordion-header" @click="toggleWorker(grp.name)">
+                <span class="accordion-title"
+                  >{{ grp.title }} ({{ grp.items.length }})</span
+                >
+                <Icon class="accordion-icon" name="Chevron_down" />
               </div>
               <div
                 v-if="openWorkerItems.includes(grp.name)"
                 class="accordion-content"
               >
                 <ul class="link-list">
-                  <li
-                    v-for="item in grp.items"
-                    :key="item.path"
-                  >
+                  <li v-for="item in grp.items" :key="item.path">
                     <a
                       class="link-item"
                       :href="item.path"
@@ -457,7 +417,9 @@ meta:
                         {{ item.label }}
                         <br />[ {{ folderLabel(item.path) }} ]
                       </span>
-                      <span class="body-s text-secondary">{{ prettyPath(item.path) }}</span>
+                      <span class="body-s text-secondary">{{
+                        prettyPath(item.path)
+                      }}</span>
                     </a>
                   </li>
                 </ul>
@@ -467,10 +429,7 @@ meta:
         </section>
       </div>
 
-      <div
-        v-else-if="shouldShowNoResults"
-        class="worker-search__no-results"
-      >
+      <div v-else-if="shouldShowNoResults" class="worker-search__no-results">
         검색 결과가 없습니다.
       </div>
     </div>
@@ -723,7 +682,9 @@ function toggleWorker(name) {
 /** @typedef {{ path: string, label: string, worker?: string }} LinkItem */
 
 const publishRoutes = computed(() =>
-  generatedPages.filter((r) => r.path?.startsWith("/publish/") && !!r.component)
+  generatedPages.filter(
+    (r) => r.path?.startsWith("/publish/") && !!r.component,
+  ),
 );
 
 // 파일명 → 라벨 변환 보조: 메타 타이틀 우선, 없으면 파일명 마지막 슬러그
@@ -809,7 +770,10 @@ const workGroups = computed(() => {
           items: items.sort((a, b) => a.label.localeCompare(b.label)),
         }));
 
-      const totalCount = subGroups.reduce((acc, sg) => acc + sg.items.length, 0);
+      const totalCount = subGroups.reduce(
+        (acc, sg) => acc + sg.items.length,
+        0,
+      );
 
       return {
         name,
@@ -922,7 +886,9 @@ const statusGroups = computed(() => {
           const subGroups = Object.entries(subFolders)
             .sort(([a], [b]) => a.localeCompare(b))
             .map(([subName, items]) => {
-              const sortedItems = items.sort((a, b) => a.label.localeCompare(b.label));
+              const sortedItems = items.sort((a, b) =>
+                a.label.localeCompare(b.label),
+              );
 
               // 팝업 개수 계산
               const popupCount = sortedItems.filter((item) => {
@@ -942,9 +908,18 @@ const statusGroups = computed(() => {
               };
             });
 
-          const totalCount = subGroups.reduce((acc, sg) => acc + sg.items.length, 0);
-          const pageCount = subGroups.reduce((acc, sg) => acc + sg.pageCount, 0);
-          const popupCount = subGroups.reduce((acc, sg) => acc + sg.popupCount, 0);
+          const totalCount = subGroups.reduce(
+            (acc, sg) => acc + sg.items.length,
+            0,
+          );
+          const pageCount = subGroups.reduce(
+            (acc, sg) => acc + sg.pageCount,
+            0,
+          );
+          const popupCount = subGroups.reduce(
+            (acc, sg) => acc + sg.popupCount,
+            0,
+          );
 
           return {
             name: categoryName,
@@ -956,9 +931,18 @@ const statusGroups = computed(() => {
           };
         });
 
-      const totalCount = categoryGroups.reduce((acc, cg) => acc + cg.totalCount, 0);
-      const pageCount = categoryGroups.reduce((acc, cg) => acc + cg.pageCount, 0);
-      const popupCount = categoryGroups.reduce((acc, cg) => acc + cg.popupCount, 0);
+      const totalCount = categoryGroups.reduce(
+        (acc, cg) => acc + cg.totalCount,
+        0,
+      );
+      const pageCount = categoryGroups.reduce(
+        (acc, cg) => acc + cg.pageCount,
+        0,
+      );
+      const popupCount = categoryGroups.reduce(
+        (acc, cg) => acc + cg.popupCount,
+        0,
+      );
 
       return {
         name: statusName,
@@ -973,10 +957,12 @@ const statusGroups = computed(() => {
 
 // 총 개수 계산
 /** @type {import('vue').ComputedRef<number>} */
-const workTotalCount = computed(() => workGroups.value.reduce((acc, g) => acc + g.totalCount, 0));
+const workTotalCount = computed(() =>
+  workGroups.value.reduce((acc, g) => acc + g.totalCount, 0),
+);
 /** @type {import('vue').ComputedRef<number>} */
 const workerTotalCount = computed(() =>
-  workerGroups.value.reduce((acc, g) => acc + g.items.length, 0)
+  workerGroups.value.reduce((acc, g) => acc + g.items.length, 0),
 );
 
 // 팝업 여부 확인 함수 (언더스코어가 있지만 sp_로 시작하지 않는 경우)
@@ -1150,14 +1136,15 @@ function matchesSearch(item, query, filter) {
 /** @type {import('vue').ComputedRef<Group[]>} */
 const filteredWorkGroups = computed(() => {
   // 검색어가 있거나 약관 필터가 선택되었을 때만 필터링 수행
-  if (!debouncedSearchQuery.value && searchFilter.value !== "agree") return workGroups.value;
+  if (!debouncedSearchQuery.value && searchFilter.value !== "agree")
+    return workGroups.value;
 
   return workGroups.value
     .map((grp) => {
       if (grp.items) {
         // Guide: 2뎁스 없이 바로 items
         const filteredItems = grp.items.filter((item) =>
-          matchesSearch(item, debouncedSearchQuery.value, searchFilter.value)
+          matchesSearch(item, debouncedSearchQuery.value, searchFilter.value),
         );
         return {
           ...grp,
@@ -1170,12 +1157,19 @@ const filteredWorkGroups = computed(() => {
           .map((subGrp) => ({
             ...subGrp,
             items: subGrp.items.filter((item) =>
-              matchesSearch(item, debouncedSearchQuery.value, searchFilter.value)
+              matchesSearch(
+                item,
+                debouncedSearchQuery.value,
+                searchFilter.value,
+              ),
             ),
           }))
           .filter((subGrp) => subGrp.items.length > 0);
 
-        const totalCount = filteredSubGroups.reduce((acc, sg) => acc + sg.items.length, 0);
+        const totalCount = filteredSubGroups.reduce(
+          (acc, sg) => acc + sg.items.length,
+          0,
+        );
 
         return {
           ...grp,
@@ -1192,13 +1186,14 @@ const filteredWorkGroups = computed(() => {
 /** @type {import('vue').ComputedRef<WorkerGroup[]>} */
 const filteredWorkerGroups = computed(() => {
   // 검색어가 있거나 약관 필터가 선택되었을 때만 필터링 수행
-  if (!debouncedSearchQuery.value && searchFilter.value !== "agree") return workerGroups.value;
+  if (!debouncedSearchQuery.value && searchFilter.value !== "agree")
+    return workerGroups.value;
 
   return workerGroups.value
     .map((grp) => ({
       ...grp,
       items: grp.items.filter((item) =>
-        matchesSearch(item, debouncedSearchQuery.value, searchFilter.value)
+        matchesSearch(item, debouncedSearchQuery.value, searchFilter.value),
       ),
     }))
     .filter((grp) => grp.items.length > 0);
@@ -1208,7 +1203,8 @@ const filteredWorkerGroups = computed(() => {
 /** @type {import('vue').ComputedRef<StatusGroup[]>} */
 const filteredStatusGroups = computed(() => {
   // 검색어가 있거나 약관 필터가 선택되었을 때만 필터링 수행
-  if (!debouncedSearchQuery.value && searchFilter.value !== "agree") return statusGroups.value;
+  if (!debouncedSearchQuery.value && searchFilter.value !== "agree")
+    return statusGroups.value;
 
   return statusGroups.value
     .map((grp) => {
@@ -1219,7 +1215,11 @@ const filteredStatusGroups = computed(() => {
           const filteredSubGroups = categoryGrp.subGroups
             .map((subGrp) => {
               const filteredItems = subGrp.items.filter((item) =>
-                matchesSearch(item, debouncedSearchQuery.value, searchFilter.value)
+                matchesSearch(
+                  item,
+                  debouncedSearchQuery.value,
+                  searchFilter.value,
+                ),
               );
 
               // 팝업 개수 계산
@@ -1240,9 +1240,18 @@ const filteredStatusGroups = computed(() => {
             })
             .filter((subGrp) => subGrp.items.length > 0);
 
-          const totalCount = filteredSubGroups.reduce((acc, sg) => acc + sg.items.length, 0);
-          const pageCount = filteredSubGroups.reduce((acc, sg) => acc + sg.pageCount, 0);
-          const popupCount = filteredSubGroups.reduce((acc, sg) => acc + sg.popupCount, 0);
+          const totalCount = filteredSubGroups.reduce(
+            (acc, sg) => acc + sg.items.length,
+            0,
+          );
+          const pageCount = filteredSubGroups.reduce(
+            (acc, sg) => acc + sg.pageCount,
+            0,
+          );
+          const popupCount = filteredSubGroups.reduce(
+            (acc, sg) => acc + sg.popupCount,
+            0,
+          );
 
           return {
             ...categoryGrp,
@@ -1254,9 +1263,18 @@ const filteredStatusGroups = computed(() => {
         })
         .filter((categoryGrp) => categoryGrp.totalCount > 0);
 
-      const totalCount = filteredCategories.reduce((acc, cg) => acc + cg.totalCount, 0);
-      const pageCount = filteredCategories.reduce((acc, cg) => acc + cg.pageCount, 0);
-      const popupCount = filteredCategories.reduce((acc, cg) => acc + cg.popupCount, 0);
+      const totalCount = filteredCategories.reduce(
+        (acc, cg) => acc + cg.totalCount,
+        0,
+      );
+      const pageCount = filteredCategories.reduce(
+        (acc, cg) => acc + cg.pageCount,
+        0,
+      );
+      const popupCount = filteredCategories.reduce(
+        (acc, cg) => acc + cg.popupCount,
+        0,
+      );
 
       return {
         ...grp,
@@ -1284,14 +1302,16 @@ const searchResultCount = computed(() => {
 // 검색 결과 표시 여부
 const shouldShowResults = computed(() => {
   return (
-    (!debouncedSearchQuery.value && searchFilter.value !== "agree") || searchResultCount.value > 0
+    (!debouncedSearchQuery.value && searchFilter.value !== "agree") ||
+    searchResultCount.value > 0
   );
 });
 
 // 검색 결과 없음 표시 여부
 const shouldShowNoResults = computed(() => {
   return (
-    (debouncedSearchQuery.value || searchFilter.value === "agree") && searchResultCount.value === 0
+    (debouncedSearchQuery.value || searchFilter.value === "agree") &&
+    searchResultCount.value === 0
   );
 });
 
@@ -1363,24 +1383,13 @@ function onSearchInput(event) {
 
   searchDebounceTimer = setTimeout(() => {
     debouncedSearchQuery.value = searchQuery.value;
-
-    // 검색어가 입력되면 카테고리 섹션의 모든 아코디언을 펼침
+    // 검색어 입력 시 아코디언을 자동으로 펼치지 않도록 유지
+    // 검색 중 1뎁스만 자동 펼침: _guide는 접힘 유지, 2뎁스는 닫힘
     if (debouncedSearchQuery.value.length > 0) {
-      // 카테고리 섹션의 모든 1뎁스 펼침
-      workGroups.value.forEach((grp) => {
-        if (!openPrimaryItems.value.includes(grp.name)) {
-          openPrimaryItems.value.push(grp.name);
-        }
-
-        // 2뎁스도 펼침
-        if (grp.subGroups) {
-          grp.subGroups.forEach((subGrp) => {
-            if (!openSecondaryItems.value.includes(subGrp.name)) {
-              openSecondaryItems.value.push(subGrp.name);
-            }
-          });
-        }
-      });
+      openPrimaryItems.value = workGroups.value
+        .filter((grp) => grp.name !== "_guide")
+        .map((grp) => grp.name);
+      openSecondaryItems.value = [];
     }
   }, 300);
 }
@@ -1414,7 +1423,10 @@ onMounted(async () => {
       if (headerElement) {
         const height = Math.ceil(headerElement.getBoundingClientRect().height);
         headerHeight.value = height;
-        document.documentElement.style.setProperty("--calculated-header-height", `${height}px`);
+        document.documentElement.style.setProperty(
+          "--calculated-header-height",
+          `${height}px`,
+        );
       } else {
         // header를 찾지 못한 경우 CSS 변수 또는 기본값 사용
         const cssHeight = getComputedStyle(document.documentElement)
@@ -1424,7 +1436,7 @@ onMounted(async () => {
         headerHeight.value = defaultHeight;
         document.documentElement.style.setProperty(
           "--calculated-header-height",
-          `${defaultHeight}px`
+          `${defaultHeight}px`,
         );
       }
     };
@@ -1952,14 +1964,14 @@ body {
           bottom: -1px;
           border-radius: calc(#{$search-border-radius} - 2px);
           background:
-            linear-gradient(to right, $search-focus-color 100%, transparent 0) top left / 0
-              $search-animation-border-width no-repeat,
-            linear-gradient(to bottom, $search-focus-color 100%, transparent 0) top right /
-              $search-animation-border-width 0 no-repeat,
-            linear-gradient(to left, $search-focus-color 100%, transparent 0) bottom right / 0
-              $search-animation-border-width no-repeat,
-            linear-gradient(to top, $search-focus-color 100%, transparent 0) bottom left /
-              $search-animation-border-width 0 no-repeat;
+            linear-gradient(to right, $search-focus-color 100%, transparent 0)
+              top left / 0 $search-animation-border-width no-repeat,
+            linear-gradient(to bottom, $search-focus-color 100%, transparent 0)
+              top right / $search-animation-border-width 0 no-repeat,
+            linear-gradient(to left, $search-focus-color 100%, transparent 0)
+              bottom right / 0 $search-animation-border-width no-repeat,
+            linear-gradient(to top, $search-focus-color 100%, transparent 0)
+              bottom left / $search-animation-border-width 0 no-repeat;
           content: "";
           pointer-events: none;
           opacity: 0;
@@ -2168,6 +2180,7 @@ body {
   }
 }
 </style>
+
 
 
 
