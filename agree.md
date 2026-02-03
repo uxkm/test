@@ -2,6 +2,231 @@
 {% raw %}
 ```js
 
+
+
+<route lang="yaml">
+meta:
+  id: SPY240A01
+  title: ""
+  menu: "페이 > 해외NFC결제 > 약관동의"
+  layout: SubLayout
+  category: 페이
+  publish: 김대민
+  publishVersion: 0.8
+  status: 작업완료
+  header:
+    fixed: true
+    close: true
+</route>
+<template>
+  <BottomSheet
+    title="해외 NFC 결제를 이용하려면 약관에 동의해주세요"
+    v-model="isOpen"
+  >
+    <div class="sc-agree__list compound bg-gray" role="region">
+      <div class="agree-list__group">
+        <!-- ======================================== -->
+        <!-- 1뎁스 영역: 기본 약관 항목들 -->
+        <!-- ======================================== -->
+        <div class="agree-sublist" role="group">
+          <div
+            v-for="item in subItems4"
+            :key="item.value"
+            class="agree-subitem"
+            :class="{ 'agree-subitem__accordion': Boolean(item.accordion) }"
+          >
+            <template v-if="item.accordion">
+              <SolidListAccordion
+                class="agree-subitem__accordion"
+                :rowClickable="false"
+                :value="item.value"
+                v-model:isExpanded="subAccordionState4[item.value]"
+              >
+                <template #title>
+                  <div
+                    class="agree-item agree-item__sub"
+                    :class="{
+                      'is-checked': subAgrees4.includes(item.value),
+                    }"
+                  >
+                    <Checkbox
+                      :value="item.value"
+                      variant="box"
+                      align="left"
+                      :model-value="subAgrees4.includes(item.value)"
+                      class="agree-item__checkbox item-checkbox__sub"
+                      @update:model-value="onToggleSub4(item.value, $event)"
+                      @click.stop
+                    >
+                      <template #label>
+                        <span class="agree-item__label item-label__sub">{{
+                          item.label
+                        }}</span>
+                      </template>
+                    </Checkbox>
+                  </div>
+                </template>
+                <div class="agree-subitem__panel">
+                  <div v-if="item.value === 's4-1'" class="agree-depth">
+                    <!-- ======================================== -->
+                    <!-- 2뎁스 영역: 서비스 이용약관 -->
+                    <!-- ======================================== -->
+                    <ul class="agree-sublist agree-sublist__depth2">
+                      <li
+                        v-for="depth2Item in subItemsDepth2_s4_1"
+                        :key="depth2Item.value"
+                        class="agree-subitem agree-subitem__depth2"
+                      >
+                        <!-- 아코디언이 있는 항목 -->
+                        <template v-if="depth2Item.accordion">
+                          <SolidListAccordion
+                            class="agree-subitem__accordion accordion-depth2"
+                            :rowClickable="false"
+                            :value="depth2Item.value"
+                            v-model:isExpanded="
+                              subAccordionState4[depth2Item.value]
+                            "
+                          >
+                            <template #title>
+                              <div class="agree-item agree-item__sub">
+                                <Checkbox
+                                  :value="depth2Item.value"
+                                  variant="mark"
+                                  align="left"
+                                  :model-value="
+                                    subAgrees4.includes(depth2Item.value)
+                                  "
+                                  class="agree-item__checkbox item-checkbox__sub"
+                                  @update:model-value="
+                                    onToggleSub4(depth2Item.value, $event)
+                                  "
+                                  @click.stop
+                                >
+                                  <template #label>
+                                    <span
+                                      class="agree-item__label item-label__sub"
+                                      >{{ depth2Item.label }}</span
+                                    >
+                                  </template>
+                                </Checkbox>
+                              </div>
+                            </template>
+                          </SolidListAccordion>
+                        </template>
+
+                        <!-- 일반 항목 -->
+                        <div v-else class="agree-item agree-item__sub">
+                          <Checkbox
+                            :value="depth2Item.value"
+                            variant="mark"
+                            align="left"
+                            :model-value="subAgrees4.includes(depth2Item.value)"
+                            class="agree-item__checkbox item-checkbox__sub"
+                            @update:model-value="
+                              onToggleSub4(depth2Item.value, $event)
+                            "
+                            @click.stop
+                          >
+                            <template #label>
+                              <span class="agree-item__label item-label__sub">{{
+                                depth2Item.label
+                              }}</span>
+                            </template>
+                          </Checkbox>
+                          <IconButton
+                            iconName="Chevron_right"
+                            size="small"
+                            :aria-label="`${depth2Item.label} 상세 보기`"
+                            class="agree-subitem__trigger"
+                          />
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </SolidListAccordion>
+            </template>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <template #footer>
+      <BottomActionContainer :scrollDim="true">
+        <BoxButtonGroup size="xlarge" variant="100">
+          <BoxButton text="확인" :disabled="subAgrees4.length === 0" />
+        </BoxButtonGroup>
+      </BottomActionContainer>
+    </template>
+  </BottomSheet>
+</template>
+
+<script setup>
+import {
+  BottomActionContainer,
+  BoxButton,
+  BottomSheet,
+  BoxButtonGroup,
+  Checkbox,
+  IconButton,
+  SolidListAccordion,
+} from "@shc-nss/ui/solid";
+import { reactive, ref } from "vue";
+
+const isOpen = defineModel({ default: true });
+
+const subItems4 = [
+  {
+    label: "필수 약관 모두 동의",
+    value: "s4-1",
+    accordion: true,
+  },
+];
+
+// 2뎁스 항목들 - 서비스 이용약관 (s4-1)
+const subItemsDepth2_s4_1 = [
+  { label: "개인정보 제3자 제공동의", value: "s4-1-1" },
+  { label: "개인정보 국외 이전 동의", value: "s4-1-2" },
+];
+
+const subAgrees4 = ref([]);
+const subAccordionState4 = reactive({
+  "s4-1": true, // 서비스 이용약관 2뎁스 아코디언 상태
+});
+
+/**
+ * 동작 로직
+ */
+function onToggleSub4(value, checked) {
+  const set = new Set(subAgrees4.value);
+  const parentValue = "s4-1";
+  const childValues = subItemsDepth2_s4_1.map((item) => item.value);
+
+  if (value === parentValue) {
+    if (checked) {
+      set.add(parentValue);
+      childValues.forEach((child) => set.add(child));
+    } else {
+      set.delete(parentValue);
+      childValues.forEach((child) => set.delete(child));
+    }
+  } else {
+    if (checked) set.add(value);
+    else set.delete(value);
+
+    const allChildrenChecked = childValues.every((child) => set.has(child));
+    if (allChildrenChecked) set.add(parentValue);
+    else set.delete(parentValue);
+  }
+
+  subAgrees4.value = Array.from(set);
+}
+</script>
+
+
+
+
+
 // sat164a04
 <route lang="yaml">
 meta:
