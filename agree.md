@@ -2,6 +2,110 @@
 {% raw %}
 ```js
 
+// sat164a04
+<route lang="yaml">
+meta:
+  id: SAT166A04
+  title: 한국투자증권 금융광고 동의 철회
+  menu: "자산 > 금융추천: 투자 > 한투 금융 상품 투자 상세페이지 > 약관 동의 철회"
+  layout: SubLayout
+  category: 자산
+  publish: 김대민
+  publishVersion: 0.9
+  status: 작업완료
+  etc: |
+    [v0.9 페이지 추가] 260203: 약관 동의 철회 페이지 추가,
+  header:
+    fixed: true
+    back: true
+    close: true
+</route>
+<template>
+  <ScTitle
+    description="동의를 해지하면 신한 SOL페이에서 한국투자증권 금융상품을 볼 수 없어요."
+  />
+  <div class="sc-contents__body sc-agree__page">
+    <div class="sc-agree__list compound" role="region">
+      <div class="agree-list__group">
+        <div class="agree-sublist" role="group">
+          <div
+            v-for="item in agreementItems"
+            :key="item.value"
+            class="agree-subitem"
+          >
+            <div class="agree-item agree-item__sub">
+              <span class="agree-item__label item-label__sub flex-auto">
+                {{ item.label }}
+              </span>
+              <IconButton
+                size="small"
+                icon-name="Chevron_right"
+                :aria-label="`${item.label} 상세보기`"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="sc-contents__footer">
+    <section class="section">
+      <BasicCard color="gray" variant="solid">
+        <div class="agree-item item-basic" :class="{ 'is-checked': isChecked }">
+          <Checkbox
+            v-model="isChecked"
+            class="agree-item__checkbox item-checkbox__basic"
+            variant="box"
+            align="left"
+          >
+            <template #label>
+              <span class="agree-item__label item-label__basic">
+                위 내용을 확인했으며 한국투자증권 금융상품 광고 동의를
+                해지하겠습니다.
+              </span>
+            </template>
+          </Checkbox>
+        </div>
+      </BasicCard>
+    </section>
+  </div>
+  <BottomActionContainer :scrollDim="true">
+    <BoxButton
+      text="동의 해지하기"
+      size="xlarge"
+      color="primary"
+      :disabled="!isChecked"
+    />
+  </BottomActionContainer>
+</template>
+
+<script setup>
+import { ScTitle } from "@shc-nss/ui/shc";
+import {
+  BasicCard,
+  BottomActionContainer,
+  BoxButton,
+  Checkbox,
+  IconButton,
+} from "@shc-nss/ui/solid";
+import { ref } from "vue";
+
+const isChecked = ref(false);
+
+const agreementItems = [
+  {
+    value: "consent-collect",
+    label:
+      "[필수] 한국투자증권 금융상품 광고 제휴서비스 개인(신용)정보 수집 및 이용 동의",
+  },
+  {
+    value: "consent-provide",
+    label: "[필수] 한국투자증권 금융상품 광고 제휴서비스 제3자 제공동의",
+  },
+];
+</script>
+
+
 
 // 추가 bottomsheet case
 .bs-card-agree.sv-bottom-sheet {
