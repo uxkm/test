@@ -3,6 +3,275 @@
 ```js
 
 
+<route lang="yaml">
+meta:
+  id: SCD001A02_bs1
+  title: "카드"
+  menu: 카드 > 약관 동의(BS)
+  layout: EmptyLayout
+  category: 카드
+  publish: 김대민
+  publishVersion: 0.8
+  status: 작업완료
+  etc: | 
+    260128: 약관 동의 Bottomsheet 추가(맞춤 카드를 추천받으려면 동의가 필요해요) 
+</route>
+<template>
+  <BottomSheet
+    disableMinHeight
+    variant="none"
+    :closableDimm="true"
+    :closableDrag="false"
+    dimmed
+    title="맞춤 카드를 추천받으려면 동의가 필요해요"
+    v-model="isOpen"
+    class="bs-card-agree"
+  >
+    <div class="bs-card-agree__contents">
+      <div class="agree-contents__header">
+        <img
+          :src="$cdnURL + '/images/pages/pay/img_card_double.png'"
+          alt=""
+          class="img_card_double"
+          aria-hidden="true"
+        />
+      </div>
+      <div class="agree-contents__body">
+        <div class="sc-agree__list agree-outline">
+          <div class="agree-list__group">
+            <div class="agree-outline__list">
+              <SolidListAccordion
+                v-for="item in outlineItems"
+                :key="item.value"
+                :class="[
+                  'outline-accordion',
+                  { 'is-checked': outlineChecked.includes(item.value) },
+                ]"
+                :rowClickable="false"
+                :value="item.value"
+                :prevent-hash="true"
+                v-model:isExpanded="isAccordionExpanded"
+              >
+                <template #title>
+                  <div class="outline-item check-variant-top">
+                    <div class="outline-item__body">
+                      <Checkbox
+                        :value="item.value"
+                        variant="box"
+                        align="left"
+                        :model-value="outlineChecked.includes(item.value)"
+                        class="outline-checkbox"
+                        @update:model-value="
+                          onToggleoutline(item.value, $event)
+                        "
+                      >
+                        <template #label>
+                          <div class="outline-label">
+                            <span class="outline-label__main">{{
+                              item.label
+                            }}</span>
+                            <span
+                              v-if="item.subText"
+                              class="outline-label__subtext"
+                              >{{ item.subText }}</span
+                            >
+                          </div>
+                        </template>
+                      </Checkbox>
+                      <div v-if="item.meta" class="outline-label__meta">
+                        <span>{{ item.meta }}</span>
+                        <Tooltip
+                          placement="top-center"
+                          :showClose="true"
+                          :closeOnClickOutside="true"
+                        >
+                          <template #content>
+                            <div
+                              class="sc-tooltip__content agree-grade-tooltip"
+                            >
+                              <div class="label-group">
+                                <SolidLabel color="cyan" title="안심" />
+                                <SolidLabel color="green" title="다소안심" />
+                                <SolidLabel color="yellow" title="보통" />
+                                <SolidLabel color="orange" title="신중" />
+                                <SolidLabel color="red" title="주의" />
+                              </div>
+                              <p class="agree-grade-tooltip__desc">
+                                동의등급제는 개인(신용)정보에 관한 선택적 동의
+                                항목에 대해 사생활의 비밀과 자유를 침해할 위험,
+                                이익이나 혜택, 동의 내용의 명확성 등을 고려한 뒤
+                                5가지 등급을 부여하는 제도예요.
+                              </p>
+                            </div>
+                          </template>
+                        </Tooltip>
+                      </div>
+                    </div>
+                  </div>
+                </template>
+                <div class="outline-panel">
+                  <div class="outline-depth2__item">
+                    <div class="outline-depth2__item-header">
+                      <p class="outline-depth2__item-label">
+                        카드 및 금융상품·서비스 안내 및 이용권유를 위한
+                        수집·이용
+                      </p>
+                      <SolidLabel
+                        class="outline-depth2__item-grade"
+                        color="green"
+                        title="다소안심"
+                      />
+                    </div>
+                    <div class="outline-depth2__item-body">
+                      <ul class="outline-depth2__item-list">
+                        <li class="outline-depth2__list-item">
+                          <Checkbox
+                            value="agree-outline-2-1"
+                            variant="mark"
+                            align="left"
+                            :model-value="
+                              outlineChecked.includes('agree-outline-2-1')
+                            "
+                            class="outline-depth2__item-checkbox"
+                            @update:model-value="
+                              onToggleoutline('agree-outline-2-1', $event)
+                            "
+                          >
+                            <template #label>
+                              <span>고유식별번호 조회 동의</span>
+                            </template>
+                          </Checkbox>
+                        </li>
+                        <li class="outline-depth2__list-item">
+                          <Checkbox
+                            value="agree-outline-2-2"
+                            variant="mark"
+                            align="left"
+                            :model-value="
+                              outlineChecked.includes('agree-outline-2-2')
+                            "
+                            class="outline-depth2__item-checkbox"
+                            @update:model-value="
+                              onToggleoutline('agree-outline-2-2', $event)
+                            "
+                          >
+                            <template #label>
+                              <span>개인신용정보 제공 동의</span>
+                            </template>
+                          </Checkbox>
+                        </li>
+                      </ul>
+                      <div class="agree-depth__link">
+                        <TextButton
+                          class="agree-depth__link-button"
+                          color="secondary"
+                          size="small"
+                          text="자세히 보기"
+                          showGoTo
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </SolidListAccordion>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="agree-contents__footer">
+        <div class="sc-bottom-info__card">
+          <p class="sc-bottom-info__inner-title">꼭! 알아두세요</p>
+          <div class="sc-bottom-info__details">
+            <UnorderedList :gap="8">
+              <UnorderedListItem
+                variant="bullet"
+                size="small"
+                data-color="quaternary"
+                text="동의를 해제하면 맞춤 카드 관련 안내를 받아볼 수 없어요."
+              />
+              <UnorderedListItem
+                variant="bullet"
+                size="small"
+                data-color="quaternary"
+                text="개인(신용)정보의 보유 및 이용기간은 계약 종료 시까지에요."
+              />
+              <UnorderedListItem
+                variant="bullet"
+                size="small"
+                data-color="quaternary"
+                text="카드상품과 부수서비스의 안내 및 이용권유에 동의했더라도 신용정보의 이용 및 보호에 관한 법률에 따라 언제든 관련한 연락 중단을 요청할 수 있어요. 요청은 신한카드 고객센터(1544-7000) 또는 홈페이지(www.shinhancard.com)에서 해주세요."
+              />
+            </UnorderedList>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- 하단 확인 버튼 -->
+    <template #footer>
+      <BottomActionContainer :scrollDim="true">
+        <BoxButtonGroup size="xlarge" variant="35:65">
+          <BoxButton text="다음에" color="secondary" />
+          <BoxButton text="확인" :disabled="!isConfirmEnabled" />
+        </BoxButtonGroup>
+      </BottomActionContainer>
+    </template>
+  </BottomSheet>
+</template>
+
+<script setup>
+import {
+  BottomActionContainer,
+  BottomSheet,
+  BoxButton,
+  BoxButtonGroup,
+  Checkbox,
+  SolidListAccordion,
+  SolidLabel,
+  TextButton,
+  Tooltip,
+  UnorderedList,
+  UnorderedListItem,
+} from "@shc-nss/ui/solid";
+import { computed, ref } from "vue";
+
+const isOpen = defineModel({ default: true });
+const isAccordionExpanded = ref(true);
+
+const outlineItems = [
+  {
+    label: "[선택] 개인(신용)정보 수집·이용 동의",
+    value: "agree-outline-2",
+    meta: "동의등급제 안내",
+  },
+];
+
+const outlineChecked = ref([]);
+
+const outlineChildMap = {
+  "agree-outline-2": ["agree-outline-2-1", "agree-outline-2-2"],
+};
+
+const isConfirmEnabled = computed(() => outlineChecked.value.length > 0);
+
+function onToggleoutline(value, checked) {
+  const set = new Set(outlineChecked.value);
+  if (checked) set.add(value);
+  else set.delete(value);
+
+  const parentValue = Object.keys(outlineChildMap).find((key) =>
+    outlineChildMap[key].includes(value),
+  );
+  if (parentValue) {
+    const childValues = outlineChildMap[parentValue];
+    const hasCheckedChild = childValues.some((child) => set.has(child));
+    if (hasCheckedChild) set.add(parentValue);
+    else set.delete(parentValue);
+  }
+  outlineChecked.value = Array.from(set);
+}
+</script>
+
+
 
 <route lang="yaml">
 meta:
