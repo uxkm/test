@@ -4,6 +4,114 @@
 ```scss
 
 
+
+/* 
+  # =================================================================
+  # Publish에서 사용하는 Vuetify 스타일 유틸 (숫자 스케일)
+  # - 추출된 목록 기준, @for/@each로 반복 부분 생성
+  # - 스케일: 0=0px, 1=4px, 2=8px, … 16=64px
+  # ================================================================= 
+*/
+$vuetify-scale: (
+  0: 0,
+  1: 4px,
+  2: 8px,
+  3: 12px,
+  4: 16px,
+  5: 20px,
+  6: 24px,
+  7: 28px,
+  8: 32px,
+  9: 36px,
+  10: 40px,
+  11: 44px,
+  12: 48px,
+  13: 52px,
+  14: 56px,
+  15: 60px,
+  16: 64px,
+);
+
+// Margin (0~16, auto)
+@each $i, $v in $vuetify-scale {
+  .ma-#{$i} { margin: $v !important; }
+  .mx-#{$i} { margin-left: $v !important; margin-right: $v !important; }
+  .my-#{$i} { margin-top: $v !important; margin-bottom: $v !important; }
+  .mt-#{$i} { margin-top: $v !important; }
+  .mr-#{$i} { margin-right: $v !important; }
+  .mb-#{$i} { margin-bottom: $v !important; }
+  .ml-#{$i} { margin-left: $v !important; }
+  .ms-#{$i} { margin-inline-start: $v !important; }
+  .me-#{$i} { margin-inline-end: $v !important; }
+}
+.ma-auto { margin: auto !important; }
+.mx-auto { margin-left: auto !important; margin-right: auto !important; }
+.my-auto { margin-top: auto !important; margin-bottom: auto !important; }
+.mt-auto { margin-top: auto !important; }
+.mr-auto { margin-right: auto !important; }
+.mb-auto { margin-bottom: auto !important; }
+.ml-auto { margin-left: auto !important; }
+.ms-auto { margin-inline-start: auto !important; }
+.me-auto { margin-inline-end: auto !important; }
+
+// Margin 음수 (n1~n16)
+@for $i from 1 through 16 {
+  $v: -$i * 4px;
+  .ma-n#{$i} { margin: $v !important; }
+  .mx-n#{$i} { margin-left: $v !important; margin-right: $v !important; }
+  .my-n#{$i} { margin-top: $v !important; margin-bottom: $v !important; }
+  .mt-n#{$i} { margin-top: $v !important; }
+  .mr-n#{$i} { margin-right: $v !important; }
+  .mb-n#{$i} { margin-bottom: $v !important; }
+  .ml-n#{$i} { margin-left: $v !important; }
+  .ms-n#{$i} { margin-inline-start: $v !important; }
+  .me-n#{$i} { margin-inline-end: $v !important; }
+}
+
+// Padding (0~16)
+@each $i, $v in $vuetify-scale {
+  .pa-#{$i} { padding: $v !important; }
+  .px-#{$i} { padding-left: $v !important; padding-right: $v !important; }
+  .py-#{$i} { padding-top: $v !important; padding-bottom: $v !important; }
+  .pt-#{$i} { padding-top: $v !important; }
+  .pr-#{$i} { padding-right: $v !important; }
+  .pb-#{$i} { padding-bottom: $v !important; }
+  .pl-#{$i} { padding-left: $v !important; }
+}
+
+// Display
+.d-none { display: none !important; }
+.d-inline { display: inline !important; }
+.d-inline-block { display: inline-block !important; }
+.d-block { display: block !important; }
+.d-flex { display: flex !important; }
+.d-inline-flex { display: inline-flex !important; }
+
+// Flex
+.justify-start { justify-content: flex-start !important; }
+.justify-end { justify-content: flex-end !important; }
+.justify-center { justify-content: center !important; }
+.justify-space-between { justify-content: space-between !important; }
+.justify-space-around { justify-content: space-around !important; }
+.justify-space-evenly { justify-content: space-evenly !important; }
+.align-start { align-items: flex-start !important; }
+.align-end { align-items: flex-end !important; }
+.align-center { align-items: center !important; }
+.flex-column { flex-direction: column !important; }
+.flex-row { flex-direction: row !important; }
+.flex-fill { flex: 1 1 auto !important; }
+
+// Size
+.w-auto { width: auto !important; }
+.w-100 { width: 100% !important; }
+.h-auto { height: auto !important; }
+.h-100 { height: 100% !important; }
+
+
+
+
+
+
 .category-list {
       display: flex;
       justify-content: center;
