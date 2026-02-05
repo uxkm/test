@@ -3,6 +3,11 @@
 {% raw %}
 ```scss
 
+
+const subAccordionState4 = reactive({
+  "location-service-consent": false,
+});
+
 // dark mode 대응 스키마 추가
 // 예시 1
 [data-theme="dark"] & {
