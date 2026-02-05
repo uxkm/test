@@ -2,6 +2,351 @@
 {% raw %}
 ```js
 
+// 3165 라인
+
+      &.is-error-fallback .sv-list__icon {
+        background-color: var(--bg-gray);
+        img {
+          width: 32px;
+          height: 32px;
+        }
+      }
+
+
+// discount
+<template>
+  <!-- S: 할인·쿠폰 -->
+  <section class="section bf-discount">
+    <div class="bf-section__header">
+      <h2 class="title-sub">놓치면 아까운 할인·쿠폰</h2>
+    </div>
+    <!-- S : 할인·쿠폰 로딩중 스켈레톤 -->
+    <div class="cupon-list__body" aria-label="로딩중" tabindex="0">
+      <div
+        v-for="n in 5"
+        :key="n"
+        class="cupon-item outline skeleton"
+        aria-hidden="true"
+      >
+        <div class="label">
+          <LoadingSkeleton width="40%" :height="22" rounded="small" />
+        </div>
+        <div class="content">
+          <div class="left">
+            <LoadingSkeleton width="25%" :height="22" rounded="small" />
+            <LoadingSkeleton width="100%" :height="26" rounded="small" />
+          </div>
+          <div class="right">
+            <LoadingSkeleton :width="48" :height="48" rounded="medium" />
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- E : 할인·쿠폰 로딩중 스켈레톤 -->
+
+    <div class="cupon-list__body">
+      <!-- 링크인 경우에만 role="link" tabindex="0" aria-label="쿠폰 정보" 추가 -->
+      <div
+        v-for="coupon in filteredCoupons"
+        :key="coupon.id"
+        :class="[
+          'cupon-item outline',
+          { 'is-label': coupon.label || coupon.expiryDate },
+          /* 수정 260204: 해당 행의 쿠폰 아이콘 이미지 로드 실패(통신 오류) 시에만 적용.
+             ScImage @error 발생 시 onIconError(coupon.id)로 id가 iconErrorIds에 추가됨. */
+          { 'is-error-fallback': iconErrorIds.includes(coupon.id) },
+        ]"
+        role="link"
+        :aria-label="
+          [
+            coupon.label ? `쿠폰 상태: ${coupon.label}` : null,
+            coupon.expiryDate ? `만료일: ${coupon.expiryDate}` : null,
+            coupon.sub,
+            coupon.main,
+          ]
+            .filter(Boolean)
+            .join(', ')
+        "
+      >
+        <ListItem align="centered" :left="{ direction: 'reverse' }">
+          <template #label v-if="coupon.label || coupon.expiryDate">
+            <div class="flex gap-4">
+              <!-- 쿠폰 상태 -->
+              <SolidLabel
+                v-if="coupon.label"
+                :title="coupon.label"
+                :color="coupon.labelColor || 'blue'"
+                class="inline-flex"
+              />
+              <!-- 만료일 -->
+              <TintLabel
+                v-if="coupon.expiryDate"
+                :title="coupon.expiryDate"
+                :color="coupon.expiryDateColor || 'blue'"
+              />
+            </div>
+          </template>
+          <template #leftSubText>
+            <span aria-hidden="true">{{ coupon.sub }}</span>
+          </template>
+          <template #leftMainText>
+            <strong aria-hidden="true">{{ coupon.main }}</strong>
+          </template>
+          <template #rightIcon>
+            <!-- 수정 260204: img → ScImage. 통신 오류 시 fallback 이미지 노출, 다크모드 시 fallback 별도 이미지. -->
+            <ScImage
+              :src="coupon.icon.src"
+              :alt="coupon.icon.alt"
+              class="cupon-icon"
+              aria-hidden="true"
+              :fallback="fallbackImageUrl"
+              @error="onIconError(coupon.id)"
+            />
+          </template>
+        </ListItem>
+      </div>
+
+      <!-- 통신 오류 UI 확인용: 존재하지 않는 이미지 URL로 의도적 404 → ScImage @error 발생 → fallback 노출 및 is-error-fallback 클래스 적용. 확인 후 블록 삭제 가능. -->
+      <div
+        v-for="coupon in filteredCoupons"
+        :key="coupon.id"
+        :class="[
+          'cupon-item outline',
+          { 'is-label': coupon.label || coupon.expiryDate },
+          { 'is-error-fallback': iconErrorIds.includes(coupon.id) },
+        ]"
+        role="link"
+        :aria-label="
+          [
+            coupon.label ? `쿠폰 상태: ${coupon.label}` : null,
+            coupon.expiryDate ? `만료일: ${coupon.expiryDate}` : null,
+            coupon.sub,
+            coupon.main,
+          ]
+            .filter(Boolean)
+            .join(', ')
+        "
+      >
+        <ListItem align="centered" :left="{ direction: 'reverse' }">
+          <template #label v-if="coupon.label || coupon.expiryDate">
+            <div class="flex gap-4">
+              <!-- 쿠폰 상태 -->
+              <SolidLabel
+                v-if="coupon.label"
+                :title="coupon.label"
+                :color="coupon.labelColor || 'blue'"
+                class="inline-flex"
+              />
+              <!-- 만료일 -->
+              <TintLabel
+                v-if="coupon.expiryDate"
+                :title="coupon.expiryDate"
+                :color="coupon.expiryDateColor || 'blue'"
+              />
+            </div>
+          </template>
+          <template #leftSubText>
+            <span aria-hidden="true">{{ coupon.sub }}</span>
+          </template>
+          <template #leftMainText>
+            <strong aria-hidden="true">{{ coupon.main }}</strong>
+          </template>
+          <template #rightIcon>
+            <!-- UI확인용: __nonexistent_ui_check.png(404) 사용 → 로드 실패 시 fallback·is-error-fallback 동작 확인. -->
+            <ScImage
+              :src="`${$cdnURL}/images/pages/base/__nonexistent_ui_check.png`"
+              :alt="coupon.icon.alt"
+              class="cupon-icon"
+              aria-hidden="true"
+              :fallback="fallbackImageUrl"
+              @error="onIconError(coupon.id)"
+            />
+          </template>
+        </ListItem>
+      </div>
+    </div>
+
+    <div class="bf-section__footer">
+      <CapsuleButton
+        text="할인·쿠폰 전체보기"
+        color="primary"
+        variant="outline"
+        size="medium"
+        :rightIcon="{ iconName: 'Chevron_right' }"
+      />
+    </div>
+
+    <!-- S : 할인·쿠폰 IF 오류시 노출 -->
+    <div class="bf-if__error">
+      <div class="bf-if__error-inner">
+        <div class="bf-if__error-icon">
+          <ScImage
+            :src="`${$cdnURL}/images/pages/benefits/main/result_icon.png`"
+            alt="IF 오류"
+          />
+        </div>
+        <div class="bf-if__error-text">정보를 불러오지 못했어요</div>
+        <CapsuleButton
+          text="다른 할인·쿠폰 확인하기"
+          color="primary"
+          variant="outline"
+          size="small"
+        />
+      </div>
+    </div>
+    <!-- E : 할인·쿠폰 IF 오류시 노출 -->
+  </section>
+  <!-- E: 할인·쿠폰 -->
+</template>
+
+<script setup>
+import { computed, inject, onMounted, onUnmounted, ref } from "vue";
+import { AppContextKey } from "@/configs/inject/appContext";
+import { ScImage } from "@shc-nss/ui/shc";
+import {
+  CapsuleButton,
+  ListItem,
+  LoadingSkeleton,
+  SolidLabel,
+  TintLabel,
+} from "@shc-nss/ui/solid";
+
+const { $cdnURL } = inject(AppContextKey);
+
+// ========== 수정 260204: 테마 기반 fallback 이미지 (라이트/다크 분리) ==========
+// DOM의 data-theme을 기준으로 하여, 앱 스토어·콘솔·외부 코드 등 어떤 경로로 테마가 바뀌어도 반영되도록 함.
+// (이전에는 Pinia 테마 스토어만 참조해, 콘솔에서 setAttribute('data-theme')로 변경 시 반영되지 않던 문제 해결)
+
+/** <html>의 data-theme 속성값 ('light' | 'dark' | null). null이면 시스템 설정(prefers-color-scheme) 따름. */
+const dataTheme = ref(null);
+/** 테마가 'system'일 때 사용. prefers-color-scheme: dark 미디어 쿼리 결과. */
+const systemDark = ref(false);
+let observer = null;
+let mediaQuery = null;
+
+/** document.documentElement.getAttribute('data-theme')을 읽어 dataTheme에 반영. SSR 대응으로 document 존재 시에만 실행. */
+function readDataTheme() {
+  if (typeof document === "undefined") return;
+  dataTheme.value = document.documentElement.getAttribute("data-theme");
+}
+
+onMounted(() => {
+  readDataTheme();
+  // data-theme 속성 변경 감지 (스토어 토글, 콘솔 setAttribute, 브릿지 등 모든 경로 반영)
+  observer = new MutationObserver((mutations) => {
+    for (const m of mutations) {
+      if (m.attributeName === "data-theme") {
+        readDataTheme();
+        break;
+      }
+    }
+  });
+  observer.observe(document.documentElement, { attributes: true });
+
+  // 시스템 테마(system 모드)용: prefers-color-scheme 변경 시 systemDark 갱신
+  mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+  systemDark.value = mediaQuery.matches;
+  const onSystemThemeChange = () => {
+    systemDark.value = mediaQuery.matches;
+  };
+  mediaQuery.addEventListener("change", onSystemThemeChange);
+  onUnmounted(() => mediaQuery.removeEventListener("change", onSystemThemeChange));
+});
+
+onUnmounted(() => {
+  observer?.disconnect();
+});
+
+/** 실제 화면에 적용 중인 다크모드 여부. data-theme이 'dark'이거나, (system 모드일 때) systemDark가 true이면 다크. */
+const isResolvedDark = computed(
+  () =>
+    dataTheme.value === "dark" ||
+    (dataTheme.value !== "light" && systemDark.value)
+);
+/** ScImage 로드 실패 시 노출할 대체 이미지 URL. 다크모드일 때 empty_image_dark.svg, 라이트일 때 empty_image.svg 사용. */
+const fallbackImageUrl = computed(() =>
+  isResolvedDark.value
+    ? `${$cdnURL}/images/pages/base/empty_image_dark.svg`
+    : `${$cdnURL}/images/pages/base/empty_image.svg`
+);
+
+// ========== 수정 260204: 통신 오류 시 해당 행에만 is-error-fallback 클래스 적용 ==========
+/** 이미지 로드에 실패한 쿠폰 id 목록. ScImage @error 시 onIconError(coupon.id)로 추가됨. */
+const iconErrorIds = ref([]);
+/** ScImage의 @error 핸들러. 실패한 쿠폰 id를 iconErrorIds에 넣어 해당 행에만 is-error-fallback 클래스가 붙도록 함. */
+function onIconError(couponId) {
+  if (!iconErrorIds.value.includes(couponId)) {
+    iconErrorIds.value = [...iconErrorIds.value, couponId];
+  }
+}
+
+// 쿠폰 리스트 데이터
+const couponItems = [
+  {
+    id: 1,
+    icon: {
+      src: `${$cdnURL}/images/dummy/img_coupon_symbol01.png`,
+      alt: "",
+    },
+    label: "보유중",
+    labelColor: "blue",
+    expiryDate: "D-3",
+    expiryDateColor: "blue",
+    main: "5,000원 캐시백",
+    sub: "그리팅몰",
+  },
+  {
+    id: 2,
+    icon: {
+      src: `${$cdnURL}/images/dummy/img_coupon_symbol02.png`,
+      alt: "",
+    },
+    main: "10,000원 캐시백",
+    sub: "CJ더마켓",
+  },
+  {
+    id: 3,
+    icon: {
+      src: `${$cdnURL}/images/dummy/img_coupon_symbol03.png`,
+      alt: "",
+    },
+    label: "보유중",
+    labelColor: "blue",
+    expiryDate: "D-3",
+    expiryDateColor: "blue",
+    main: "5% 캐시백",
+    sub: "크록스",
+  },
+  {
+    id: 4,
+    icon: {
+      src: `${$cdnURL}/images/dummy/img_coupon_symbol04.png`,
+      alt: "",
+    },
+    main: "1,000원 캐시백",
+    sub: "파리바게뜨",
+  },
+  {
+    id: 5,
+    icon: {
+      src: `${$cdnURL}/images/dummy/img_coupon_symbol05.png`,
+      alt: "",
+    },
+    expiryDate: "D-1",
+    expiryDateColor: "blue",
+    main: "3% 캐시백",
+    sub: "구구스",
+  },
+];
+
+// 필터링된 쿠폰 리스트
+const filteredCoupons = computed(() => {
+  return couponItems;
+});
+</script>
+
+
+
 
 
 
