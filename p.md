@@ -420,15 +420,13 @@ meta:
     back: true
     close: false
     home: true
+  # 모드 변경: false=페이지, true=풀팝업 (이 값만 변경하면 wrap/section 자동 반영)
+  isFullPopup: false
 </route>
 <template>
-  <!--
-    모드 변경: 아래 두 곳 값을 함께 변경
-    - 풀팝업: :wrap="true" / :class="{ section: false }"
-    - 페이지: :wrap="false" / :class="{ section: true }"
-  -->
+  <!-- wrap: route.meta.isFullPopup 사용, section 클래스는 !wrap과 동기화 -->
   <ConditionalFullPopup
-    :wrap="false"
+    :wrap="route.meta?.isFullPopup ?? false"
     v-model="isOpen"
     :title="bodyTitle"
     :closeable="true"
@@ -436,7 +434,7 @@ meta:
   >
     <ScTitle mainTitle="실시간 포인트 적립을 위해<br />약관에 동의해주세요." />
     <div class="sc-contents__body sc-agree__page">
-      <section :class="{ section: true }">
+      <section :class="{ section: !(route.meta?.isFullPopup ?? false) }">
         <div
           class="sc-agree__list compound agree_new"
           role="region"
@@ -737,6 +735,7 @@ watch(basicAgree4, (checked) => {
   }
 });
 </script>
+
 
 
 
