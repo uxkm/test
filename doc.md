@@ -3,6 +3,24 @@
 {% raw %}
 ```scss
 
+// dark mode 대응 스키마 추가
+// 예시 1
+[data-theme="dark"] & {
+  border-color: var(--gray-700);
+}
+@media (prefers-color-scheme: dark) {
+  border-color: var(--gray-700);
+}
+
+// 예시 2
+[data-theme="dark"] .welcome-intro__dim {
+  background-color: #202020;
+}
+@media (prefers-color-scheme: dark) {
+  .welcome-intro__dim {
+    background-color: #202020;
+  }
+}
 
 
 /* 
