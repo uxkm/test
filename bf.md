@@ -2,7 +2,6 @@
 {% raw %}
 ```js
 
-
 <route lang="yaml">
 meta:
   id: SBT021A01
@@ -28,6 +27,7 @@ meta:
     [완료]260119: 마크업 (상단 네비게이션 우측 close 제거 홈 아이콘 추가 메타정보 수정),
 </route>
 <template>
+  <!-- [수정] UI 확인용: 스켈레톤·본문 둘 다 노출되도록 sc-contents__body 한 겹으로 감쌈. 스켈레톤/본문을 형제가 아닌 동일 body 자식으로 두어 빌드 시 본문이 가려지지 않음 -->
   <div class="sc-contents__body">
     <!-- [추가] 260130: 스켈레톤 추가 -->
     <!-- S : 로딩중 스켈레톤 -->
@@ -36,54 +36,56 @@ meta:
       aria-label="로딩중"
       tabindex="0"
     >
-    <div class="cupon-head">
-      <LoadingSkeleton :width="304" :height="33" rounded="small" />
-    </div>
-    <div class="cupon-chip">
-      <LoadingSkeleton :width="88" :height="36" rounded="full" />
-      <LoadingSkeleton :width="88" :height="36" rounded="full" />
-      <LoadingSkeleton :width="88" :height="36" rounded="full" />
-    </div>
-    <div class="cupon-list__wrap">
-      <div class="cupon-list__head">
-        <LoadingSkeleton :width="92" :height="24" rounded="small" />
+      <!-- card-grid__skeleton 직계 자식 (들여쓰기 1단계) -->
+      <div class="cupon-head">
+        <LoadingSkeleton :width="304" :height="33" rounded="small" />
       </div>
-      <div class="cupon-list__body">
-        <ul class="webzine-list">
-          <li 
-            v-for="skeletonIndex in 4" :key="`skeleton-${skeletonIndex}`"
-            class="webzine-item"
-          >
-            <div class="webzine-item__thumbnail">
-              <LoadingSkeleton
-                :width="48"
-                :height="48"
-              />
-            </div>
-            <div class="webzine-item__content">
-              <LoadingSkeleton
-                :width="87"
-                :height="22"
-                rounded="small"
-              />
-              <LoadingSkeleton
-                :width="200"
-                :height="22"
-                rounded="small"
-              />
-              <LoadingSkeleton
-                :width="130"
-                :height="22"
-                rounded="small"
-              />
-            </div>
-          </li>
-        </ul>
+      <div class="cupon-chip">
+        <LoadingSkeleton :width="88" :height="36" rounded="full" />
+        <LoadingSkeleton :width="88" :height="36" rounded="full" />
+        <LoadingSkeleton :width="88" :height="36" rounded="full" />
+      </div>
+      <div class="cupon-list__wrap">
+        <div class="cupon-list__head">
+          <LoadingSkeleton :width="92" :height="24" rounded="small" />
+        </div>
+        <div class="cupon-list__body">
+          <ul class="webzine-list">
+            <li 
+              v-for="skeletonIndex in 4" :key="`skeleton-${skeletonIndex}`"
+              class="webzine-item"
+            >
+              <div class="webzine-item__thumbnail">
+                <LoadingSkeleton
+                  :width="48"
+                  :height="48"
+                />
+              </div>
+              <div class="webzine-item__content">
+                <LoadingSkeleton
+                  :width="87"
+                  :height="22"
+                  rounded="small"
+                />
+                <LoadingSkeleton
+                  :width="200"
+                  :height="22"
+                  rounded="small"
+                />
+                <LoadingSkeleton
+                  :width="130"
+                  :height="22"
+                  rounded="small"
+                />
+              </div>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
-  </div>
     <!-- E : 로딩중 스켈레톤 -->
 
+    <!-- 본문: sc-contents__body 직계 자식, 스켈레톤과 형제 -->
     <div class="cupon-contents">
       <!-- S : 모바일상품권 + 할인쿠폰이 있을 경우 -->
       <template v-if="couponItems.length > 0">
