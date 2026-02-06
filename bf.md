@@ -2,6 +2,8 @@
 {% raw %}
 ```js
 
+:aria-label="`전체쿠폰 ${couponItems.length}개`"
+
 <route lang="yaml">
 meta:
   id: SBT021A01
