@@ -2,6 +2,19 @@
 {% raw %}
 ```js
 
+//4868 line
+
+    &.is-error-fallback {
+      .coupon-book__card-img {
+        width: 48px;
+        height: 48px;
+        border: 1px solid var(--border-secondary);
+        border-radius: var(--radius-xl);
+        background-color: var(--bg-gray);
+      }
+    }
+
+
 // _utility
   &.isError {
     path[fill="#D0D5DD"] {
