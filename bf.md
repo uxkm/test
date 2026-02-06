@@ -1,7 +1,7 @@
 
 {% raw %}
 ```js
-
+:aria-label="`총 ${couponItems.length}개의 쿠폰을 보유중이에요.`"
 :aria-label="`전체쿠폰 ${couponItems.length}개`"
 
 <route lang="yaml">
