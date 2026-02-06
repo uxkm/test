@@ -1,6 +1,415 @@
 
 {% raw %}
 ```js
+
+// _utility
+  &.isError {
+    path[fill="#D0D5DD"] {
+      [data-theme="dark"] & {
+        fill: var(--fg-disabled);
+      }
+      @media (prefers-color-scheme: dark) {
+        fill: var(--fg-disabled);
+      }
+    }
+  }
+
+<template>
+  <!-- S: 할인·쿠폰 -->
+  <section class="section bf-discount">
+    <div class="bf-section__header">
+      <h2 class="title-sub">놓치면 아까운 할인·쿠폰</h2>
+    </div>
+    <!-- S : 할인·쿠폰 로딩중 스켈레톤 -->
+    <div class="cupon-list__body" aria-label="로딩중" tabindex="0">
+      <div
+        v-for="n in 5"
+        :key="n"
+        class="cupon-item outline skeleton"
+        aria-hidden="true"
+      >
+        <div class="label">
+          <LoadingSkeleton width="40%" :height="22" rounded="small" />
+        </div>
+        <div class="content">
+          <div class="left">
+            <LoadingSkeleton width="25%" :height="22" rounded="small" />
+            <LoadingSkeleton width="100%" :height="26" rounded="small" />
+          </div>
+          <div class="right">
+            <LoadingSkeleton :width="48" :height="48" rounded="medium" />
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- E : 할인·쿠폰 로딩중 스켈레톤 -->
+
+    <div class="cupon-list__body">
+      <!-- 링크인 경우에만 role="link" tabindex="0" aria-label="쿠폰 정보" 추가 -->
+      <div
+        v-for="coupon in filteredCoupons"
+        :key="coupon.id"
+        :class="[
+          'cupon-item outline',
+          { 'is-label': coupon.label || coupon.expiryDate },
+          /* 수정 260204: 해당 행 쿠폰 아이콘 이미지 로드 실패 시에만 적용. ScImage @error → onIconError(coupon.id) → iconErrorIds에 추가됨. */
+          { 'is-error-fallback': iconErrorIds.includes(coupon.id) },
+        ]"
+        role="link"
+        :aria-label="
+          [
+            coupon.label ? `쿠폰 상태: ${coupon.label}` : null,
+            coupon.expiryDate ? `만료일: ${coupon.expiryDate}` : null,
+            coupon.sub,
+            coupon.main,
+          ]
+            .filter(Boolean)
+            .join(', ')
+        "
+      >
+        <ListItem align="centered" :left="{ direction: 'reverse' }">
+          <template #label v-if="coupon.label || coupon.expiryDate">
+            <div class="flex gap-4">
+              <!-- 쿠폰 상태 -->
+              <SolidLabel
+                v-if="coupon.label"
+                :title="coupon.label"
+                :color="coupon.labelColor || 'blue'"
+                class="inline-flex"
+              />
+              <!-- 만료일 -->
+              <TintLabel
+                v-if="coupon.expiryDate"
+                :title="coupon.expiryDate"
+                :color="coupon.expiryDateColor || 'blue'"
+              />
+            </div>
+          </template>
+          <template #leftSubText>
+            <span aria-hidden="true">{{ coupon.sub }}</span>
+          </template>
+          <template #leftMainText>
+            <strong aria-hidden="true">{{ coupon.main }}</strong>
+          </template>
+          <template #rightIcon>
+            <!-- 수정 260204: img → ScImage.
+              - 로드 실패 시: coupon.icon.fallback 있으면 해당 이미지, 없으면 ScImage 기본 ScIcon(empty_image) 노출.
+              - @error 시 onIconError로 해당 행에 is-error-fallback 클래스 적용. -->
+            <!-- <ScImage
+              :src="coupon.icon.src"
+              :alt="coupon.icon.alt"
+              :fallback="coupon.icon.fallback"
+              class="cupon-icon"
+              aria-hidden="true"
+              @error="onIconError(coupon.id)"
+            /> -->
+            <ScImage
+              :src="coupon.icon.src"
+              :alt="coupon.icon.alt"
+              class="cupon-icon"
+              aria-hidden="true"
+              @error="onIconError(coupon.id)"
+            />
+          </template>
+        </ListItem>
+      </div>
+    </div>
+
+    <div class="bf-section__footer">
+      <CapsuleButton
+        text="할인·쿠폰 전체보기"
+        color="primary"
+        variant="outline"
+        size="medium"
+        :rightIcon="{ iconName: 'Chevron_right' }"
+      />
+    </div>
+
+    <!-- S : 할인·쿠폰 IF 오류시 노출 -->
+    <div class="bf-if__error">
+      <div class="bf-if__error-inner">
+        <div class="bf-if__error-icon">
+          <ScImage
+            :src="`${$cdnURL}/images/pages/benefits/main/result_icon.png`"
+            alt="IF 오류"
+          />
+        </div>
+        <div class="bf-if__error-text">정보를 불러오지 못했어요</div>
+        <CapsuleButton
+          text="다른 할인·쿠폰 확인하기"
+          color="primary"
+          variant="outline"
+          size="small"
+        />
+      </div>
+    </div>
+    <!-- E : 할인·쿠폰 IF 오류시 노출 -->
+  </section>
+  <!-- E: 할인·쿠폰 -->
+</template>
+
+<script setup>
+import { computed, inject, ref } from "vue";
+import { AppContextKey } from "@/configs/inject/appContext";
+import { ScImage } from "@shc-nss/ui/shc";
+import {
+  CapsuleButton,
+  ListItem,
+  LoadingSkeleton,
+  SolidLabel,
+  TintLabel,
+} from "@shc-nss/ui/solid";
+
+const { $cdnURL } = inject(AppContextKey);
+
+// ========== 수정 260204: 쿠폰 아이콘 이미지 로드 실패 시 해당 행에만 is-error-fallback 클래스 적용 ==========
+/** 이미지 로드에 실패한 쿠폰 id 목록. ScImage @error 시 onIconError(coupon.id)로 id가 여기에 추가됨. */
+const iconErrorIds = ref([]);
+/** ScImage @error 핸들러. 실패한 쿠폰 id를 iconErrorIds에 넣어 해당 행의 :class에서 is-error-fallback이 붙도록 함. */
+function onIconError(couponId) {
+  if (!iconErrorIds.value.includes(couponId)) {
+    iconErrorIds.value = [...iconErrorIds.value, couponId];
+  }
+}
+
+// 쿠폰 리스트 데이터
+const couponItems = [
+  {
+    id: 1,
+    icon: {
+      src: `${$cdnURL}/images/dummy/img_coupon_symbol01.png`,
+      alt: "",
+    },
+    label: "보유중",
+    labelColor: "blue",
+    expiryDate: "D-3",
+    expiryDateColor: "blue",
+    main: "5,000원 캐시백",
+    sub: "그리팅몰",
+  },
+  {
+    id: 2,
+    icon: {
+      src: `${$cdnURL}/images/dummy/img_coupon_symbol02.png`,
+      alt: "",
+    },
+    main: "10,000원 캐시백",
+    sub: "CJ더마켓",
+  },
+  {
+    id: 3,
+    icon: {
+      src: `${$cdnURL}/images/dummy/img_coupon_symbol03.png`,
+      alt: "",
+    },
+    label: "보유중",
+    labelColor: "blue",
+    expiryDate: "D-3",
+    expiryDateColor: "blue",
+    main: "5% 캐시백",
+    sub: "크록스",
+  },
+  {
+    id: 4,
+    icon: {
+      src: `${$cdnURL}/images/dummy/img_coupon_symbol04.png`,
+      alt: "",
+    },
+    main: "1,000원 캐시백",
+    sub: "파리바게뜨",
+  },
+  {
+    id: 5,
+    icon: {
+      src: `${$cdnURL}/images/dummy/img_coupon_symbol05.png`,
+      alt: "",
+    },
+    expiryDate: "D-1",
+    expiryDateColor: "blue",
+    main: "3% 캐시백",
+    sub: "구구스",
+  },
+  // 수정 260204: 이미지 호출 오류 시 UI 확인용. 존재하지 않는 URL → ScImage 로드 실패 → ScIcon(또는 fallback) 노출 및 is-error-fallback 클래스 적용 확인. 확인 후 제거.
+  {
+    id: 6,
+    icon: {
+      src: `${$cdnURL}/images/pages/base/__nonexistent_ui_check.png`,
+      alt: "",
+    },
+    main: "이미지 오류 UI 확인용",
+    sub: "로드 실패 시 ScIcon 노출",
+  },
+];
+
+// 필터링된 쿠폰 리스트
+const filteredCoupons = computed(() => {
+  return couponItems;
+});
+</script>
+
+
+
+
+// ScImage Component
+<template>
+  <img
+    v-if="!isError"
+    ref="imageRef"
+    v-bind="$attrs"
+    :data-src="src"
+    :src="visibleSrc"
+    :alt="alt"
+    :class="[imageClasses, $attrs.class]"
+    :width="width"
+    :height="height"
+    @load="onLoad"
+    @error="onError"
+  />
+  <!-- 에러 케이스 대체 이미지 -->
+  <template v-else>
+    <!-- fallback 이미지 제공 -->
+    <img
+      v-if="fallback"
+      v-bind="$attrs"
+      :class="['sc-image', 'isFallbackError', $attrs.class]"
+      :src="fallback"
+      :width="width"
+      :height="height"
+      alt="이미지를 불러올 수 없습니다."
+    />
+    <!-- ScIcon은 fragment라 attrs 상속 불가 → span으로 감싸 attrs는 span에만 적용. display:contents로 레이아웃 영향 없음. -->
+    <span class="sc-image__error-icon" style="display: contents" v-bind="$attrs">
+      <ScIcon
+        :class="['sc-image', 'isError', $attrs.class].filter(Boolean).join(' ')"
+        iconName="empty_image"
+        width="32px"
+        height="32px"
+      />
+    </span>
+  </template>
+</template>
+
+<script lang="ts">
+/**
+ * @param {string} src 이미지 실제 URL
+ * @param {string} alt 대체 텍스트
+ * @param {string | number} width 이미지 너비
+ * @param {string | number} height 이미지 높이
+ * @param {boolean} lazy lazy loading 적용여부
+ * @param {string} fallback Error 대체 이미지
+ */
+export interface ScImageProps {
+  src: string;
+  alt?: string;
+  width?: string | number;
+  height?: string | number;
+  lazy?: boolean;
+  fallback?: string;
+}
+
+/**
+ * @param {[event: Event]} load 이미지 loaded 이벤트
+ * @param {[event: Event]} error 이미지 error 이벤트
+ */
+export type ScImageEmits = {
+  load: [event: Event];
+  error: [event: Event];
+};
+</script>
+
+<script setup lang="ts">
+import { useIntersectionObserver } from "@vueuse/core";
+import { type Ref, computed, onMounted, ref, watch } from "vue";
+import { ScIcon } from "~/components/shc/icon";
+import { ScImageVariants } from "./ScImage.variants";
+
+defineOptions({ inheritAttrs: false });
+
+/** fallback 기본값 없음: 있으면 isFallbackError img 노출, 없으면(undefined) ScIcon(empty_image) 노출 */
+const props = withDefaults(defineProps<ScImageProps>(), {
+  lazy: true,
+});
+const emits = defineEmits<ScImageEmits>();
+
+const visibleSrc = ref<string | undefined>(undefined);
+const imageRef = ref<HTMLImageElement | null>(null);
+const isError = ref(false);
+
+//#region lazy loading
+// lazy 옵션 false 일때는 바로 대입
+onMounted(() => {
+  if (!props.lazy) visibleSrc.value = props.src;
+});
+
+const { stop } = useIntersectionObserver(
+  imageRef as Ref<HTMLElement | null>,
+  ([entry]) => {
+    if (entry?.isIntersecting) {
+      visibleSrc.value = props.src ?? "";
+      stop();
+    }
+  },
+  // 이미지 10% 노출 시 동작
+  // lazy 옵션 줄때만 동작
+  { threshold: 0.1, immediate: props.lazy }
+);
+// #endregion
+
+const imageClasses = computed(() =>
+  ScImageVariants({
+    isError: isError.value,
+  })
+);
+
+//#region 이벤트 처리
+/**
+ * Load 이벤트
+ * @param {Event} event Load event
+ */
+const onLoad = (event: Event) => emits("load", event);
+
+/**
+ * Error 이벤트
+ * @param {Event} event Error Event
+ */
+const onError = (event: Event) => {
+  isError.value = true;
+  emits("error", event);
+};
+
+watch(
+  () => props.src,
+  (newValue) => {
+    isError.value = false;
+    visibleSrc.value = newValue;
+  }
+);
+//#endregion
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 :aria-label="`총 ${couponItems.length}개의 쿠폰을 보유중이에요.`"
 :aria-label="`전체쿠폰 ${couponItems.length}개`"
 
