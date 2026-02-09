@@ -2,6 +2,20 @@
 {% raw %}
 ```js
 
+&::before,
+        &::after {
+          content: "";
+          position: absolute;
+          top: calc(var(--spacing-md, 8px) * -2);
+          z-index: 1;
+          width: 8px;
+          height: 24px;
+          border-radius: 100px;
+          background: #b1b7c4;
+        }
+
+
+
 //4868 line
 
     &.is-error-fallback {
