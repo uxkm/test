@@ -130,6 +130,25 @@ svg {
 
 
 
+.text-price {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: var(--spacing-sm);
+      path[fill="#143898"] {
+        fill: var(--brand-900);
+        [data-theme="dark"] & {
+          fill: var(--text-ondark_brand-same);
+        }
+        html:not([data-theme]) & {
+          @media (prefers-color-scheme: dark) {
+            fill: var(--text-ondark_brand-same);
+          }
+        }
+      }
+    }
+
+
 &::before,
         &::after {
           content: "";
