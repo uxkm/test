@@ -2,6 +2,32 @@
 {% raw %}
 ```js
 
+<template>
+  <div class="sc-contents__body">
+    <section class="section">
+      <RadioCircleGroup 
+        v-model="termsAgree"
+        :items="['동의함', '동의 안함']" 
+        orientation="horizontal" 
+        class="terms-radio__group"
+      />
+    </section>
+    <section class="section">
+      <div class="tterms-content" style="height:500px;background-color: var(--gray-50)">
+      <!-- 약관 내용, 개발 시 style="background-color는 제거" -->
+      </div>
+    </section>
+  </div>
+</template>
+
+<script setup>
+import { 
+  RadioCircleGroup 
+} from "@shc-nss/ui/solid";
+import { ref } from "vue";
+
+const termsAgree = ref("동의함");
+
 
 <route lang="yaml">
 meta:
