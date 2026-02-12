@@ -27,6 +27,7 @@ import {
 import { ref } from "vue";
 
 const termsAgree = ref("동의함");
+const termsAgree = ref(undefined);
 
 
 <route lang="yaml">
