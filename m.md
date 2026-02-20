@@ -2,14 +2,14 @@
 {% raw %}
 ```js
 
-// 분리하여 작업 컴포넌트 호출 방식 ScLottie.vue
 <template>
-  <!-- a11y: 접근성용 재생/정지 버튼 자동 렌더 (래퍼 + 토글 버튼 포함) -->
+  <!-- a11y: 재생/정지 버튼 자동 렌더, SVG는 aria-hidden(장식), 대체텍스트는 토글 aria-label로 제공 -->
   <div
     v-if="a11y"
     class="lottie-animation-container lottie-animation-container--a11y"
     :style="a11yWrapperStyle"
   >
+    <!-- Lottie SVG는 장식용 → data_ready 시 svg에 aria-hidden 적용, 대체텍스트는 토글 버튼 aria-label로 제공 -->
     <div
       ref="lottieContainer"
       class="lottie-animation-container__inner"
@@ -138,6 +138,11 @@ const initLottie = () => {
     const instance = lottieInstance.value;
     if (!instance) return;
 
+    // a11y: renderer "svg"로 생성된 SVG에 aria-hidden 적용 (장식용, 대체텍스트는 토글 버튼 aria-label로 제공)
+    if (props.a11y && lottieContainer.value) {
+      lottieContainer.value.querySelector("svg")?.setAttribute("aria-hidden", "true");
+    }
+
     props.speed && (instance.playSpeed = props.speed);
 
     if (props.delay) {
@@ -185,6 +190,7 @@ onUnmounted(() => {
   lottieInstance.value?.destroy();
 });
 </script>
+
 
 
 // 호출하는 부분
