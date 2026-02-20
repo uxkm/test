@@ -2,6 +2,206 @@
 {% raw %}
 ```js
 
+// 분리하여 작업 컴포넌트 호출 방식 ScLottie.vue
+<template>
+  <!-- a11y: 접근성용 재생/정지 버튼 자동 렌더 (래퍼 + 토글 버튼 포함) -->
+  <div
+    v-if="a11y"
+    class="lottie-animation-container lottie-animation-container--a11y"
+    :style="a11yWrapperStyle"
+  >
+    <div
+      ref="lottieContainer"
+      class="lottie-animation-container__inner"
+      :style="lottieStyle"
+    />
+    <!-- a11y: 재생/정지 토글 버튼 (네이티브 button으로 클릭 안정성 확보) -->
+    <button
+      type="button"
+      class="lottie-animation-container__toggle"
+      :aria-label="isPlaying ? '정지' : '재생'"
+      @click="togglePlay"
+    >
+      <ScIcon
+        :icon-name="isPlaying ? 'Control_pause' : 'Control_play'"
+        :size="24"
+      />
+    </button>
+  </div>
+  <!-- a11y 미사용 시 기존 단일 컨테이너 렌더 -->
+  <div
+    v-else
+    ref="lottieContainer"
+    class="lottie-animation-container"
+    :style="lottieStyle"
+  />
+</template>
+
+<script lang="ts">
+/**
+ * @param {string} animationLink
+ * @param {boolean} a11y - true 시 재생/정지 접근성 버튼 자동 렌더
+ */
+export interface ScLottieProps {
+  animationLink: string;
+  width?: number | string;
+  height?: number | string;
+  /** a11y 모드에서 래퍼/버튼 레이아웃에 사용 */
+  minHeight?: number | string;
+  loop?: boolean;
+  autoPlay?: boolean;
+  speed?: number;
+  delay?: number;
+  /** true 시 재생/정지 접근성 버튼 자동 렌더 */
+  a11y?: boolean;
+}
+</script>
+
+<script setup lang="ts">
+// a11y 모드: IconButton 대신 네이티브 button + ScIcon 사용 (클릭 이벤트 안정성)
+import { ScIcon } from "../icon";
+import Lottie, { type AnimationItem } from "lottie-web";
+import { computed, nextTick, onMounted, onUnmounted, ref, watch } from "vue";
+
+const props = withDefaults(defineProps<ScLottieProps>(), {
+  loop: true,
+  autoPlay: true,
+  a11y: false,
+});
+
+const emit = defineEmits<{
+  onAnimationLoaded: [item: AnimationItem];
+}>();
+
+const lottieContainer = ref<Element | null>(null); // lottie Container
+const lottieInstance = ref<AnimationItem | null>(null); // lottie Instance
+/** a11y 모드에서 재생/정지 상태 (토글 버튼 UI 및 aria-label 동기화) */
+const isPlaying = ref(props.autoPlay);
+let delayTimeoutId: ReturnType<typeof setTimeout> | null = null;
+
+const applyPlayState = (instance: AnimationItem, shouldPlay: boolean) => {
+  try {
+    shouldPlay ? instance.play() : instance.pause();
+  } catch {
+    // 일부 로띠에서 play/pause 미지원 시 무시
+  }
+};
+
+/** a11y: lottie-web togglePause() 호출 후 isPlaying 동기화 */
+const togglePlay = () => {
+  const instance = lottieInstance.value;
+  if (!instance) return;
+  instance.togglePause();
+  isPlaying.value = !instance.isPaused;
+};
+
+const lottieStyle = computed(() => {
+  const style: Record<string, string> = {};
+
+  if (props.width)
+    style.width = typeof props.width === "number" ? `${props.width}px` : props.width;
+  if (props.height)
+    style.height = typeof props.height === "number" ? `${props.height}px` : props.height;
+  if (props.minHeight)
+    style.minHeight =
+      typeof props.minHeight === "number" ? `${props.minHeight}px` : props.minHeight;
+
+  return style;
+});
+
+/** a11y: 토글 버튼 absolute 포지셔닝을 위한 래퍼 스타일 */
+const a11yWrapperStyle = computed(() => {
+  const style: Record<string, string> = { position: "relative" };
+  if (props.minHeight)
+    style.minHeight =
+      typeof props.minHeight === "number" ? `${props.minHeight}px` : props.minHeight;
+  return style;
+});
+
+const initLottie = () => {
+  if (!lottieContainer.value) return;
+
+  // a11y: 초기 재생 여부를 isPlaying(내부 상태)로 결정
+  const shouldAutoplay = props.a11y ? isPlaying.value : props.autoPlay;
+
+  lottieInstance.value = Lottie.loadAnimation({
+    container: lottieContainer.value as unknown as Element,
+    renderer: "svg",
+    loop: props.loop,
+    autoplay: shouldAutoplay,
+    path: props.animationLink,
+  });
+
+  emit("onAnimationLoaded", lottieInstance.value);
+
+  lottieInstance.value.addEventListener("data_ready", () => {
+    const instance = lottieInstance.value;
+    if (!instance) return;
+
+    props.speed && (instance.playSpeed = props.speed);
+
+    if (props.delay) {
+      applyPlayState(instance, false);
+      delayTimeoutId = setTimeout(() => {
+        // a11y: delay 후 재생 시 isPlaying 반영
+        const shouldPlay = props.a11y ? isPlaying.value : props.autoPlay;
+        if (shouldPlay && lottieInstance.value) {
+          applyPlayState(lottieInstance.value, true);
+        }
+        delayTimeoutId = null;
+      }, props.delay);
+    } else {
+      // a11y: data_ready 시점에 isPlaying 반영
+      const shouldPlay = props.a11y ? isPlaying.value : props.autoPlay;
+      applyPlayState(instance, shouldPlay);
+    }
+  });
+};
+
+// nextTick: v-if(a11y) 분기 시 ref 할당 완료 보장 후 초기화
+onMounted(async () => {
+  await nextTick();
+  initLottie();
+});
+
+// a11y: isPlaying 변경 시 / 일반: props.autoPlay 변경 시 play/pause 동기화
+watch(
+  () => (props.a11y ? isPlaying.value : props.autoPlay),
+  (shouldPlay) => {
+    const instance = lottieInstance.value;
+    if (!instance) return;
+
+    if (delayTimeoutId) {
+      clearTimeout(delayTimeoutId);
+      delayTimeoutId = null;
+    }
+
+    applyPlayState(instance, shouldPlay);
+  },
+);
+
+onUnmounted(() => {
+  if (delayTimeoutId) clearTimeout(delayTimeoutId);
+  lottieInstance.value?.destroy();
+});
+</script>
+
+
+// 호출하는 부분
+<div class="lottie-wrap">
+  <ScLottie
+    :animation-link="$cdnURL + '/images/lottie/common/timeline_etc_info01.json'"
+    :autoPlay="true"
+    :loop="true"
+    :width="'auto'"
+    min-height="344px"
+    a11y
+  />
+</div>
+  
+
+
+
 // 재생/정지 컴포넌트 케이스 2
 <route lang="yaml">
   meta:
