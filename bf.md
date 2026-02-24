@@ -3,6 +3,9 @@
 ```js
 
 
+import SBT001A01Service from "./section/SBT001A01-service.vue";
+
+
 svg {
   path[fill="white"],
   ellipse[fill="white"] {
