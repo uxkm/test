@@ -2,6 +2,140 @@
 {% raw %}
 ```js
 
+// SBT128A01
+
+
+    <!-- 추가 UI -->
+    <section class="section giftshop">
+      <div class="giftshop__header">
+        <h2 class="title-sub">기프트샵</h2>
+        <TextButton text="전체보기" color="secondary" size="small" showGoTo />
+      </div>
+      <div class="giftshop__body">
+        <ul class="giftshop__list">
+          <li
+            v-for="item in giftshopItems"
+            :key="item.id"
+          >
+            <a
+              role="link"
+              :aria-label="`${item.brand} ${item.productName} 정상가: ${item.originalPrice}, 할인: ${item.discountRate}, 할인가: ${item.salePrice}`"
+            >
+              <figure class="giftshop__item" aria-hidden="true">
+                <div class="giftshop__item-image">
+                  <ScImage :src="item.image.src" :alt="item.image.alt" />
+                </div>
+                <figcaption class="giftshop__item-caption">
+                  <strong>{{ item.brand }}</strong>
+                  <p>{{ item.productName }}</p>
+                  <p><del>{{ item.originalPrice }}</del></p>
+                  <p>
+                    <em>{{ item.discountRate }}</em>
+                    <ins>{{ item.salePrice }}</ins>
+                  </p>
+                </figcaption>
+              </figure>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section delivery-coupon">
+      <div class="delivery-coupon__header">
+        <h2 class="title-sub">배달앱 땡겨요 쿠폰</h2>
+        <TextButton text="전체보기" color="secondary" size="small" showGoTo />
+      </div>
+      <div class="delivery-coupon__body">
+        <Carousel
+          v-if="deliveryCouponSlides.length > 0"
+          root-class="delivery-coupon__carousel"
+          slides-per-view="1"
+          :space-between="0"
+          :loop="deliveryCouponSlides.length > 1"
+          :pagination="deliveryCouponSlides.length > 1"
+          :navigation="deliveryCouponSlides.length > 1"
+          :autoplay="deliveryCouponSlides.length > 1"
+          :show-autoplay-control="deliveryCouponSlides.length > 1"
+          pagination-type="fraction"
+          pagination-placement="outside-center"
+          number-color="responsiveMode"
+          number-size="large"
+        >
+          <CarouselItem
+            v-for="(slide, i) in deliveryCouponSlides"
+            :key="slide.id ?? i"
+          >
+            <a 
+              role="link" 
+              :href="slide.url || 'javascript:;'" 
+              class="delivery-coupon__slide"
+              :aria-label="`${slide.image.alt ?? ''}`"
+            >
+              <ScImage
+                v-if="slide.image"
+                :src="slide.image.src"
+                :alt="slide.image.alt ?? ''"
+              />
+            </a>
+          </CarouselItem>
+        </Carousel>
+      </div>
+    </section>
+
+
+
+
+// 추가 데이터
+// 배달앱 땡겨요 쿠폰 캐러셀 슬라이드 (1개면 카운트/재생/정지 미노출)
+const deliveryCouponSlides = [
+  {
+    id: 1,
+    url: "javascript:;",
+    image: {
+      src: `${$cdnURL}/images/dummy/img_giftshop01.png`,
+      alt: "도미노피자 배달 메뉴, 최대 11,000원 할인, 기간: 23년 8월1일 부터 23년 8월31일까지",
+    },
+  },
+  {
+    id: 2,
+    url: "javascript:;",
+    image: {
+      src: `${$cdnURL}/images/dummy/img_giftshop01.png`,
+      alt: "도미노피자 배달 메뉴, 최대 11,000원 할인, 기간: 23년 8월1일 부터 23년 8월31일까지",
+    },
+  },
+];
+
+// 기프트샵 리스트 데이터
+const giftshopItems = [
+  {
+    id: 1,
+    brand: "투썸플레이스",
+    productName: "따먹는 스토리베리 포콜릿 생크림",
+    originalPrice: "7,200원",
+    discountRate: "7%",
+    salePrice: "6,700원",
+    image: {
+      src: `${$cdnURL}/images/dummy/img_giftshop01.png`,
+      alt: "기프트샵",
+    },
+  },
+  {
+    id: 2,
+    brand: "투썸플레이스",
+    productName: "따먹는 스토리베리 포콜릿 생크림",
+    originalPrice: "7,200원",
+    discountRate: "7%",
+    salePrice: "6,700원",
+    image: {
+      src: `${$cdnURL}/images/dummy/img_giftshop01.png`,
+      alt: "기프트샵",
+    },
+  },
+];
+
+
 
 import SBT001A01Service from "./section/SBT001A01-service.vue";
 
