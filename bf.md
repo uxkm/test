@@ -12,6 +12,12 @@
 // isSwiping	inner/handle의 터치·마우스 4개 소스 통합
 // handleButtonOffset	isSwiping 통합 변수 사용 (기존 innerIsSwiping || handleIsSwiping)
 
+// import – useSwipe 추가
+// inner / handle 핸들러 – 공통 핸들러 추출
+// useSwipe + usePointerSwipe 하이브리드 – inner, handle 각각 적용
+// isSwiping computed – 4개 소스 통합
+// handleButtonOffset – isSwiping.value 사용
+// 주석 – [수정 260303] 추가
 
 
 <template>
