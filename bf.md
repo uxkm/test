@@ -2,6 +2,36 @@
 {% raw %}
 ```js
 
+
+// android safe area구분
+
+// Android: safe-area 사용 시 영향 제거
+// Android에서 env(safe-area-inset-*)가 상단/측면 공간을 만들며 레이아웃이 밀리는 현상 방지
+html.os_android {
+  --env-t: 0;
+  --env-l: 0;
+  --env-r: 0;
+
+  // bottomsheet, fullpopup, modalpopup, overlay 상단 영역까지 차지
+  .sc-wrap ~ .sv-bottom-sheet,
+  .sc-wrap ~ .sv-popup.sv-popup--variant-full,
+  .sc-wrap ~ .sv-popup.sv-popup--variant-modal,
+  .sc-wrap ~ .sv-overlay {
+    padding-top: 0;
+  }
+
+  // error-boundary-wrap 상단 패딩 제거
+  .error-boundary-wrap {
+    padding-top: 0;
+  }
+
+  // 상단 고정 네비게이션 패딩 보정 (env-t 제거)
+  .error-boundary-wrap .sv-navigation--fixed .sv-navigation__inner {
+    padding-top: var(--spacing-lg);
+  }
+}
+
+
 // promotion 네이티브 이슈 처리
 
 // import	네이티브 WebView 터치 스와이프 대응: useSwipe(touch) 추가
