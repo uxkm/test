@@ -40,6 +40,13 @@ WebView가 들어 있는 스크롤 뷰가 터치를 선점하는지
 터치 이벤트가 WebView까지 전달되는지
 요약: 웹에서의 동작과 동일하게, inner·handle 영역의 터치 스와이프가 정상 동작하는지가 네이티브에서 가장 중요한 확인 포인트.
 */
+/*
+  [네이티브 처리/요청 사항] promotion-banner 터치 스와이프 동작
+  - 배경: 로컬 웹뷰·브라우저에서는 스와이프 동작하나, 네이티브 앱에서는 스크롤 뷰가 터치를 선점하여 동작하지 않음
+  - iOS: WebView 상위 UIScrollView의 delaysContentTouches, 제스처 설정 조정하여 배너 영역 수평 터치가 WebView에 전달되도록
+  - Android: 배너 영역 터치 시 parent.requestDisallowInterceptTouchEvent(true) 호출하여 상위 스크롤 뷰가 터치를 가로채지 않도록
+  - 목표: promotion-banner__inner, promotion-banner__handle 영역의 좌측 스와이프가 WebView까지 전달되어 dismiss 동작
+*/
 
 
 <template>
