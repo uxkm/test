@@ -4,6 +4,16 @@
 
 // promotion 네이티브 이슈 처리
 
+// import	네이티브 WebView 터치 스와이프 대응: useSwipe(touch) 추가
+// inner 공통 핸들러	터치·마우스 공통 처리: distance 인자로 받는 핸들러 추출
+// inner useSwipe+usePointerSwipe	터치(useSwipe, passive:false) + 마우스(usePointerSwipe, pointerTypes:['mouse','pen']) 하이브리드
+// handle 핸들러	inner와 동일한 터치·마우스 공통 핸들러 패턴 적용
+// handle useSwipe+usePointerSwipe	handle: useSwipe + usePointerSwipe 하이브리드
+// isSwiping	inner/handle의 터치·마우스 4개 소스 통합
+// handleButtonOffset	isSwiping 통합 변수 사용 (기존 innerIsSwiping || handleIsSwiping)
+
+
+
 <template>
   <!-- S: 이벤트 프로모션 -->
   <section class="bf-promotion" aria-label="이벤트 프로모션">
