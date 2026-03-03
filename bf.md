@@ -20,6 +20,28 @@
 // 주석 – [수정 260303] 추가
 
 
+/*
+네이티브 앱 확인 체크리스트
+1. 터치 스와이프 동작 (핵심)
+[ ] inner 영역: 배너 콘텐츠(이미지·텍스트)를 좌측으로 터치 스와이프 시 dismiss
+[ ] handle 영역: "당겨보세요!" 버튼 영역을 좌측으로 터치 스와이프 시 dismiss
+[ ] 스와이프 후 40px 이상 드래그 시 dismiss
+[ ] 스와이프 후 40px 미만이면 원래 위치로 복귀
+2. 클릭·버튼 동작
+[ ] 짧은 탭(클릭) 시 dismiss
+[ ] handle 버튼(화살표) 클릭 시 dismiss
+[ ] X 버튼 클릭 시 접힘 애니메이션 후 배너 원래 상태로 복귀
+3. 환경별 확인 (가능한 경우)
+[ ] iOS (WKWebView): 터치 스와이프 동작
+[ ] Android (WebView): 터치 스와이프 동작
+4. 동작하지 않을 때 점검 사항
+WebView가 들어 있는 스크롤 뷰가 터치를 선점하는지
+해당 배너 영역에 requestDisallowInterceptTouchEvent (Android) 적용 여부
+터치 이벤트가 WebView까지 전달되는지
+요약: 웹에서의 동작과 동일하게, inner·handle 영역의 터치 스와이프가 정상 동작하는지가 네이티브에서 가장 중요한 확인 포인트.
+*/
+
+
 <template>
   <!-- S: 이벤트 프로모션 -->
   <section class="bf-promotion" aria-label="이벤트 프로모션">
