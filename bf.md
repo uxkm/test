@@ -355,6 +355,8 @@
 import { computed, inject, nextTick, onMounted, ref, watchEffect } from "vue";
 import { useTemplateRef } from "vue";
 // [수정 260303] 네이티브 WebView 터치 스와이프 대응: useSwipe(touch) 추가
+// 기존:
+//   import { usePointerSwipe } from "@vueuse/core";
 import { usePointerSwipe, useSwipe } from "@vueuse/core";
 import { AppContextKey } from "@/configs/inject/appContext";
 import { ScImage } from "@shc-nss/ui/shc";
@@ -478,6 +480,17 @@ let hasDragged = false;
 let startX = 0;
 
 // [수정 260303] 터치·마우스 공통 처리: distance 인자로 받는 핸들러 추출
+// 기존:
+//   const { distanceX, isSwiping: innerIsSwiping } = usePointerSwipe(
+//     promotionBannerInner,
+//     {
+//       disableTextSelect: true,
+//       threshold: SENSITIVITY.SWIPE_THRESHOLD,
+//       onSwipeStart(e) { hasDragged = true; startX = e.clientX || 0; ... },
+//       onSwipe(e) { const distance = distanceX.value; ... },
+//       onSwipeEnd() { const isClick = !hasDragged || Math.abs(distanceX.value) < ...; ... },
+//     }
+//   );
 const innerOnSwipeStart = () => {
   hasDragged = true;
   const initialWidth = initialInnerWidth.value;
@@ -550,6 +563,17 @@ const innerOnSwipeEnd = (distance) => {
 };
 
 // [수정 260303] inner: 터치(useSwipe, passive:false) + 마우스(usePointerSwipe, pointerTypes:['mouse','pen']) 하이브리드
+// 기존:
+//   const { distanceX, isSwiping: innerIsSwiping } = usePointerSwipe(
+//     promotionBannerInner,
+//     {
+//       disableTextSelect: true,
+//       threshold: SENSITIVITY.SWIPE_THRESHOLD,
+//       onSwipeStart(e) { ... },
+//       onSwipe(e) { const distance = distanceX.value; ... },
+//       onSwipeEnd() { ... },
+//     }
+//   );
 const {
   lengthX: innerTouchLengthX,
   isSwiping: innerTouchIsSwiping,
@@ -574,6 +598,15 @@ const { distanceX: innerPointerDistanceX, isSwiping: innerPointerIsSwiping } =
   });
 
 // [수정 260303] handle: inner와 동일한 터치·마우스 공통 핸들러 패턴 적용
+// 기존:
+//   const { distanceX: handleDistanceX, isSwiping: handleIsSwiping } =
+//     usePointerSwipe(promotionBannerHandle, {
+//       disableTextSelect: true,
+//       threshold: SENSITIVITY.SWIPE_THRESHOLD,
+//       onSwipeStart(e) { ... },
+//       onSwipe(e) { const distance = handleDistanceX.value; ... },
+//       onSwipeEnd() { ... },
+//     });
 const handleOnSwipeStart = () => {
   hasDragged = true;
   const initialWidth = initialInnerWidth.value;
@@ -644,6 +677,15 @@ const handleOnSwipeEnd = (distance) => {
 };
 
 // [수정 260303] handle: useSwipe + usePointerSwipe 하이브리드
+// 기존:
+//   const { distanceX: handleDistanceX, isSwiping: handleIsSwiping } =
+//     usePointerSwipe(promotionBannerHandle, {
+//       disableTextSelect: true,
+//       threshold: SENSITIVITY.SWIPE_THRESHOLD,
+//       onSwipeStart(e) { ... },
+//       onSwipe(e) { ... },
+//       onSwipeEnd() { ... },
+//     });
 const { lengthX: handleTouchLengthX, isSwiping: handleTouchIsSwiping } =
   useSwipe(promotionBannerHandle, {
     threshold: SENSITIVITY.SWIPE_THRESHOLD,
@@ -668,6 +710,10 @@ const {
 });
 
 // [수정 260303] isSwiping: inner/handle의 터치·마우스 4개 소스 통합
+// 기존:
+//   const isSwiping = computed(
+//     () => innerIsSwiping.value || handleIsSwiping.value
+//   );
 const isSwiping = computed(
   () =>
     innerTouchIsSwiping.value ||
@@ -744,7 +790,8 @@ watchEffect(() => {
 
 // handle-button의 offset 계산 (항상 고정, 드래그 시에도 움직이지 않음)
 const handleButtonOffset = computed(() => {
-  // [수정 260303] isSwiping 통합 변수 사용 (기존 innerIsSwiping || handleIsSwiping)
+  // [수정 260303] 기존:
+  //   if (innerIsSwiping.value || handleIsSwiping.value) return "0px";
   if (isSwiping.value) return "0px";
 
   // 드래그가 아닐 때도 항상 고정 (움직이지 않음)
@@ -893,6 +940,7 @@ onMounted(async () => {
   }
 });
 </script>
+
 
 
 
