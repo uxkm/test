@@ -2,6 +2,23 @@
 {% raw %}
 ```js
 
+// 기본: body에 safe-area padding (footer 없을 때)
+    .sv-bottom-sheet_body,
+    &.bs-card-agree .sv-bottom-sheet_body {
+      padding-bottom: var(--env-b);
+    }
+    // footer 있을 때: body padding 제거, 하단 CTA 영역에만 적용
+    &:has(.sv-popup_footer),
+    &.has-footer {
+      .sv-bottom-sheet_body,
+      &.bs-card-agree .sv-bottom-sheet_body {
+        padding-bottom: 0;
+      }
+      .sv-bottom-action-container__content {
+        padding-bottom: var(--env-b);
+      }
+    }
+
 
 // android safe area구분
 
