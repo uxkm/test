@@ -2,6 +2,13 @@
 {% raw %}
 ```js
 
+  // override 처리
+  // 상단 고정 네비게이션: 노치 영역을 0으로 두고 노치 아래부터 시작
+  .sv-navigation--fixed .sv-navigation__inner {
+    top: var(--env-t);
+    padding-top: var(--spacing-lg);
+  }
+
 // 기본: body에 safe-area padding (footer 없을 때)
     .sv-bottom-sheet_body,
     &.bs-card-agree .sv-bottom-sheet_body {
