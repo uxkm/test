@@ -2,6 +2,21 @@
 {% raw %}
 ```js
 
+// 1) nav를 노치 아래부터 배치
+  .sv-navigation--fixed .sv-navigation__inner {
+    top: var(--env-t);
+  }
+  // 2) 스크롤 시 노치 영역에 콘텐츠 노출 방지: nav 위에 노치 높이만큼 배경 덮음
+  .sv-navigation--fixed .sv-navigation__inner::before {
+    content: "";
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+    right: 0;
+    height: var(--env-t);
+    background: inherit;
+  }
+
   // override 처리
   // 상단 고정 네비게이션: 노치 영역을 0으로 두고 노치 아래부터 시작
   .sv-navigation--fixed .sv-navigation__inner {
