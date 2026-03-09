@@ -2,6 +2,18 @@
 {% raw %}
 ```js
 
+
+// sv-bottom-action-container__content: 오직 sv-button-group만 있으면 버튼 그룹에 env-b, 아니면 content에 env-b
+.sv-bottom-action-container__content:has(> .sv-button-group:only-child) {
+  > .sv-button-group {
+    padding-bottom: var(--env-b);
+  }
+}
+.sv-bottom-action-container__content:not(:has(> .sv-button-group:only-child)) {
+  padding-bottom: var(--env-b);
+}
+
+
 // 1) nav를 노치 아래부터 배치
   .sv-navigation--fixed .sv-navigation__inner {
     top: var(--env-t);
