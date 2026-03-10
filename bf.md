@@ -2,7 +2,9 @@
 {% raw %}
 ```js
 
-
+.device_model_sm-f956n .sc-container[data-layout=MainLayout]:after {
+  padding-bottom: calc(62px + var(--env-b) + 48px);
+}
 // sv-bottom-action-container__content: 오직 sv-button-group만 있으면 버튼 그룹에 env-b, 아니면 content에 env-b
 .sv-bottom-action-container__content:has(> .sv-button-group:only-child) {
   > .sv-button-group {
