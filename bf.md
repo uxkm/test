@@ -2,6 +2,26 @@
 {% raw %}
 ```js
 
+
+const args = {
+  slides: slides,
+  slidesPerView: "1.8",
+  spaceBetween: "5%",
+  // [추가] 자동재생/정지, 1/n 카운터 옵션 추가 시작
+  pagination: true, // 1/n 카운터 + 재생/정지 컨트롤 노출
+  paginationType: "fraction", // 블릿 대신 1/n 형식
+  autoplay: true, // 자동재생
+  autoplayDelay: 3000, // 자동재생 간격(ms)
+  // [추가] 자동재생/정지, 1/n 카운터 옵션 추가 끝
+  navigation: false,
+  loop: true,
+  centeredSlides: true,
+  theme: "default",
+  speed: 300,
+  direction: "horizontal",
+};
+
+
 .device_model_sm-f956n .sc-container[data-layout=MainLayout]:after {
   padding-bottom: calc(62px + var(--env-b) + 48px);
 }
