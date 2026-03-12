@@ -3,6 +3,8 @@
 ```js
 
 
+@use "@assets/styles/pay/_benefits" as *;
+
 const args = {
   slides: slides,
   slidesPerView: "1.8",
