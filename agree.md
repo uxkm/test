@@ -2,6 +2,1805 @@
 {% raw %}
 ```js
 
+<div class="sc-contents__body sc-agree__page">
+    <!-- 구조 수정 260318: 개발 전달용 -->
+    <div class="agree_wrap">
+      <!-- 전체 약관 선택 -->
+      <div class="agree_allcheck">
+        <Checkbox
+          v-model="agreeAll"
+          class="agree_checkbox"
+          variant="box"
+          align="left"
+        >
+          <template #label>
+            <span class="agree_label">
+              전체 약관 모두 동의
+            </span>
+          </template>
+        </Checkbox>
+      </div>
+      <!-- 약관 리스트 (depth1 개수 파악용 ref) -->
+      <ul ref="agreeListRef" class="agree_list" @click="onAgreeListClick">
+        <li class="depth1">
+          <!--
+            depth1의 checkbox는 variant="box" variant="mark" 스타일 구분
+            디자인에 맞춰서 작업 
+          -->
+          <div class="agree_item">
+            <Checkbox variant="box" align="left" class="agree_checkbox">
+              <template #label>
+                <span class="agree_label">
+                  [필수·선택] 서비스 이용약관
+                </span>
+              </template>
+            </Checkbox>
+            <!-- 
+              아이콘 버튼은 
+              하위 뎁스가 있는 경우 Chevron_down(펼침 시) / Chevron_right(접힘 시)
+              하위 뎁스가 없는 경우 Chevron_right(상세 보기만)
+              aria-label·aria-expanded 상황에 맞게 사용
+            -->
+            <IconButton
+              v-if="depth1HasChildren"
+              iconName="Chevron_down"
+              size="small"
+              class="agree_trigger"
+            />
+            <IconButton
+              v-else
+              iconName="Chevron_right"
+              size="small"
+              aria-label="[필수·선택] 서비스 이용약관 상세 보기"
+              class="agree_trigger"
+            />
+          </div>
+          <!-- depth2 (class is-expand 추가/제거로 펼침/접힘) -->
+          <div class="depth2">
+            <ul class="agree_sublist">
+              <li class="agree_subitem">
+                <div class="agree_item">
+                  <Checkbox variant="mark" align="left" class="agree_checkbox">
+                    <template #label>
+                      <span class="agree_label">
+                        앱카드 서비스 이용약관 필수 동의
+                      </span>
+                    </template>
+                  </Checkbox>
+                  <IconButton
+                    iconName="Chevron_right"
+                    size="small"
+                    aria-label="앱카드 서비스 이용약관 필수 동의 상세 보기"
+                    class="agree_trigger"
+                  />
+                </div>
+              </li>
+              <li class="agree_subitem">
+                <div class="agree_item">
+                  <Checkbox variant="mark" align="left" class="agree_checkbox">
+                    <template #label>
+                      <span class="agree_label">
+                        개인(신용)정보의 수집 및 이용 필수 동의
+                      </span>
+                    </template>
+                  </Checkbox>
+                  <IconButton
+                    iconName="Chevron_right"
+                    size="small"
+                    aria-label="개인(신용)정보의 수집 및 이용 필수 동의 상세 보기"
+                    class="agree_trigger"
+                  />
+                </div>
+              </li>
+              <li class="agree_subitem">
+                <div class="agree_item">
+                  <Checkbox variant="mark" align="left" class="agree_checkbox">
+                    <template #label>
+                      <span class="agree_label">
+                        고유식별정보처리 필수 동의
+                      </span>
+                    </template>
+                  </Checkbox>
+                  <IconButton
+                    iconName="Chevron_right"
+                    size="small"
+                    aria-label="고유식별정보처리 필수 동의 상세 보기"
+                    class="agree_trigger"
+                  />
+                </div>
+              </li>
+              <li class="agree_subitem">
+                <div class="agree_item">
+                  <Checkbox variant="mark" align="left" class="agree_checkbox">
+                    <template #label>
+                      <span class="agree_label">
+                        [선택] 위치기반 서비스 약관동의
+                      </span>
+                    </template>
+                  </Checkbox>
+                  <IconButton
+                    v-if="depth2HasChildren"
+                    iconName="Chevron_down"
+                    size="small"
+                    class="agree_trigger"
+                  />
+                  <IconButton
+                    v-else
+                    iconName="Chevron_right"
+                    size="small"
+                    aria-label="[선택] 위치기반 서비스 약관동의 상세 보기"
+                    class="agree_trigger"
+                  />
+                </div>
+                <!-- depth3 (class is-expand 추가/제거로 펼침/접힘) -->
+                <div class="depth3">
+                  <ul class="agree_sublist">
+                    <li class="agree_subitem">
+                      <div class="agree_item">
+                        <Checkbox
+                          variant="mark"
+                          align="left"
+                          class="agree_checkbox"
+                        >
+                          <template #label>
+                            <span class="agree_label">
+                              신한카드 위치기반 사업자 약관 동의
+                            </span>
+                          </template>
+                        </Checkbox>
+                        <IconButton
+                          iconName="Chevron_right"
+                          size="small"
+                          aria-label="신한카드 위치기반 사업자 약관 동의 상세 보기"
+                          class="agree_trigger"
+                        />
+                      </div>
+                    </li>
+                    <li class="agree_subitem">
+                      <div class="agree_item">
+                        <Checkbox
+                          variant="mark"
+                          align="left"
+                          class="agree_checkbox"
+                        >
+                          <template #label>
+                            <span class="agree_label">
+                              위치정보 서비스 동의사항
+                            </span>
+                          </template>
+                        </Checkbox>
+                        <IconButton
+                          v-if="depth3HasChildren"
+                          iconName="Chevron_down"
+                          size="small"
+                          class="agree_trigger"
+                        />
+                        <IconButton
+                          v-else
+                          iconName="Chevron_right"
+                          size="small"
+                          aria-label="위치정보 서비스 동의사항 상세 보기"
+                          class="agree_trigger"
+                        />
+                      </div>
+                      <!-- depth4 (class is-expand 추가/제거로 펼침/접힘) -->
+                      <div
+                        class="depth4"
+                      >
+                        <ul class="agree_sublist box_type">
+                          <li class="agree_subitem">
+                            <div class="agree_item">
+                              <Checkbox
+                                variant="mark"
+                                align="left"
+                                class="agree_checkbox"
+                              >
+                                <template #label>
+                                  <span class="agree_label">
+                                    LG U+ 위치정보 사업자 약관동의
+                                  </span>
+                                </template>
+                              </Checkbox>
+                              <IconButton
+                                iconName="Chevron_right"
+                                size="small"
+                                aria-label="LG U+ 위치정보 사업자 약관동의 상세 보기"
+                                class="agree_trigger"
+                              />
+                            </div>
+                          </li>
+                          <li class="agree_subitem">
+                            <div class="agree_item">
+                              <Checkbox
+                                variant="mark"
+                                align="left"
+                                class="agree_checkbox"
+                              >
+                                <template #label>
+                                  <span class="agree_label">
+                                    LG U+ 개인정보수집 이용 및 제3자 제공동의
+                                  </span>
+                                </template>
+                              </Checkbox>
+                              <IconButton
+                                iconName="Chevron_right"
+                                size="small"
+                                aria-label="LG U+ 개인정보수집 이용 및 제3자 제공동의 상세 보기"
+                                class="agree_trigger"
+                              />
+                            </div>
+                          </li>
+                          <li class="agree_subitem">
+                            <div class="agree_item">
+                              <Checkbox
+                                variant="mark"
+                                align="left"
+                                class="agree_checkbox"
+                              >
+                                <template #label>
+                                  <span class="agree_label">
+                                    로플랫 위치정보 사업자 약관동의
+                                  </span>
+                                </template>
+                              </Checkbox>
+                              <IconButton
+                                iconName="Chevron_right"
+                                size="small"
+                                aria-label="로플랫 위치정보 사업자 약관동의 상세 보기"
+                                class="agree_trigger"
+                              />
+                            </div>
+                          </li>
+                        </ul>
+                      </div>
+                      <!-- //.depth4 -->
+                    </li>
+                    <li class="agree_subitem">
+                      <div class="agree_item">
+                        <Checkbox
+                          variant="mark"
+                          align="left"
+                          class="agree_checkbox"
+                        >
+                          <template #label>
+                            <span class="agree_label">
+                              개인정보 수집 및 이용동의
+                            </span>
+                          </template>
+                        </Checkbox>
+                        <IconButton
+                          iconName="Chevron_right"
+                          size="small"
+                          aria-label="개인정보 수집 및 이용동의 상세 보기"
+                          class="agree_trigger"
+                        />
+                      </div>
+                    </li>
+                    <li class="agree_subitem">
+                      <div class="agree_item">
+                        <Checkbox
+                          variant="mark"
+                          align="left"
+                          class="agree_checkbox"
+                        >
+                          <template #label>
+                            <span class="agree_label">
+                              위치기반 혜택 알림 수신동의
+                            </span>
+                          </template>
+                        </Checkbox>
+                        <IconButton
+                          iconName="Chevron_right"
+                          size="small"
+                          aria-label="위치기반 혜택 알림 수신동의 상세 보기"
+                          class="agree_trigger"
+                        />
+                      </div>
+                    </li>
+                    <li class="agree_subitem">
+                      <div class="agree_item">
+                        <Checkbox
+                          variant="mark"
+                          align="left"
+                          class="agree_checkbox"
+                        >
+                          <template #label>
+                            <span class="agree_label">
+                              블루칩 씨앤에스 위치정보사업자약관동의
+                            </span>
+                          </template>
+                        </Checkbox>
+                        <IconButton
+                          iconName="Chevron_right"
+                          size="small"
+                          aria-label="블루칩 씨앤에스 위치정보사업자약관동의 상세 보기"
+                          class="agree_trigger"
+                        />
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+                <!-- //.depth3 -->
+              </li>
+              <li class="agree_subitem">
+                <div class="agree_item">
+                  <Checkbox variant="mark" align="left" class="agree_checkbox">
+                    <template #label>
+<span class="agree_label">
+                  [선택] 앱(APP) 알림 수신동의
+                      </span>
+                    </template>
+                  </Checkbox>
+                  <IconButton
+                    v-if="depth2HasChildren"
+                    iconName="Chevron_down"
+                    size="small"
+                    class="agree_trigger"
+                  />
+                  <IconButton
+                    v-else
+                    iconName="Chevron_right"
+                    size="small"
+                    aria-label="[선택] 앱(APP) 알림 수신동의 상세 보기"
+                    class="agree_trigger"
+                  />
+                </div>
+                <!-- depth3 (class is-expand 추가/제거로 펼침/접힘) -->
+                <div class="depth3">
+                  <ul class="agree_sublist">
+                    <li class="agree_subitem">
+                      <div class="agree_item">
+                        <Checkbox
+                          variant="mark"
+                          align="left"
+                          class="agree_checkbox"
+                        >
+                          <template #label>
+<span class="agree_label">
+                            마케팅 정보 수신동의
+                            </span>
+                          </template>
+                        </Checkbox>
+                        <IconButton
+                          v-if="depth3HasChildren"
+                          iconName="Chevron_down"
+                          size="small"
+                          class="agree_trigger"
+                        />
+                        <IconButton
+                          v-else
+                          iconName="Chevron_right"
+                          size="small"
+                          aria-label="마케팅 정보 수신동의 상세 보기"
+                          class="agree_trigger"
+                        />
+                      </div>
+                      <!-- depth4 (class is-expand 추가/제거로 펼침/접힘) -->
+                      <div class="depth4">
+                        <div class="agree_sublist box_type">
+                          <UnorderedList :gap="8">
+                            <UnorderedListItem size="small">
+                              <span class="list_label">
+                                항목: 앱(APP)을 통한 마케팅 정보 수신동의
+                              </span>
+                            </UnorderedListItem>
+                            <UnorderedListItem size="small">
+                              <span class="list_label">
+                                이용목적: 각종 이벤트, 할인, 이용정보 등의 안내
+                              </span>
+                            </UnorderedListItem>
+                            <UnorderedListItem size="small">
+                              <span class="list_label">
+                                보유기간: 별도 동의 철회시까지
+                              </span>
+                            </UnorderedListItem>
+                          </UnorderedList>
+                        </div>
+                      </div>
+                      <!-- //.depth4 -->
+                    </li>
+                  </ul>
+                </div>
+                <!-- //.depth3 -->
+              </li>
+            </ul>
+          </div>
+          <!-- //.depth2 -->
+        </li>
+        <!-- //.depth1 -->
+        <li class="depth1">
+          <div class="agree_item">
+            <Checkbox variant="box" align="left" class="agree_checkbox">
+              <template #label>
+                <span class="agree_label">
+                  [필수·선택] 신한Pay머니 이용약관
+                </span>
+              </template>
+            </Checkbox>
+            <IconButton
+              v-if="depth1HasChildren"
+              iconName="Chevron_down"
+              size="small"
+              class="agree_trigger"
+            />
+            <IconButton
+              v-else
+              iconName="Chevron_right"
+              size="small"
+              aria-label="[필수·선택] 신한Pay머니 이용약관 상세 보기"
+              class="agree_trigger"
+            />
+          </div>
+          <!-- depth2 (class is-expand 추가/제거로 펼침/접힘) -->
+          <div class="depth2">
+            <ul class="agree_sublist">
+              <li class="agree_subitem">
+                <div class="agree_item">
+                  <Checkbox variant="mark" align="left" class="agree_checkbox">
+                    <template #label>
+                      <span class="agree_label">
+                        신한Pay머니 이용약관 필수 동의
+                      </span>
+                    </template>
+                  </Checkbox>
+                  <IconButton
+                    iconName="Chevron_right"
+                    size="small"
+                    aria-label="신한Pay머니 이용약관 필수 동의 상세 보기"
+                    class="agree_trigger"
+                  />
+                </div>
+              </li>
+              <li class="agree_subitem">
+                <div class="agree_item">
+                  <Checkbox variant="mark" align="left" class="agree_checkbox">
+                    <template #label>
+                      <span class="agree_label">
+                        개인정보 수집 및 이용 필수 동의
+                      </span>
+                    </template>
+                  </Checkbox>
+                  <IconButton
+                    iconName="Chevron_right"
+                    size="small"
+                    aria-label="개인정보 수집 및 이용 필수 동의 상세 보기"
+                    class="agree_trigger"
+                  />
+                </div>
+              </li>
+              <li class="agree_subitem">
+                <div class="agree_item">
+                  <Checkbox variant="mark" align="left" class="agree_checkbox">
+                    <template #label>
+                      <span class="agree_label">
+                        고유식별정보처리 필수 동의
+                      </span>
+                    </template>
+                  </Checkbox>
+                  <IconButton
+                    iconName="Chevron_right"
+                    size="small"
+                    aria-label="고유식별정보처리 필수 동의 상세 보기"
+                    class="agree_trigger"
+                  />
+                </div>
+              </li>
+              <li class="agree_subitem">
+                <!-- S: 동의등급제 안내 -->
+                <div class="info_card">
+                  <Card
+                    variant="solid"
+                    color="gray"
+                    class="agree-info__card card-white"
+                  >
+                    <div class="info-card__header">
+                      <p class="info-card__title">동의등급제 안내</p>
+                    </div>
+                    <div class="info-card__content">
+                      <div class="label-group">
+                        <SolidLabel
+                          color="cyan"
+                          title="안심"
+                        />
+                        <SolidLabel
+                          color="green"
+                          title="다소안심"
+                        />
+                        <SolidLabel
+                          color="yellow"
+                          title="보통"
+                        />
+                        <SolidLabel
+                          color="orange"
+                          title="신중"
+                        />
+                        <SolidLabel
+                          color="red"
+                          title="주의"
+                        />
+                      </div>
+                      <UnorderedList>
+                        <UnorderedListItem
+                          variant="bullet"
+                          size="small"
+                          text="동의등급제는 개인(신용) 선택적 동의 항목에 대해 사생활의 비밀과 자유를 침해할 위험, 이익이나 혜택, 등의 내용의 명확성 등을 고려하여 5가지 등급을 부여하는 제도입니다."
+                        />
+                      </UnorderedList>
+                    </div>
+                  </Card>
+                </div>
+                <!-- E: 동의등급제 안내 -->
+                <div class="agree_item">
+                  <Checkbox variant="mark" align="left" class="agree_checkbox">
+                    <template #label>
+                      <span class="agree_label">
+                        [선택] 카드 및 금융상품 ・ 서비스 안내 및 이용권유를 위한 수집 ・ 이용
+                      </span>
+                      <br />
+                      <SolidLabel
+                        color="green"
+                        title="다소안심"
+                        aria-label="동의등급제 다소안심"
+                      />
+                    </template>
+                  </Checkbox>
+                  <IconButton
+                    iconName="Chevron_down"
+                    size="small"
+                    class="agree_trigger"
+                  />
+                </div>
+                <!-- depth3 (class is-expand 추가/제거로 펼침/접힘) -->
+                <div class="depth3">
+                  <ul class="agree_sublist">
+                    <li class="agree_subitem">
+                      <div class="agree_item">
+                        <Checkbox
+                          variant="mark"
+                          align="left"
+                          class="agree_checkbox"
+                        >
+                          <template #label>
+                            <span class="agree_label">
+                              고유식별번호 조회 동의
+                            </span>
+                          </template>
+                        </Checkbox>
+                      </div>
+                    </li>
+                    <li class="agree_subitem">
+                      <div class="agree_item">
+                        <Checkbox
+                          variant="mark"
+                          align="left"
+                          class="agree_checkbox"
+                        >
+                          <template #label>
+                            <span class="agree_label">
+                              개인신용정보 제공 동의
+                            </span>
+                          </template>
+                        </Checkbox>
+                      </div>
+                    </li>
+                  </ul>
+                  <!-- 하단 우측 정렬 버튼 -->
+                  <div class="agree_more">
+                    <TextButton
+                      class="agree_link"
+                      color="secondary"
+                      size="small"
+                      text="자세히보기"
+                      showGoTo
+                    />
+                  </div>
+                </div>
+                <!-- //.depth3 -->
+              </li>
+              <li class="agree_subitem">
+                <div class="agree_item">
+                  <Checkbox variant="mark" align="left" class="agree_checkbox">
+                    <template #label>
+                      <span class="agree_label">
+                        [선택] 카드 및 금융상품 ・ 서비스 안내 및 이용권유를 위한 수집 ・ 이용
+                      </span>
+                      <br />
+                      <SolidLabel
+                        color="yellow"
+                        title="보통"
+                        aria-label="동의등급제 보통"
+                      />
+                    </template>
+                  </Checkbox>
+                  <IconButton
+                    iconName="Chevron_down"
+                    size="small"
+                    class="agree_trigger"
+                  />
+                </div>
+                <!-- depth3 (class is-expand 추가/제거로 펼침/접힘) -->
+                <div class="depth3">
+                  <ul class="agree_sublist">
+                    <li class="agree_subitem">
+                      <div class="agree_item">
+                        <Checkbox
+                          variant="mark"
+                          align="left"
+                          class="agree_checkbox"
+                        >
+                          <template #label>
+                            <span class="agree_label">
+                              고유식별번호 조회 동의
+                            </span>
+                          </template>
+                        </Checkbox>
+                      </div>
+                    </li>
+                    <li class="agree_subitem">
+                      <div class="agree_item">
+                        <Checkbox
+                          variant="mark"
+                          align="left"
+                          class="agree_checkbox"
+                        >
+                          <template #label>
+                            <span class="agree_label">
+                              개인신용정보 제공 동의
+                            </span>
+                          </template>
+                        </Checkbox>
+                      </div>
+                    </li>
+                  </ul>
+                  <!-- 하단 우측 정렬 버튼 -->
+                  <div class="agree_more">
+                    <TextButton
+                      class="agree_link"
+                      color="secondary"
+                      size="small"
+                      text="자세히보기"
+                      showGoTo
+                    />
+                  </div>
+                </div>
+                <!-- //.depth3 -->
+              </li>
+              <li class="agree_subitem">
+                <div class="agree_item">
+                  <Checkbox variant="mark" align="left" class="agree_checkbox">
+                    <template #label>
+                      <span class="agree_label">
+                        [선택] 전자적 전송매체를 통한 광고성 정보 수신동의
+                      </span>
+                    </template>
+                  </Checkbox>
+                  <IconButton
+                    iconName="Chevron_down"
+                    size="small"
+                    class="agree_trigger"
+                  />
+                </div>
+                <!-- depth3 (class is-expand 추가/제거로 펼침/접힘) -->
+                <div class="depth3">
+                  <div class="agree_card">
+                    <ul class="agree_sublist box_type">
+                      <li class="agree_subitem">
+                        <div class="agree_item">
+                          <Checkbox
+                            variant="mark"
+                            align="left"
+                            class="agree_checkbox"
+                          >
+                            <template #label>
+                              <span class="agree_label">
+                                전체
+                              </span>
+                            </template>
+                          </Checkbox>
+                        </div>
+                      </li>
+                      <li class="agree_subitem">
+                        <div class="agree_item">
+                          <Checkbox
+                            variant="mark"
+                            align="left"
+                            class="agree_checkbox"
+                          >
+                            <template #label>
+                              <span class="agree_label">
+                                서면
+                              </span>
+                            </template>
+                          </Checkbox>
+                        </div>
+                      </li>
+                      <li class="agree_subitem">
+                        <div class="agree_item">
+                          <Checkbox
+                            variant="mark"
+                            align="left"
+                            class="agree_checkbox"
+                          >
+                            <template #label>
+                              <span class="agree_label">
+                                이메일
+                              </span>
+                            </template>
+                          </Checkbox>
+                        </div>
+                      </li>
+                      <li class="agree_subitem">
+                        <div class="agree_item">
+                          <Checkbox
+                            variant="mark"
+                            align="left"
+                            class="agree_checkbox"
+                          >
+                            <template #label>
+                              <span class="agree_label">
+                                전화
+                              </span>
+                            </template>
+                          </Checkbox>
+                        </div>
+                      </li>
+                      <li class="agree_subitem">
+                        <div class="agree_item">
+                          <Checkbox
+                            variant="mark"
+                            align="left"
+                            class="agree_checkbox"
+                          >
+                            <template #label>
+                              <span class="agree_label">
+                                휴대폰 메세지(카카오톡, 네이버 알림 등 모바일 메세지 포함)
+                              </span>
+                            </template>
+                          </Checkbox>
+                        </div>
+                      </li>
+                    </ul>
+                    <!-- 정보성 리스트 -->
+                    <UnorderedList class="agree_infolist" :gap="8">
+                      <UnorderedListItem
+                        variant="bullet"
+                        size="small"
+                        text="카드상품과 부수서비스의 안내 및 이용권유에 셨더라도 신용정보의 이용 및 보호에 관한 법률에 따라 이용권유 목적의 연락에 대한 중단을 언제라도 카드사에 요청할 수 있습니다. (대표전화 : 1544-7000 / 홈페이지 : www.shinhancard.com)"
+                      />
+                      <UnorderedListItem
+                        variant="bullet"
+                        size="small"
+                        text="갱신 및 상품서비스 변경 안내 등 필수 고지사항은 상기 동의 대상에서 제외됩니다."
+                      />
+                    </UnorderedList>
+                  </div>
+                </div>
+                <!-- //.depth3 -->
+              </li>
+              <li class="agree_subitem">
+                <div class="agree_item">
+                  <Checkbox variant="mark" align="left" class="agree_checkbox">
+                    <template #label>
+                      <span class="agree_label">
+                        [선택] 카드 및 금융상품 ・ 서비스 안내 및 이용권유를 위한 수집 ・ 이용
+                      </span>
+                      <br />
+                      <SolidLabel
+                        color="cyan"
+                        title="안심"
+                        aria-label="동의등급제 안심"
+                      />
+                    </template>
+                  </Checkbox>
+                  <IconButton
+                    iconName="Chevron_down"
+                    size="small"
+                    class="agree_trigger"
+                  />
+                </div>
+                <!-- depth3 (class is-expand 추가/제거로 펼침/접힘) -->
+                <div class="depth3">
+                  <ul class="agree_sublist">
+                    <li class="agree_subitem">
+                      <div class="agree_item">
+                        <Checkbox
+                          variant="mark"
+                          align="left"
+                          class="agree_checkbox"
+                        >
+                          <template #label>
+                            <span class="agree_label">
+                              개인신용정보 제공 동의
+                            </span>
+                          </template>
+                        </Checkbox>
+                      </div>
+                    </li>
+                  </ul>
+                  <!-- 하단 우측 정렬 버튼 -->
+                  <div class="agree_more">
+                    <TextButton
+                      class="agree_link"
+                      color="secondary"
+                      size="small"
+                      text="자세히보기"
+                      showGoTo
+                    />
+                  </div>
+                </div>
+                <!-- //.depth3 -->
+              </li>
+              <li class="agree_subitem">
+                <div class="agree_item">
+                  <Checkbox variant="mark" align="left" class="agree_checkbox">
+                    <template #label>
+                      <span class="agree_label">
+                        회원가입 및 발권신청 필수 동의
+                      </span>
+                    </template>
+                  </Checkbox>
+                  <IconButton
+                    iconName="Chevron_right"
+                    size="small"
+                    aria-label="회원가입 및 발권신청 필수 동의 상세 보기"
+                    class="agree_trigger"
+                  />
+                </div>
+                <p class="agree_infotext">
+                  본인은 카드 실제 소유자와 동일하며, 위 기재된 사실과 다름이 없음을 확인하고 회원가입을 신청합니다.
+                </p>
+              </li>
+            </ul>
+          </div>
+          <!-- //.depth2 -->
+        </li>
+        <!-- //.depth1 -->
+        <li class="depth1">
+          <div class="agree_item">
+            <Checkbox variant="box" align="left" class="agree_checkbox">
+              <template #label>
+                <span class="agree_label">
+                  [선택] 온라인 회원 이용약관
+                </span>
+              </template>
+            </Checkbox>
+            <IconButton
+              v-if="depth1HasChildren"
+              iconName="Chevron_down"
+              size="small"
+              class="agree_trigger"
+            />
+            <IconButton
+              v-else
+              iconName="Chevron_right"
+              size="small"
+              aria-label="[선택] 온라인 회원 이용약관 상세 보기"
+              class="agree_trigger"
+            />
+          </div>
+          <!-- depth2 (class is-expand 추가/제거로 펼침/접힘) -->
+          <div class="depth2">
+            <ul class="agree_sublist">
+              <li class="agree_subitem">
+                <div class="agree_item">
+                  <Checkbox variant="mark" align="left" class="agree_checkbox">
+                    <template #label>
+                      <span class="agree_label">
+                        온라인 회원 이용약관 필수 동의
+                      </span>
+                    </template>
+                  </Checkbox>
+                  <IconButton
+                    iconName="Chevron_right"
+                    size="small"
+                    aria-label="온라인 회원 이용약관 필수 동의 상세 보기"
+                    class="agree_trigger"
+                  />
+                </div>
+              </li>
+              <li class="agree_subitem">
+                <div class="agree_item">
+                  <Checkbox variant="mark" align="left" class="agree_checkbox">
+                    <template #label>
+                      <span class="agree_label">
+                        개인정보 수집·이용 필수 동의
+                      </span>
+                    </template>
+                  </Checkbox>
+                  <IconButton
+                    iconName="Chevron_right"
+                    size="small"
+                    aria-label="개인정보 수집·이용 필수 동의 상세 보기"
+                    class="agree_trigger"
+                  />
+                </div>
+              </li>
+            </ul>
+          </div>
+          <!-- //.depth2 -->
+        </li>
+        <!-- //.depth1 -->
+        <li class="depth1">
+          <div class="agree_item">
+            <Checkbox variant="box" align="left" class="agree_checkbox">
+              <template #label>
+                <span class="agree_label">
+                  [선택] 신한 슈퍼SOL 이용약관
+                </span>
+              </template>
+            </Checkbox>
+            <IconButton
+              v-if="depth1HasChildren"
+              iconName="Chevron_down"
+              size="small"
+              class="agree_trigger"
+            />
+            <IconButton
+              v-else
+              iconName="Chevron_right"
+              size="small"
+              aria-label="[선택] 신한 슈퍼SOL 이용약관 상세 보기"
+              class="agree_trigger"
+            />
+          </div>
+          <!-- depth2 (class is-expand 추가/제거로 펼침/접힘) -->
+          <div class="depth2">
+            <!-- S: 동의등급제 안내 -->
+            <div class="info_card">
+              <Card
+                variant="solid"
+                color="gray"
+                class="agree-info__card card-white"
+              >
+                <div class="info-card__header">
+                  <p class="info-card__title">동의등급제 안내</p>
+                </div>
+                <div class="info-card__content">
+                  <div class="label-group">
+                    <SolidLabel
+                      color="cyan"
+                      title="안심"
+                    />
+                    <SolidLabel
+                      color="green"
+                      title="다소안심"
+                    />
+                    <SolidLabel
+                      color="yellow"
+                      title="보통"
+                    />
+                    <SolidLabel
+                      color="orange"
+                      title="신중"
+                    />
+                    <SolidLabel
+                      color="red"
+                      title="주의"
+                    />
+                  </div>
+                  <UnorderedList>
+                    <UnorderedListItem
+                      variant="bullet"
+                      size="small"
+                      text="동의등급제는 개인(신용) 선택적 동의 항목에 대해 사생활의 비밀과 자유를 침해할 위험, 이익이나 혜택, 등의 내용의 명확성 등을 고려하여 5가지 등급을 부여하는 제도입니다."
+                    />
+                  </UnorderedList>
+                </div>
+              </Card>
+            </div>
+            <!-- E: 동의등급제 안내 -->
+            
+            <ul class="agree_sublist">
+              <li class="agree_subitem">
+                <div class="agree_item">
+                  <Checkbox variant="mark" align="left" class="agree_checkbox">
+                    <template #label>
+                      <span class="agree_label">
+                        신한 모바일 플랫폼 이용약관 필수 동의
+                      </span>
+                    </template>
+                  </Checkbox>
+                  <IconButton
+                    iconName="Chevron_right"
+                    size="small"
+                    aria-label="신한 모바일 플랫폼 이용약관 필수 동의 상세 보기"
+                    class="agree_trigger"
+                  />
+                </div>
+              </li>
+              <li class="agree_subitem">
+                <div class="agree_item">
+                  <Checkbox variant="mark" align="left" class="agree_checkbox">
+                    <template #label>
+                      <span class="agree_label">
+                        신한금융그룹 통합 포인트 서비스 이용 필수 동의
+                      </span>
+                    </template>
+                  </Checkbox>
+                  <IconButton
+                    iconName="Chevron_right"
+                    size="small"
+                    aria-label="신한금융그룹 통합 포인트 서비스 이용 필수 동의 상세 보기"
+                    class="agree_trigger"
+                  />
+                </div>
+              </li>
+              <li class="agree_subitem">
+                <div class="agree_item">
+                  <Checkbox variant="mark" align="left" class="agree_checkbox">
+                    <template #label>
+                      <span class="agree_label">
+                        개인(신용)정보 수집·이용·제공 필수 동의
+                      </span>
+                    </template>
+                  </Checkbox>
+                  <IconButton
+                    iconName="Chevron_right"
+                    size="small"
+                    aria-label="개인(신용)정보 수집·이용·제공 필수 동의 상세 보기"
+                    class="agree_trigger"
+                  />
+                </div>
+              </li>
+              <li class="agree_subitem">
+                <div class="agree_item">
+                  <Checkbox variant="mark" align="left" class="agree_checkbox">
+                    <template #label>
+                      <span class="agree_label">
+                        개인(신용)정보 수집·이용·제공 필수 동의(포인트 서비스 제공)
+                      </span>
+                    </template>
+                  </Checkbox>
+                  <IconButton
+                    iconName="Chevron_right"
+                    size="small"
+                    aria-label="개인(신용)정보 수집·이용·제공 필수 동의(포인트 서비스 제공) 상세 보기"
+                    class="agree_trigger"
+                  />
+                </div>
+              </li>
+              <li class="agree_subitem">
+                <div class="agree_item">
+                  <Checkbox variant="mark" align="left" class="agree_checkbox">
+                    <template #label>
+                      <span class="agree_label">
+                        전자금융서비스 이용 필수 동의(신한은행)
+                      </span>
+                    </template>
+                  </Checkbox>
+                  <IconButton
+                    iconName="Chevron_down"
+                    size="small"
+                    class="agree_trigger"
+                  />
+                </div>
+                <!-- depth3 (class is-expand 추가/제거로 펼침/접힘) -->
+                <div class="depth3">
+                  <div class="agree_card">
+                    <ul class="agree_sublist box_type">
+                      <li class="agree_subitem">
+                        <div class="agree_item">
+                          <span class="agree_label">
+                            전자금융거래 기본약관
+                          </span>
+                          <IconButton
+                            iconName="Chevron_right"
+                            size="small"
+                            aria-label="전자금융거래 기본약관 상세 보기"
+                            class="agree_trigger"
+                          />
+                        </div>
+                      </li>
+                      <li class="agree_subitem">
+                        <div class="agree_item">
+                          <span class="agree_label">
+                            신한온라인서비스 이용약관
+                          </span>
+                          <IconButton
+                            iconName="Chevron_right"
+                            size="small"
+                            aria-label="신한온라인서비스 이용약관 상세 보기"
+                            class="agree_trigger"
+                          />
+                        </div>
+                      </li>
+                      <li class="agree_subitem">
+                        <div class="agree_item">
+                          <span class="agree_label">
+                            전자통지서비스 이용약관
+                          </span>
+                          <IconButton
+                            iconName="Chevron_right"
+                            size="small"
+                            aria-label="전자통지서비스 이용약관 상세 보기"
+                            class="agree_trigger"
+                          />
+                        </div>
+                      </li>
+                      <li class="agree_subitem">
+                        <div class="agree_item">
+                          <span class="agree_label">
+                            개인정보 수집 이용 동의(비여신 금융거래)
+                          </span>
+                          <IconButton
+                            iconName="Chevron_right"
+                            size="small"
+                            aria-label="개인정보 수집 이용 동의(비여신 금융거래) 상세 보기"
+                            class="agree_trigger"
+                          />
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+                <!-- //.depth3 -->
+              </li>
+              <li class="agree_subitem">
+                <div class="agree_item">
+                  <Checkbox variant="mark" align="left" class="agree_checkbox">
+                    <template #label>
+                      <span class="agree_label">
+                        그룹 로열티 서비스 이용 필수 동의(신한은행)
+                      </span>
+                    </template>
+                  </Checkbox>
+                  <IconButton
+                    iconName="Chevron_right"
+                    size="small"
+                    aria-label="그룹 로열티 서비스 이용 필수 동의(신한은행) 상세 보기"
+                    class="agree_trigger"
+                  />
+                </div>
+              </li>
+              <li class="agree_subitem">
+                <div class="agree_item">
+                  <Checkbox variant="mark" align="left" class="agree_checkbox">
+                    <template #label>
+                      <span class="agree_label">
+                        개인(신용)정보 수집·이용·제공 필수 동의(신한은행)
+                      </span>
+                    </template>
+                  </Checkbox>
+                  <IconButton
+                    iconName="Chevron_right"
+                    size="small"
+                    aria-label="개인(신용)정보 수집·이용·제공 필수 동의(신한은행) 상세 보기"
+                    class="agree_trigger"
+                  />
+                </div>
+              </li>
+              <li class="agree_subitem">
+                <div class="agree_item">
+                  <Checkbox variant="mark" align="left" class="agree_checkbox">
+                    <template #label>
+                      <span class="agree_label">
+                        [선택] 개인(신용)정보 수집 ・ 이용 ・ 제공 동의(상품 서비스 안내 등)
+                      </span>
+                      <br />
+                      <SolidLabel
+                        color="cyan"
+                        title="안심"
+                      />
+                    </template>
+                  </Checkbox>
+                  <IconButton
+                    iconName="Chevron_right"
+                    size="small"
+                    aria-label="[선택] 개인(신용)정보 수집 ・ 이용 ・ 제공 동의(상품 서비스 안내 등) 상세 보기"
+                    class="agree_trigger"
+                  />
+                </div>
+              </li>
+              <li class="agree_subitem">
+                <div class="agree_item">
+                  <Checkbox variant="mark" align="left" class="agree_checkbox">
+                    <template #label>
+                      <span class="agree_label">
+                        [선택] 개인(신용)정보 수집 ・ 이용 ・ 제공 동의(상품 서비스 안내 등)(신한은행)
+                      </span>
+                      <br />
+                      <SolidLabel
+                        color="cyan"
+                        title="안심"
+                      />
+                    </template>
+                  </Checkbox>
+                  <IconButton
+                    iconName="Chevron_right"
+                    size="small"
+                    aria-label="[선택] 개인(신용)정보 수집 ・ 이용 ・ 제공 동의(상품 서비스 안내 등)(신한은행) 상세 보기"
+                    class="agree_trigger"
+                  />
+                </div>
+              </li>
+              <li class="agree_subitem">
+                <div class="agree_item">
+                  <Checkbox variant="mark" align="left" class="agree_checkbox">
+                    <template #label>
+                      <span class="agree_label">
+                        [선택] 광고성 전자적 수신매체 전송 동의
+                      </span>
+                    </template>
+                  </Checkbox>
+                  <IconButton
+                    iconName="Chevron_down"
+                    size="small"
+                    class="agree_trigger"
+                  />
+                </div>
+                <!-- depth3 (class is-expand 추가/제거로 펼침/접힘) -->
+                <div class="depth3">
+                  <div class="agree_card">
+                    <ul class="agree_sublist box_type">
+                      <li class="agree_subitem">
+                        <div class="agree_item">
+                          <Checkbox
+                            variant="mark"
+                            align="left"
+                            class="agree_checkbox"
+                          >
+                            <template #label>
+                              <span class="agree_label">
+                                전체
+                              </span>
+                            </template>
+                          </Checkbox>
+                        </div>
+                      </li>
+                      <li class="agree_subitem">
+                        <div class="agree_item">
+                          <Checkbox
+                            variant="mark"
+                            align="left"
+                            class="agree_checkbox"
+                          >
+                            <template #label>
+                              <span class="agree_label">
+                                이메일
+                              </span>
+                            </template>
+                          </Checkbox>
+                        </div>
+                      </li>
+                      <li class="agree_subitem">
+                        <div class="agree_item">
+                          <Checkbox
+                            variant="mark"
+                            align="left"
+                            class="agree_checkbox"
+                          >
+                            <template #label>
+                              <span class="agree_label">
+                                전화
+                              </span>
+                            </template>
+                          </Checkbox>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+                <!-- //.depth3 -->
+              </li>
+            </ul>
+          </div>
+          <!-- //.depth2 -->
+        </li>
+        <!-- //.depth1 -->
+        <li class="depth1">
+          <div class="agree_item">
+            <Checkbox variant="box" align="left" class="agree_checkbox">
+              <template #label>
+                <span class="agree_label">
+                  [선택] 전자문서 서비스 이용약관
+                </span>
+              </template>
+            </Checkbox>
+            <IconButton
+              v-if="depth1HasChildren"
+              iconName="Chevron_down"
+              size="small"
+              class="agree_trigger"
+            />
+            <IconButton
+              v-else
+              iconName="Chevron_right"
+              size="small"
+              aria-label="[선택] 전자문서 서비스 이용약관 상세 보기"
+              class="agree_trigger"
+            />
+          </div>
+          <!-- depth2 (class is-expand 추가/제거로 펼침/접힘) -->
+          <div class="depth2">
+            <ul class="agree_sublist">
+              <li class="agree_subitem">
+                <div class="agree_item">
+                  <Checkbox variant="mark" align="left" class="agree_checkbox">
+                    <template #label>
+                      <span class="agree_label">
+                        전자문서 서비스 이용약관 필수 동의
+                      </span>
+                    </template>
+                  </Checkbox>
+                  <IconButton
+                    iconName="Chevron_right"
+                    size="small"
+                    aria-label="전자문서 서비스 이용약관 필수 동의 상세 보기"
+                    class="agree_trigger"
+                  />
+                </div>
+              </li>
+              <li class="agree_subitem">
+                <div class="agree_item">
+                  <Checkbox variant="mark" align="left" class="agree_checkbox">
+                    <template #label>
+                      <span class="agree_label">
+                        전자문서 개인정보 수집·이용 필수 동의
+                      </span>
+                    </template>
+                  </Checkbox>
+                  <IconButton
+                    iconName="Chevron_right"
+                    size="small"
+                    aria-label="전자문서 개인정보 수집·이용 필수 동의 상세 보기"
+                    class="agree_trigger"
+                  />
+                </div>
+              </li>
+              <li class="agree_subitem">
+                <div class="agree_item">
+                  <Checkbox variant="mark" align="left" class="agree_checkbox">
+                    <template #label>
+                      <span class="agree_label">
+                        개인정보 제3자 제공 필수 동의
+                      </span>
+                    </template>
+                  </Checkbox>
+                  <IconButton
+                    iconName="Chevron_right"
+                    size="small"
+                    aria-label="개인정보 제3자 제공 필수 동의 상세 보기"
+                    class="agree_trigger"
+                  />
+                </div>
+              </li>
+              <li class="agree_subitem">
+                <div class="agree_item">
+                  <Checkbox variant="mark" align="left" class="agree_checkbox">
+                    <template #label>
+                      <span class="agree_label">
+                        서비스 유의사항 필수 동의
+                      </span>
+                    </template>
+                  </Checkbox>
+                  <IconButton
+                    iconName="Chevron_right"
+                    size="small"
+                    aria-label="서비스 유의사항 필수 동의 상세 보기"
+                    class="agree_trigger"
+                  />
+                </div>
+              </li>
+            </ul>
+          </div>
+          <!-- //.depth2 -->
+        </li>
+        <!-- //.depth1 -->
+        <li class="depth1">
+          <div class="agree_item">
+            <Checkbox variant="box" align="left" class="agree_checkbox">
+              <template #label>
+                <span class="agree_label">
+                  [선택] 마이데이터 서비스 이용약관
+                </span>
+              </template>
+            </Checkbox>
+            <IconButton
+              v-if="depth1HasChildren"
+              iconName="Chevron_down"
+              size="small"
+              class="agree_trigger"
+            />
+            <IconButton
+              v-else
+              iconName="Chevron_right"
+              size="small"
+              aria-label="[선택] 마이데이터 서비스 이용약관 상세 보기"
+              class="agree_trigger"
+            />
+          </div>
+          <!-- depth2 (class is-expand 추가/제거로 펼침/접힘) -->
+          <div class="depth2">
+            <ul class="agree_sublist">
+              <li class="agree_subitem">
+                <div class="agree_item">
+                  <Checkbox variant="mark" align="left" class="agree_checkbox">
+                    <template #label>
+                      <span class="agree_label">
+                        마이데이터 서비스 이용약관 필수 동의
+                      </span>
+                    </template>
+                  </Checkbox>
+                  <IconButton
+                    iconName="Chevron_right"
+                    size="small"
+                    aria-label="마이데이터 서비스 이용약관 필수 동의 상세 보기"
+                    class="agree_trigger"
+                  />
+                </div>
+              </li>
+              <li class="agree_subitem">
+                <div class="agree_item">
+                  <Checkbox variant="mark" align="left" class="agree_checkbox">
+                    <template #label>
+                      <span class="agree_label">
+                        마이데이터 서비스 개인(신용)정보의 수집 및 이용 필수 동의
+                      </span>
+                    </template>
+                  </Checkbox>
+                  <IconButton
+                    iconName="Chevron_right"
+                    size="small"
+                    aria-label="마이데이터 서비스 개인(신용)정보의 수집 및 이용 필수 동의 상세 보기"
+                    class="agree_trigger"
+                  />
+                </div>
+              </li>
+            </ul>
+            <!-- 하단 우측 정렬 버튼 -->
+            <div class="agree_more">
+              <TextButton
+                class="agree_link"
+                color="secondary"
+                size="small"
+                text="개인정보 처리방침"
+                showGoTo
+              />
+            </div>
+          </div>
+          <!-- //.depth2 -->
+        </li>
+        <!-- //.depth1 -->
+        <li class="depth1">
+          <div class="agree_item">
+            <Checkbox variant="box" align="left" class="agree_checkbox">
+              <template #label>
+                <span class="agree_label">
+                  [선택] 마케팅 동의 이용약관
+                </span>
+              </template>
+            </Checkbox>
+            <IconButton
+              v-if="depth1HasChildren"
+              iconName="Chevron_down"
+              size="small"
+              class="agree_trigger"
+            />
+            <IconButton
+              v-else
+              iconName="Chevron_right"
+              size="small"
+              aria-label="[선택] 마케팅 동의 이용약관 상세 보기"
+              class="agree_trigger"
+            />
+          </div>
+          <!-- depth2 (class is-expand 추가/제거로 펼침/접힘) -->
+          <div class="depth2">
+            <ul class="agree_sublist">
+              <li class="agree_subitem">
+                <div class="agree_item">
+                  <Checkbox variant="mark" align="left" class="agree_checkbox">
+                    <template #label>
+                      <span class="agree_label">
+                        [선택] 카드 및 금융상품 ・ 서비스 안내 및 이용권유를 위한 수집 ・ 이용
+                      </span>
+                      <br />
+                      <SolidLabel
+                        color="green"
+                        title="다소안심"
+                        aria-label="동의등급제 다소안심"
+                      />
+                    </template>
+                  </Checkbox>
+                  <IconButton
+                    iconName="Chevron_down"
+                    size="small"
+                    class="agree_trigger"
+                  />
+                </div>
+                <!-- depth3 (class is-expand 추가/제거로 펼침/접힘) -->
+                <div class="depth3">
+                  <ul class="agree_sublist">
+                    <li class="agree_subitem">
+                      <div class="agree_item">
+                        <Checkbox
+                          variant="mark"
+                          align="left"
+                          class="agree_checkbox"
+                        >
+                          <template #label>
+                            <span class="agree_label">
+                              고유식별번호 조회 동의
+                            </span>
+                          </template>
+                        </Checkbox>
+                      </div>
+                    </li>
+                    <li class="agree_subitem">
+                      <div class="agree_item">
+                        <Checkbox
+                          variant="mark"
+                          align="left"
+                          class="agree_checkbox"
+                        >
+                          <template #label>
+                            <span class="agree_label">
+                              개인신용정보 제공 동의
+                            </span>
+                          </template>
+                        </Checkbox>
+                      </div>
+                    </li>
+                  </ul>
+                  <!-- 하단 우측 정렬 버튼 -->
+                  <div class="agree_more">
+                    <TextButton
+                      class="agree_link"
+                      color="secondary"
+                      size="small"
+                      text="자세히보기"
+                      showGoTo
+                    />
+                  </div>
+                </div>
+                <!-- //.depth3 -->
+              </li>
+              <li class="agree_subitem">
+                <div class="agree_item">
+                  <Checkbox variant="mark" align="left" class="agree_checkbox">
+                    <template #label>
+                      <span class="agree_label">
+                        [선택] 카드 및 금융상품 ・ 서비스 이외의 부수서비스 안내 등을 위한 수집 ・ 이용
+                      </span>
+                      <br />
+                      <SolidLabel
+                        color="yellow"
+                        title="보통"
+                        aria-label="동의등급제 보통"
+                      />
+                    </template>
+                  </Checkbox>
+                  <IconButton
+                    iconName="Chevron_down"
+                    size="small"
+                    class="agree_trigger"
+                  />
+                </div>
+                <!-- depth3 (class is-expand 추가/제거로 펼침/접힘) -->
+                <div class="depth3">
+                  <ul class="agree_sublist">
+                    <li class="agree_subitem">
+                      <div class="agree_item">
+                        <Checkbox
+                          variant="mark"
+                          align="left"
+                          class="agree_checkbox"
+                        >
+                          <template #label>
+                            <span class="agree_label">
+                              고유식별번호 조회 동의
+                            </span>
+                          </template>
+                        </Checkbox>
+                      </div>
+                    </li>
+                    <li class="agree_subitem">
+                      <div class="agree_item">
+                        <Checkbox
+                          variant="mark"
+                          align="left"
+                          class="agree_checkbox"
+                        >
+                          <template #label>
+                            <span class="agree_label">
+                              개인신용정보 제공 동의
+                            </span>
+                          </template>
+                        </Checkbox>
+                      </div>
+                    </li>
+                  </ul>
+                  <!-- 하단 우측 정렬 버튼 -->
+                  <div class="agree_more">
+                    <TextButton
+                      class="agree_link"
+                      color="secondary"
+                      size="small"
+                      text="자세히보기"
+                      showGoTo
+                    />
+                  </div>
+                </div>
+                <!-- //.depth3 -->
+              </li>
+              <li class="agree_subitem">
+                <div class="agree_item">
+                  <Checkbox variant="mark" align="left" class="agree_checkbox">
+                    <template #label>
+                      <span class="agree_label">
+                        [선택] 전자적 전송매체를 통한 광고성 정보 수신동의
+                      </span>
+                    </template>
+                  </Checkbox>
+                  <IconButton
+                    iconName="Chevron_down"
+                    size="small"
+                    class="agree_trigger"
+                  />
+                </div>
+                <!-- depth3 (class is-expand 추가/제거로 펼침/접힘) -->
+                <div class="depth3">
+                  <div class="agree_card">
+                    <ul class="agree_sublist box_type">
+                      <li class="agree_subitem">
+                        <div class="agree_item">
+                          <Checkbox
+                            variant="mark"
+                            align="left"
+                            class="agree_checkbox"
+                          >
+                            <template #label>
+                              <span class="agree_label">
+                                전체
+                              </span>
+                            </template>
+                          </Checkbox>
+                        </div>
+                      </li>
+                      <li class="agree_subitem">
+                        <div class="agree_item">
+                          <Checkbox
+                            variant="mark"
+                            align="left"
+                            class="agree_checkbox"
+                          >
+                            <template #label>
+                              <span class="agree_label">
+                                서면
+                              </span>
+                            </template>
+                          </Checkbox>
+                        </div>
+                      </li>
+                      <li class="agree_subitem">
+                        <div class="agree_item">
+                          <Checkbox
+                            variant="mark"
+                            align="left"
+                            class="agree_checkbox"
+                          >
+                            <template #label>
+                              <span class="agree_label">
+                                이메일
+                              </span>
+                            </template>
+                          </Checkbox>
+                        </div>
+                      </li>
+                      <li class="agree_subitem">
+                        <div class="agree_item">
+                          <Checkbox
+                            variant="mark"
+                            align="left"
+                            class="agree_checkbox"
+                          >
+                            <template #label>
+                              <span class="agree_label">
+                                전화
+                              </span>
+                            </template>
+                          </Checkbox>
+                        </div>
+                      </li>
+                      <li class="agree_subitem">
+                        <div class="agree_item">
+                          <Checkbox
+                            variant="mark"
+                            align="left"
+                            class="agree_checkbox"
+                          >
+                            <template #label>
+                              <span class="agree_label">
+                                휴대폰 메세지(카카오톡, 네이버 알림 등 모바일 메세지 포함)
+                              </span>
+                            </template>
+                          </Checkbox>
+                        </div>
+                      </li>
+                    </ul>
+                    <!-- 정보성 리스트 -->
+                    <UnorderedList class="agree_infolist" :gap="8">
+                      <UnorderedListItem
+                        variant="bullet"
+                        size="small"
+                        text="카드상품과 부수서비스의 안내 및 이용권유에 셨더라도 신용정보의 이용 및 보호에 관한 법률에 따라 이용권유 목적의 연락에 대한 중단을 언제라도 카드사에 요청할 수 있습니다. (대표전화 : 1544-7000 / 홈페이지 : www.shinhancard.com)"
+                      />
+                      <UnorderedListItem
+                        variant="bullet"
+                        size="small"
+                        text="갱신 및 상품서비스 변경 안내 등 필수 고지사항은 상기 동의 대상에서 제외됩니다."
+                      />
+                    </UnorderedList>
+                  </div>
+                </div>
+                <!-- //.depth3 -->
+              </li>
+              <li class="agree_subitem">
+                <div class="agree_item">
+                  <Checkbox variant="mark" align="left" class="agree_checkbox">
+                    <template #label>
+                      <span class="agree_label">
+                        [선택] 신한금융 자회사 및 손자회사에 개인(신용)정보를 제공
+                      </span>
+                      <br />
+                      <SolidLabel
+                        color="cyan"
+                        title="안심"
+                        aria-label="동의등급제 안심"
+                      />
+                    </template>
+                  </Checkbox>
+                  <IconButton
+                    iconName="Chevron_down"
+                    size="small"
+                    class="agree_trigger"
+                  />
+                </div>
+                <!-- depth3 (class is-expand 추가/제거로 펼침/접힘) -->
+                <div class="depth3">
+                  <ul class="agree_sublist">
+                    <li class="agree_subitem">
+                      <div class="agree_item">
+                        <Checkbox
+                          variant="mark"
+                          align="left"
+                          class="agree_checkbox"
+                        >
+                          <template #label>
+                            <span class="agree_label">
+                              개인신용정보 제공 동의
+                            </span>
+                          </template>
+                        </Checkbox>
+                      </div>
+                    </li>
+                  </ul>
+                  <!-- 하단 우측 정렬 버튼 -->
+                  <div class="agree_more">
+                    <TextButton
+                      class="agree_link"
+                      color="secondary"
+                      size="small"
+                      text="자세히보기"
+                      showGoTo
+                    />
+                  </div>
+                </div>
+                <!-- //.depth3 -->
+              </li>
+            </ul>
+          </div>
+          <!-- //.depth2 -->
+        </li>
+        <!-- //.depth1 -->
+      </ul>
+    </div>
+    <!-- //.agree_wrap -->
+  </div>
+
+
+
+
 // 개발 요청 약관 체크 구조
 .agree_wrap {
   padding: 0 var(--spacing-2xl);
