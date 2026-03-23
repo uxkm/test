@@ -3,6 +3,43 @@
 ```js
 
 
+// 약관 아코디언 펼침 접힘 액션
+
+  @supports (grid-template-rows: 1fr) {
+    .depth2,
+    .depth3,
+    .depth4 {
+      display: grid;
+      grid-template-rows: minmax(0, 0fr);
+      grid-auto-rows: minmax(0, 0fr);
+      height: auto;
+      overflow: hidden;
+      max-height: none;
+      transition:
+        grid-template-rows 0.5s var(--ease-strong-in),
+        grid-auto-rows 0.5s var(--ease-strong-in);
+    }
+  
+    .depth2.is-expand,
+    .depth3.is-expand,
+    .depth4.is-expand {
+      grid-template-rows: minmax(0, 1fr);
+      grid-auto-rows: max-content;
+      overflow: visible;
+      transition: grid-template-rows 0.5s var(--ease-strong-in);
+    }
+  
+    .depth2 > *,
+    .depth3 > *,
+    .depth4 > * {
+      overflow: hidden;
+      min-height: 0;
+    }
+  }
+
+
+
+
 <template>
   <!-- S: 이벤트 프로모션 -->
   <section class="bf-promotion" aria-label="이벤트 프로모션">
