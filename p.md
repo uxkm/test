@@ -2,6 +2,303 @@
 {% raw %}
 ```js
 
+
+// _benefits grid 제거
+// 1549 line
+.level-progress {
+  position: relative;
+  display: block;
+  margin-top: var(--spacing-3xl);
+  &__label {
+    display: flex;
+    align-items: flex-start;
+    width: 100%;
+  }
+  &__text {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 1;
+    width: 56px;
+    height: 62px;
+    text-align: center;
+    line-height: 0;
+    box-sizing: border-box;
+    &.level0 {
+      width: 65px;
+    }
+    &.level2 {
+      margin-left: auto;
+    }
+    &.level3 {
+      margin-left: auto;
+    }
+  }
+}
+
+
+// 2437 line
+&__list {
+  display: flex;
+  column-gap: var(--spacing-lg);
+  min-width: 0;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; // Firefox
+  padding-left: var(--spacing-2xl);
+  padding-right: var(--spacing-2xl);
+  &::-webkit-scrollbar {
+    display: none; // Chrome, Safari
+  }
+  &.skeleton {
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    padding-left: var(--container-padding-mobile);
+    .collection-card__item {
+      margin: 0;
+      padding: 0;
+      min-width: 160px;
+      width: 100%;
+    }
+  }
+}
+
+
+// 745 line
+&__contents-body {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-3xl);
+  margin-bottom: var(--spacing-3xl);
+  > .bf-quiz-pangpang__contents-item {
+    flex: 1 1 calc(50% - (var(--spacing-md) / 2));
+    min-width: 0;
+  }
+}
+
+
+// 822 line
+&__contents-footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-lg) var(--spacing-md);
+  position: relative;
+  .bf-quiz-pangpang__contents-item {
+    flex: 1 1 calc(50% - (var(--spacing-md) / 2));
+    min-width: 0;
+    &:nth-child(3) {
+      flex-basis: 100%;
+      width: 100%;
+    }
+  }
+}
+
+
+// 1373 line
+&__container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+  padding: 0;
+}
+
+// 1380 line
+&__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  position: relative;
+  width: calc((100% - (var(--spacing-md) * 4)) / 5);
+  height: 64px;
+  padding: var(--spacing-md);
+  box-sizing: border-box;
+  border-radius: var(--radius-xl);
+  background-color: var(--bg-canvas_white);
+}
+
+// 1455 line
+&__total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--spacing-lg);
+  margin-top: var(--spacing-4xl);
+  padding: var(--spacing-xl) var(--spacing-2xl);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border-secondary);
+}
+
+
+// 3641 line
+.custum-card__group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+
+  > .sv-button-group {
+    width: calc(50% - 4px);
+  }
+
+  > .sv-button-group:last-child {
+    width: 100%;
+  }
+}
+
+
+// 4709 line
+&__content {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+  padding: var(--spacing-4xl) 0 var(--spacing-2xl);
+}
+
+
+// 4718 line
+&__item {
+  flex: 0 0 50%;
+  max-width: 50%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: var(--spacing-3xl) 0;
+  border-top: 1px solid var(--border-secondary);
+}
+
+// _utility
+// 3537 line
+.shared-list {
+  --shared-list-gap: var(--spacing-xl);
+  display: flex;
+  flex-wrap: wrap;
+  padding: var(--spacing-3xl) var(--spacing-2xl);
+  @media (min-width: 360px) {
+    --shared-list-gap: var(--spacing-lg);
+  }
+  @media (min-width: 320px) {
+    padding: var(--spacing-3xl) 0;
+  }
+  li {
+    width: calc((100% - (var(--shared-list-gap) * 3)) / 4);
+    margin-right: var(--shared-list-gap);
+    margin-bottom: var(--shared-list-gap);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    &:nth-child(4n) {
+      margin-right: 0;
+    }
+    &:nth-last-child(-n + 4) {
+      margin-bottom: 0;
+    }
+  }
+  .sv-button--size-m.sv-button--variant-ghost .sv-button__left-icon {
+    width: 56px !important;
+    height: 56px !important;
+  }
+  .sv-button--size-m.sv-button--variant-ghost .sv-button__label {
+    @include font-set("body-s", 500);
+    font-weight: 500;
+  }
+  .sv-button {
+    flex-direction: column;
+    gap: var(--spacing-md);
+    width: 100%;
+    padding: 0;
+    .sv-button__left-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0;
+      border-radius: 50%;
+      background-color: var(--bg-ongray_graylight_a5);
+      .sc-icon {
+        width: 36px;
+        height: 36px;
+      }
+    }
+    .sv-button__label {
+      margin-top: var(--spacing-md);
+      margin-left: 0;
+      color: var(--text-primary);
+    }
+    &.link-copy-btn {
+      color: var(--fg-primary);
+    }
+    &.x-btn {
+      color: inherit;
+      .sv-button__left-icon {
+        background-color: var(--bg-informative-same);
+      }
+    }
+    &.kakao-btn {
+      svg path[fill="white"] {
+        fill: #fff;
+      }
+    }
+    // &.x_transp {
+    //   .sv-button__left-icon {
+    //     background-color: var(--bg-ongray_graylight_a5);
+    //   }
+    // }
+  }
+}
+
+// common
+// 767 line
+&__grid {
+  --month-filter-gap: var(--spacing-md);
+  display: flex !important;
+  flex-wrap: wrap !important;
+  .sv-select-box {
+    width: calc((100% - (var(--month-filter-gap) * 2)) / 3);
+    box-sizing: border-box;
+    margin: 0 var(--month-filter-gap) var(--month-filter-gap) 0 !important;
+    &:nth-child(3n) {
+      margin-right: 0 !important;
+    }
+    &:nth-last-child(-n + 3) {
+      margin-bottom: 0 !important;
+    }
+  }
+}
+
+
+// 818 line
+.today-list {
+  $bg-list-brand: var(--bg-brand) !important;
+  $bg-list-cyan: var(--bg-cyan) !important;
+  $bg-list-red: var(--bg-red) !important;
+  $bg-list-orange: var(--bg-orange) !important;
+  $bg-list-crimson: var(--bg-red) !important;
+
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+
+  &__item {
+    width: calc((100% - (var(--spacing-md) * 2)) / 3);
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
 // fullpopup & page 호출 방식
 
 // ConditionalFullPopup 모듈 예시
