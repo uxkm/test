@@ -2,6 +2,36 @@
 {% raw %}
 ```js
 
+<li
+          v-for="item in collectionEventItemsImage.slice(0, 5)"
+          :key="item.id"
+          class="collection-card__item"
+          data-type="image"
+        >
+          <div role="link" tabindex="0" class="collection-card__item-inner">
+            <ScImage :src="item.iconImage" :alt="item.iconAlt || ''" />
+          </div>
+        </li>
+
+
+const collectionEventItemsImage = [
+  {
+    id: 1,
+    iconImage: `${$cdnURL}/images/pages/benefits/main/bg_card1.svg`,
+    iconAlt: "해외여행 필수템 캐시백부터 할인까지 여기 다 있ZIP",
+  },
+  {
+    id: 2,
+    iconImage: `${$cdnURL}/images/pages/benefits/main/bg_card2.svg`,
+    iconAlt: "Tops 쿠폰 캐시백부터 할인까지 꼼꼼히 준비했ZIP",
+  },
+  {
+    id: 3,
+    iconImage: `${$cdnURL}/images/pages/benefits/main/bg_card3.svg`,
+    iconAlt: "제주여행 필수템 호텔부터 렌트카까지 알짜혜택만 모았ZIP",
+  },
+];
+
 
 // 약관 아코디언 펼침 접힘 액션
 
