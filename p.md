@@ -3,6 +3,331 @@
 ```js
 
 
+# SCSS grid 레거시 변경 (통합)
+
+`@supports not (display: grid)` 제거 및 flex 기반 레거시 스타일로 정리한 구간을 파일별로 모았습니다. 라인 주석에는 해당 블록을 쓰는 `.vue` 파일을 함께 표기했습니다.
+
+---
+
+## `_benefits.scss` — grid 제거
+
+경로: `resources/assets/styles/pay/_benefits.scss`
+
+```scss
+// 1549 line · SBT159A01.vue
+.level-progress {
+  position: relative;
+  display: block;
+  margin-top: var(--spacing-3xl);
+  &__label {
+    display: flex;
+    align-items: flex-start;
+    width: 100%;
+  }
+  &__text {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 1;
+    width: 56px;
+    height: 62px;
+    text-align: center;
+    line-height: 0;
+    box-sizing: border-box;
+    &.level0 {
+      width: 65px;
+    }
+    &.level2 {
+      margin-left: auto;
+    }
+    &.level3 {
+      margin-left: auto;
+    }
+  }
+}
+```
+
+```scss
+// 2437 line · SBT105A01.vue, section/SBT001A01-event.vue
+&__list {
+  display: flex;
+  column-gap: var(--spacing-lg);
+  min-width: 0;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; // Firefox
+  padding-left: var(--spacing-2xl);
+  padding-right: var(--spacing-2xl);
+  &::-webkit-scrollbar {
+    display: none; // Chrome, Safari
+  }
+  &.skeleton {
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    padding-left: var(--container-padding-mobile);
+    .collection-card__item {
+      margin: 0;
+      padding: 0;
+      min-width: 160px;
+      width: 100%;
+    }
+  }
+}
+```
+
+```scss
+// 745 line · section/SBT001A01-quiz-pangpang.vue
+&__contents-body {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-3xl);
+  margin-bottom: var(--spacing-3xl);
+  > .bf-quiz-pangpang__contents-item {
+    flex: 1 1 calc(50% - (var(--spacing-md) / 2));
+    min-width: 0;
+  }
+}
+```
+
+```scss
+// 822 line · section/SBT001A01-quiz-pangpang.vue
+&__contents-footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-lg) var(--spacing-md);
+  position: relative;
+  .bf-quiz-pangpang__contents-item {
+    flex: 1 1 calc(50% - (var(--spacing-md) / 2));
+    min-width: 0;
+    &:nth-child(3) {
+      flex-basis: 100%;
+      width: 100%;
+    }
+  }
+}
+```
+
+```scss
+// 1373 line · SBT160A01.vue (.month-schedule)
+&__container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+  padding: 0;
+}
+
+// 1380 line · SBT160A01.vue (.month-schedule)
+&__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  position: relative;
+  width: calc((100% - (var(--spacing-md) * 4)) / 5);
+  height: 64px;
+  padding: var(--spacing-md);
+  box-sizing: border-box;
+  border-radius: var(--radius-xl);
+  background-color: var(--bg-canvas_white);
+}
+```
+
+```scss
+// 1455 line · SBT160A01.vue (.month-schedule)
+&__total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--spacing-lg);
+  margin-top: var(--spacing-4xl);
+  padding: var(--spacing-xl) var(--spacing-2xl);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border-secondary);
+}
+```
+
+```scss
+// 3641 line · section/SBT011A01-first.vue, section/SBT011A01-monthly.vue, section/SBT011A01-first-skeleton.vue
+.custum-card__group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+
+  > .sv-button-group {
+    width: calc(50% - 4px);
+  }
+
+  > .sv-button-group:last-child {
+    width: 100%;
+  }
+}
+```
+
+```scss
+// 4709 line · SBT158A01.vue (.welcome-giftpack)
+&__content {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+  padding: var(--spacing-4xl) 0 var(--spacing-2xl);
+}
+
+// 4718 line · SBT158A01.vue (.welcome-giftpack)
+&__item {
+  flex: 0 0 50%;
+  max-width: 50%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: var(--spacing-3xl) 0;
+  border-top: 1px solid var(--border-secondary);
+}
+```
+
+---
+
+## `_utility.scss`
+
+경로: `resources/assets/styles/base/_utility.scss`
+
+```scss
+// 3537 line · SBT113A01.vue, SBT113A02.vue, SMY071A01.vue, SMY114A02.vue, SMY134A12.vue, SPY069A01.vue, discover/layout/SnsList.vue
+.shared-list {
+  --shared-list-gap: var(--spacing-xl);
+  display: flex;
+  flex-wrap: wrap;
+  padding: var(--spacing-3xl) var(--spacing-2xl);
+  @media (min-width: 360px) {
+    --shared-list-gap: var(--spacing-lg);
+  }
+  @media (min-width: 320px) {
+    padding: var(--spacing-3xl) 0;
+  }
+  li {
+    width: calc((100% - (var(--shared-list-gap) * 3)) / 4);
+    margin-right: var(--shared-list-gap);
+    margin-bottom: var(--shared-list-gap);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    &:nth-child(4n) {
+      margin-right: 0;
+    }
+    &:nth-last-child(-n + 4) {
+      margin-bottom: 0;
+    }
+  }
+  .sv-button--size-m.sv-button--variant-ghost .sv-button__left-icon {
+    width: 56px !important;
+    height: 56px !important;
+  }
+  .sv-button--size-m.sv-button--variant-ghost .sv-button__label {
+    @include font-set("body-s", 500);
+    font-weight: 500;
+  }
+  .sv-button {
+    flex-direction: column;
+    gap: var(--spacing-md);
+    width: 100%;
+    padding: 0;
+    .sv-button__left-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0;
+      border-radius: 50%;
+      background-color: var(--bg-ongray_graylight_a5);
+      .sc-icon {
+        width: 36px;
+        height: 36px;
+      }
+    }
+    .sv-button__label {
+      margin-top: var(--spacing-md);
+      margin-left: 0;
+      color: var(--text-primary);
+    }
+    &.link-copy-btn {
+      color: var(--fg-primary);
+    }
+    &.x-btn {
+      color: inherit;
+      .sv-button__left-icon {
+        background-color: var(--bg-informative-same);
+      }
+    }
+    &.kakao-btn {
+      svg path[fill="white"] {
+        fill: #fff;
+      }
+    }
+    // &.x_transp {
+    //   .sv-button__left-icon {
+    //     background-color: var(--bg-ongray_graylight_a5);
+    //   }
+    // }
+  }
+}
+```
+
+---
+
+## `_common.scss`
+
+경로: `resources/assets/styles/base/_common.scss`
+
+```scss
+// 767 line · SBT108A01.vue, SBT108A02.vue, SBT119A01.vue, SBT120A01.vue, SMY062A01.vue (.month-filter__grid)
+&__grid {
+  --month-filter-gap: var(--spacing-md);
+  display: flex !important;
+  flex-wrap: wrap !important;
+  .sv-select-box {
+    width: calc((100% - (var(--month-filter-gap) * 2)) / 3);
+    box-sizing: border-box;
+    margin: 0 var(--month-filter-gap) var(--month-filter-gap) 0 !important;
+    &:nth-child(3n) {
+      margin-right: 0 !important;
+    }
+    &:nth-last-child(-n + 3) {
+      margin-bottom: 0 !important;
+    }
+  }
+}
+```
+
+```scss
+// 818 line · SBT068A01.vue
+.today-list {
+  $bg-list-brand: var(--bg-brand) !important;
+  $bg-list-cyan: var(--bg-cyan) !important;
+  $bg-list-red: var(--bg-red) !important;
+  $bg-list-orange: var(--bg-orange) !important;
+  $bg-list-crimson: var(--bg-red) !important;
+
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+
+  &__item {
+    width: calc((100% - (var(--spacing-md) * 2)) / 3);
+  }
+}
+```
+
+
+
+
+
+
+
+
 // _benefits grid 제거
 // 1549 line
 .level-progress {
