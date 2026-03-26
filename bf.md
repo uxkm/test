@@ -3,6 +3,146 @@
 ```js
 
 
+          <!-- 수정 260326: SBT001A01-discount.vue 패턴으로 쿠폰 리스트 마크업/접근성 동기화 -->
+          <div class="cupon-list__body">
+            <div
+              v-for="coupon in couponItems"
+              :key="coupon.id"
+              :class="[
+                'cupon-item outline',
+                { 'is-label': coupon.label || coupon.expiryDate },
+                /* 이미지 로드 실패 시 해당 행에만 적용. ScImage @error → onIconError(coupon.id) → iconErrorIds에 추가. */
+                { 'is-error-fallback': iconErrorIds.includes(coupon.id) },
+              ]"
+              role="link"
+              tabindex="0"
+              :aria-label="
+                [
+                  coupon.label ? `쿠폰 상태: ${coupon.label}` : null,
+                  coupon.expiryDate ? `만료일: ${coupon.expiryDate}` : null,
+                  coupon.expiryText,
+                  coupon.sub,
+                  coupon.main,
+                ]
+                  .filter(Boolean)
+                  .join(', ')
+              "
+            >
+              <ListItem align="centered" :left="{ direction: 'reverse' }" aria-hidden="true">
+                <template #label v-if="coupon.label || coupon.expiryDate">
+                  <div class="flex gap-4">
+                    <SolidLabel
+                      v-if="coupon.label"
+                      :title="coupon.label"
+                      :color="coupon.labelColor || 'blue'"
+                      class="inline-flex"
+                    />
+                    <TintLabel
+                      v-if="coupon.expiryDate"
+                      :title="coupon.expiryDate"
+                      :color="coupon.expiryDateColor || 'blue'"
+                    />
+                    <span 
+                      v-if="coupon.expiryText"
+                      class="expiry-date"
+                    >
+                      {{ coupon.expiryText }}
+                    </span>
+                  </div>
+                </template>
+                <template #leftSubText>
+                  <span>{{ coupon.sub }}</span>
+                </template>
+                <template #leftMainText>
+                  <strong>{{ coupon.main }}</strong>
+                </template>
+                <template #rightIcon>
+                  <ScImage
+                    :src="coupon.icon.src"
+                    :alt="coupon.icon.alt"
+                    class="cupon-icon"
+                    @error="onIconError(coupon.id)"
+                  />
+                </template>
+              </ListItem>
+            </div>
+          </div>
+
+// 수정 260326: SBT001A01-discount.vue 데이터 스키마(label/expiryDate/main/sub)로 동기화
+const couponItems = [
+  {
+    id: 1,
+    icon: {
+      src: `${$cdnURL}/images/dummy/img_coupon_symbol01.png`,
+      alt: "",
+    },
+    label: "보유중",
+    labelColor: "blue",
+    expiryDate: "D-3",
+    expiryDateColor: "blue",
+    // 수정 260326: expiryDate 뒤에 노출할 날짜 문구
+    expiryText: "2025.01.01까지",
+    main: "5,000원 캐시백",
+    sub: "그리팅몰",
+  },
+  {
+    id: 2,
+    icon: {
+      src: `${$cdnURL}/images/dummy/img_coupon_symbol02.png`,
+      alt: "",
+    },
+    main: "10,000원 캐시백",
+    sub: "CJ더마켓",
+  },
+  {
+    id: 3,
+    icon: {
+      src: `${$cdnURL}/images/dummy/img_coupon_symbol03.png`,
+      alt: "",
+    },
+    label: "보유중",
+    labelColor: "blue",
+    expiryDate: "D-3",
+    expiryDateColor: "blue",
+    // 수정 260326: expiryDate 뒤에 노출할 날짜 문구
+    expiryText: "2025.01.01까지",
+    main: "5% 캐시백",
+    sub: "크록스",
+  },
+  {
+    id: 4,
+    icon: {
+      src: `${$cdnURL}/images/dummy/img_coupon_symbol04.png`,
+      alt: "",
+    },
+    main: "1,000원 캐시백",
+    sub: "파리바게뜨",
+  },
+  {
+    id: 5,
+    icon: {
+      src: `${$cdnURL}/images/dummy/img_coupon_symbol05.png`,
+      alt: "",
+    },
+    expiryDate: "D-1",
+    expiryDateColor: "blue",
+    // 수정 260326: expiryDate 뒤에 노출할 날짜 문구
+    expiryText: "2025.01.01까지",
+    main: "3% 캐시백",
+    sub: "구구스",
+  },
+  // 이미지 호출 오류 시 UI 확인용. 존재하지 않는 URL → ScImage 로드 실패 → ScIcon(또는 fallback) 노출 및 is-error-fallback 클래스 적용 확인. 확인 후 제거.
+  {
+    id: 6,
+    icon: {
+      src: `${$cdnURL}/images/pages/base/__nonexistent_ui_check.png`,
+      alt: "",
+    },
+    main: "이미지 오류 UI 확인용",
+    sub: "로드 실패 시 ScIcon 노출",
+  },
+];
+
 <route lang="yaml">
 meta:
   id: SBT021A01
