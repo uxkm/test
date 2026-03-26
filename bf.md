@@ -2,6 +2,486 @@
 {% raw %}
 ```js
 
+
+<route lang="yaml">
+meta:
+  id: SBT021A01
+  title: 받은 쿠폰
+  menu: "혜택​ > 받은 쿠폰"
+  layout: SubLayout
+  category: 혜택
+  publish: 김대민
+  publishVersion: 0.8
+  status: 재작업
+  etc: |
+    [추가] 260206: 통신오류 이미지 구조 추가 및 수정,
+    [수정] 260206: 빌드시 하단 콘텐츠가 안보이는 현상으로 구조수정,
+    [추가] 260130: 스켈레톤 추가,
+    [접근성 개선]260123: BasicChipGroup control="expand" 옵션추가
+    251210: 이미지 ScImage 로 수정
+  header:
+    variant: sub
+    fixed: true
+    showBack: true
+    home: true
+  qa2: 퍼블완료
+  ui: |
+    [완료]260120: 마크업 (TBD 아이콘 수정 및 UI 확인용 페이지 추가, SBT021A01-a, SBT021A01-b),
+    [완료]260119: 마크업 (상단 네비게이션 우측 close 제거 홈 아이콘 추가 메타정보 수정),
+</route>
+<template>
+  <!-- [수정] UI 확인용: 스켈레톤·본문 둘 다 노출되도록 sc-contents__body 한 겹으로 감쌈. 스켈레톤/본문을 형제가 아닌 동일 body 자식으로 두어 빌드 시 본문이 가려지지 않음 -->
+  <div class="sc-contents__body">
+    <!-- [추가] 260130: 스켈레톤 추가 -->
+    <!-- S : 로딩중 스켈레톤 -->
+    <div
+      class="card-grid__skeleton coupon-received-loading"
+      aria-label="로딩중"
+      tabindex="0"
+    >
+      <!-- card-grid__skeleton 직계 자식 (들여쓰기 1단계) -->
+      <div class="cupon-head">
+        <LoadingSkeleton
+          :width="304"
+          :height="33"
+          rounded="small"
+        />
+      </div>
+      <div class="cupon-chip">
+        <LoadingSkeleton
+          :width="88"
+          :height="36"
+          rounded="full"
+        />
+        <LoadingSkeleton
+          :width="88"
+          :height="36"
+          rounded="full"
+        />
+        <LoadingSkeleton
+          :width="88"
+          :height="36"
+          rounded="full"
+        />
+      </div>
+      <div class="cupon-list__wrap">
+        <div class="cupon-list__head">
+          <LoadingSkeleton
+            :width="92"
+            :height="24"
+            rounded="small"
+          />
+        </div>
+        <div class="cupon-list__body">
+          <ul class="webzine-list">
+            <li
+              v-for="skeletonIndex in 4"
+              :key="`skeleton-${skeletonIndex}`"
+              class="webzine-item"
+            >
+              <div class="webzine-item__thumbnail">
+                <LoadingSkeleton
+                  :width="48"
+                  :height="48"
+                />
+              </div>
+              <div class="webzine-item__content">
+                <LoadingSkeleton
+                  :width="87"
+                  :height="22"
+                  rounded="small"
+                />
+                <LoadingSkeleton
+                  :width="200"
+                  :height="22"
+                  rounded="small"
+                />
+                <LoadingSkeleton
+                  :width="130"
+                  :height="22"
+                  rounded="small"
+                />
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <!-- E : 로딩중 스켈레톤 -->
+
+    <!-- 본문: sc-contents__body 직계 자식, 스켈레톤과 형제 -->
+    <div class="cupon-contents">
+      <!-- S : 모바일상품권 + 할인쿠폰이 있을 경우 -->
+      <template v-if="couponItems.length > 0">
+        <div
+          class="cupon-head"
+          tabindex="0"
+          :aria-label="`총 ${couponItems.length}개의 쿠폰을 보유중이에요.`"
+        >
+          <p aria-hidden="true">
+            총 <em class="cupon-count">{{ couponItems.length }}</em
+            >개의 쿠폰을 보유중이에요.
+          </p>
+        </div>
+        <div class="cupon-chip">
+          <!-- [v0.9 접근성 개선] 260123: control="expand" 옵션추가 -->
+          <BasicChipGroup
+            :control="chipControl"
+            :items="items"
+            variant="solid"
+            control="expand"
+            v-model="selectedValue"
+          />
+        </div>
+      </template>
+      <!-- E : 모바일상품권 + 할인쿠폰이 있을 경우 -->
+
+      <!-- S : 모바일상품권 0 + 할인쿠폰 0 인 경우(기존 유지, 변경예정) -->
+      <template v-else>
+        <div class="cupon-top__btngroup">
+          <BoxButtonGroup variant="50:50">
+            <BoxButton
+              size="large"
+              color="tertiary"
+              text="스탬프쿠폰"
+            >
+              <template #icon>
+                <!-- 아이콘 TBD 추 후 변경 -->
+                <!-- 260120: 이미지 변경 -->
+                <!-- <Icon name="sample-icon" width="34px" height="34px" /> -->
+                <img
+                  :src="`${$cdnURL}/images/pages/base/img_shinhan.png`"
+                  alt=""
+                  aria-hidden="true"
+                />
+              </template>
+            </BoxButton>
+            <BoxButton
+              size="large"
+              color="tertiary"
+              text="기프트샵"
+            >
+              <template #icon>
+                <!-- 아이콘 TBD 추 후 변경 -->
+                <!-- 260120: 이미지 변경 -->
+                <!-- <Icon name="sample-icon" width="34px" height="34px" /> -->
+                <img
+                  :src="`${$cdnURL}/images/pages/base/img_giftshop.png`"
+                  alt=""
+                  aria-hidden="true"
+                />
+              </template>
+            </BoxButton>
+          </BoxButtonGroup>
+
+          <Divider
+            variant="basic"
+            color="tertiary"
+            size="full"
+            orientation="horizontal"
+          />
+        </div>
+      </template>
+      <!-- E : 모바일상품권 0 + 할인쿠폰 0 인 경우(기존 유지, 변경예정) -->
+
+      <!-- S : 모바일상품권 + 할인쿠폰이 있을 경우 -->
+      <template v-if="couponItems.length > 0">
+        <div class="cupon-list__wrap">
+          <div class="cupon-list__head">
+            <strong
+              class="cupon-head__text"
+              :aria-label="`전체쿠폰 ${couponItems.length}개`"
+              tabindex="0"
+            >
+              <span aria-hidden="true"
+                >전체쿠폰 <em class="cupon-count">{{ couponItems.length }}</em
+                >개</span
+              >
+            </strong>
+            <Tooltip
+              :open="false"
+              placement="top-left"
+              :showClose="true"
+              :size="20"
+              class="select-type__tooltip"
+            >
+              <template #content>
+                <div class="sc-tooltip__content">
+                  <strong class="sc-tooltip-content__title">쿠폰 개수가 다르다면?</strong>
+                  <p>쿠폰별로 받기 또는 사용 반영까지 최대 하루정도 소요될 수 있어요</p>
+                </div>
+              </template>
+            </Tooltip>
+          </div>
+          <!-- 수정 260326: SBT001A01-discount.vue 패턴으로 쿠폰 리스트 마크업/접근성 동기화 -->
+          <div class="cupon-list__body">
+            <div
+              v-for="coupon in couponItems"
+              :key="coupon.id"
+              :class="[
+                'cupon-item outline',
+                { 'is-label': coupon.label || coupon.expiryDate },
+                /* 이미지 로드 실패 시 해당 행에만 적용. ScImage @error → onIconError(coupon.id) → iconErrorIds에 추가. */
+                { 'is-error-fallback': iconErrorIds.includes(coupon.id) },
+              ]"
+              role="link"
+              tabindex="0"
+              :aria-label="
+                [
+                  coupon.label ? `쿠폰 상태: ${coupon.label}` : null,
+                  coupon.expiryDate ? `만료일: ${coupon.expiryDate}` : null,
+                  coupon.expiryText,
+                  coupon.sub,
+                  coupon.main,
+                ]
+                  .filter(Boolean)
+                  .join(', ')
+              "
+            >
+              <ListItem align="centered" :left="{ direction: 'reverse' }" aria-hidden="true">
+                <template #label v-if="coupon.label || coupon.expiryDate">
+                  <div class="flex gap-4">
+                    <SolidLabel
+                      v-if="coupon.label"
+                      :title="coupon.label"
+                      :color="coupon.labelColor || 'blue'"
+                      class="inline-flex"
+                    />
+                    <TintLabel
+                      v-if="coupon.expiryDate"
+                      :title="coupon.expiryDate"
+                      :color="coupon.expiryDateColor || 'blue'"
+                    />
+                    <span 
+                      v-if="coupon.expiryText"
+                      class="expiry-date"
+                    >
+                      {{ coupon.expiryText }}
+                    </span>
+                  </div>
+                </template>
+                <template #leftSubText>
+                  <span>{{ coupon.sub }}</span>
+                </template>
+                <template #leftMainText>
+                  <strong>{{ coupon.main }}</strong>
+                </template>
+                <template #rightIcon>
+                  <ScImage
+                    :src="coupon.icon.src"
+                    :alt="coupon.icon.alt"
+                    class="cupon-icon"
+                    @error="onIconError(coupon.id)"
+                  />
+                </template>
+              </ListItem>
+            </div>
+          </div>
+        </div>
+      </template>
+      <!-- E : 모바일상품권 + 할인쿠폰이 있을 경우 -->
+
+      <template v-else>
+        <!-- S : 모바일상품권 5장 + 할인쿠폰 0장 인 경우 & 모바일상품권 0 + 할인쿠폰 0 인 경우(기존 유지, 변경예정) -->
+        <div class="sc-empty-case">
+          <div class="empty-type">
+            <div
+              class="empty__img fg-informative"
+              aria-hidden="true"
+            >
+              <!-- 260120: 이미지 변경 -->
+              <!-- <ScIcon
+                iconName="icon-error-coalition"
+                width="68px"
+                height="68px"
+              /> -->
+              <ScIcon
+                iconName="icon-nodata"
+                width="56px"
+                height="56px"
+              />
+            </div>
+            <div class="empty__main">
+              <p>받은 쿠폰이 없습니다.</p>
+            </div>
+            <div class="empty__btn">
+              <BoxButton
+                color="quaternary"
+                size="medium"
+                text="쿠폰 받으러 가기"
+              />
+            </div>
+          </div>
+        </div>
+        <!-- E : 모바일상품권 5장 + 할인쿠폰 0장 인 경우 & 모바일상품권 0 + 할인쿠폰 0 인 경우(기존 유지, 변경예정) -->
+
+        <!-- S : 모바일상품권 0 + 할인쿠폰 3장 인 경우 -->
+        <div class="sc-empty-case">
+          <div class="empty-type">
+            <div
+              class="empty__img fg-informative"
+              aria-hidden="true"
+            >
+              <!-- 260120: 이미지 변경 -->
+              <!-- <ScIcon
+                iconName="icon-error-coalition"
+                width="68px"
+                height="68px"
+              /> -->
+              <ScIcon
+                iconName="icon-nodata"
+                width="56px"
+                height="56px"
+              />
+            </div>
+            <div class="empty__main">
+              <p>보유한 모바일상품권이 없습니다.</p>
+            </div>
+            <div class="empty__btn">
+              <BoxButton
+                color="quaternary"
+                size="medium"
+                text="기프트샵 가기"
+              />
+            </div>
+          </div>
+        </div>
+        <!-- E : 모바일상품권 0 + 할인쿠폰 3장 인 경우 -->
+      </template>
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { AppContextKey } from "@/configs/inject/appContext";
+import { ScIcon, ScImage } from "@shc-nss/ui/shc";
+import {
+  BasicChipGroup,
+  BoxButton,
+  BoxButtonGroup,
+  Divider,
+  ListItem,
+  LoadingSkeleton,
+  SolidLabel,
+  TintLabel,
+  Tooltip,
+} from "@shc-nss/ui/solid";
+import { computed, inject, ref } from "vue";
+
+const { $cdnURL } = inject(AppContextKey);
+
+// 이미지 오류 UI 확인용 해당 행 쿠폰 아이콘 로드 실패 시 is-error-fallback 클래스 적용.
+const iconErrorIds = ref([]);
+function onIconError(couponId) {
+  if (!iconErrorIds.value.includes(couponId)) {
+    iconErrorIds.value = [...iconErrorIds.value, couponId];
+  }
+}
+
+// 첫 번째 칩을 선택된 상태로 초기화
+const selectedValue = ref("1");
+const items = [
+  {
+    text: "전체",
+    value: "1",
+  },
+  {
+    text: "모바일 상품권",
+    value: "2",
+  },
+  {
+    text: "할인쿠폰",
+    value: "3",
+  },
+];
+
+// 칩 개수에 따라 control 설정 (기본: none, 많으면: expand)
+const chipControl = computed(() => {
+  return items.length >= 4 ? "expand" : "none";
+});
+
+// 수정 260326: SBT001A01-discount.vue 데이터 스키마(label/expiryDate/main/sub)로 동기화
+const couponItems = [
+  {
+    id: 1,
+    icon: {
+      src: `${$cdnURL}/images/dummy/img_coupon_symbol01.png`,
+      alt: "",
+    },
+    label: "보유중",
+    labelColor: "blue",
+    expiryDate: "D-3",
+    expiryDateColor: "blue",
+    // 수정 260326: expiryDate 뒤에 노출할 날짜 문구
+    expiryText: "2025.01.01까지",
+    main: "5,000원 캐시백",
+    sub: "그리팅몰",
+  },
+  {
+    id: 2,
+    icon: {
+      src: `${$cdnURL}/images/dummy/img_coupon_symbol02.png`,
+      alt: "",
+    },
+    main: "10,000원 캐시백",
+    sub: "CJ더마켓",
+  },
+  {
+    id: 3,
+    icon: {
+      src: `${$cdnURL}/images/dummy/img_coupon_symbol03.png`,
+      alt: "",
+    },
+    label: "보유중",
+    labelColor: "blue",
+    expiryDate: "D-3",
+    expiryDateColor: "blue",
+    // 수정 260326: expiryDate 뒤에 노출할 날짜 문구
+    expiryText: "2025.01.01까지",
+    main: "5% 캐시백",
+    sub: "크록스",
+  },
+  {
+    id: 4,
+    icon: {
+      src: `${$cdnURL}/images/dummy/img_coupon_symbol04.png`,
+      alt: "",
+    },
+    main: "1,000원 캐시백",
+    sub: "파리바게뜨",
+  },
+  {
+    id: 5,
+    icon: {
+      src: `${$cdnURL}/images/dummy/img_coupon_symbol05.png`,
+      alt: "",
+    },
+    expiryDate: "D-1",
+    expiryDateColor: "blue",
+    // 수정 260326: expiryDate 뒤에 노출할 날짜 문구
+    expiryText: "2025.01.01까지",
+    main: "3% 캐시백",
+    sub: "구구스",
+  },
+  // 이미지 호출 오류 시 UI 확인용. 존재하지 않는 URL → ScImage 로드 실패 → ScIcon(또는 fallback) 노출 및 is-error-fallback 클래스 적용 확인. 확인 후 제거.
+  {
+    id: 6,
+    icon: {
+      src: `${$cdnURL}/images/pages/base/__nonexistent_ui_check.png`,
+      alt: "",
+    },
+    main: "이미지 오류 UI 확인용",
+    sub: "로드 실패 시 ScIcon 노출",
+  },
+];
+</script>
+
+
+
+
+
+
+
 <li
           v-for="item in collectionEventItemsImage.slice(0, 5)"
           :key="item.id"
