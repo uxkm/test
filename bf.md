@@ -3,6 +3,23 @@
 ```js
 
 
+  /* 배달앱 쿠폰 캐러슬: 슬라이드 간 8px (spaceBetween만으로는 1장 뷰에서 간격이 뷰포트 밖으로 잘려 보이지 않음) */
+  .delivery-coupon__carousel {
+    .swiper-slide {
+      box-sizing: border-box;
+      width: calc(100% - 8px);
+      margin-right: 8px;
+    }
+    .delivery-coupon__slide {
+      display: block;
+      width: 100%;
+    }
+    .delivery-coupon__slide img {
+      display: block;
+      width: 100%;
+    }
+  }
+
           <!-- 수정 260326: SBT001A01-discount.vue 패턴으로 쿠폰 리스트 마크업/접근성 동기화 -->
           <div class="cupon-list__body">
             <div
