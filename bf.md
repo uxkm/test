@@ -1,6 +1,85 @@
 
 {% raw %}
 ```js
+<article aria-label="외부 광고 배너">
+        <Carousel
+          v-if="exportBannerSlides.length > 1"
+          root-class="export-banner__carousel"
+          :slides-per-view="1"
+          :space-between="12"
+          :loop="true"
+          :autoplay="true"
+          :autoplay-delay="3500"
+          :pagination="true"
+          pagination-type="fraction"
+          pagination-placement="outside-center"
+          number-color="responsiveMode"
+          number-size="large"
+          :navigation="false"
+          :allow-touch-move="true"
+        >
+          <CarouselItem
+            v-for="slide in exportBannerSlides"
+            :key="slide.id"
+          >
+            <a
+              role="link"
+              :href="slide.href"
+              class="export-banner__link"
+              :aria-label="slide.ariaLabel"
+            >
+              <img
+                :src="slide.src"
+                :alt="slide.alt"
+                class="export-banner"
+              />
+            </a>
+          </CarouselItem>
+        </Carousel>
+        <div
+          v-else-if="exportBannerSlides.length === 1"
+          class="export-banner__carousel"
+        >
+          <a
+            role="link"
+            :href="exportBannerSlides[0].href"
+            class="export-banner__link"
+            :aria-label="exportBannerSlides[0].ariaLabel"
+          >
+            <img
+              :src="exportBannerSlides[0].src"
+              :alt="exportBannerSlides[0].alt"
+              class="export-banner"
+            />
+          </a>
+        </div>
+      </article>
+
+/** 외부광고 배너: 2건 이상이면 캐러셀(1장·자동), 1건이면 정적 배너만 */
+const exportBannerSlides = [
+  {
+    id: "export-1",
+    src: `${$cdnURL}/images/pages/benefits/main/img_export.png`,
+    alt: "익시오 앱 무료 다운로드 - 통화녹음&요약 AI앱 익시오 AD Moloco 광고입니다. (1/3)",
+    ariaLabel: "익시오 앱 무료 다운로드 이동",
+    href: "javascript:;",
+  },
+  {
+    id: "export-2",
+    src: `${$cdnURL}/images/pages/benefits/main/img_export.png`,
+    alt: "익시오 앱 무료 다운로드 - 통화녹음&요약 AI앱 익시오 AD Moloco 광고입니다. (2/3)",
+    ariaLabel: "익시오 앱 무료 다운로드 이동",
+    href: "javascript:;",
+  },
+  {
+    id: "export-3",
+    src: `${$cdnURL}/images/pages/benefits/main/img_export.png`,
+    alt: "익시오 앱 무료 다운로드 - 통화녹음&요약 AI앱 익시오 AD Moloco 광고입니다. (3/3)",
+    ariaLabel: "익시오 앱 무료 다운로드 이동",
+    href: "javascript:;",
+  },
+];
+
 
 
   /* 배달앱 쿠폰 캐러슬: 슬라이드 간 8px (spaceBetween만으로는 1장 뷰에서 간격이 뷰포트 밖으로 잘려 보이지 않음) */
