@@ -533,6 +533,59 @@ test3
       <ArchiveContent v-if="activeTab === 'archive'" />
 
       <SettingContent v-if="activeTab === 'setting'" />
+
+      <!--
+        [다른 방식 1] v-if / v-else-if / v-else 체인
+        (한 번에 하나만 렌더되며, 조건이 위에서부터 순차 평가됨)
+
+        <AllContent v-if="activeTab === 'all'" />
+        <ProgressContent v-else-if="activeTab === 'progress'" />
+        <CompleteContent v-else-if="activeTab === 'complete'" />
+        <ArchiveContent v-else-if="activeTab === 'archive'" />
+        <SettingContent v-else-if="activeTab === 'setting'" />
+        <div v-else>선택된 탭이 없습니다.</div>
+      -->
+
+      <!--
+        [다른 방식 2] activeIndex로 비교
+        (짧지만 탭 순서 변경/추가/삭제 시 index가 어긋날 수 있음)
+
+        <AllContent v-if="activeIndex === 0" />
+        <ProgressContent v-if="activeIndex === 1" />
+        <CompleteContent v-if="activeIndex === 2" />
+        <ArchiveContent v-if="activeIndex === 3" />
+        <SettingContent v-if="activeIndex === 4" />
+      -->
+
+      <!--
+        [다른 방식 3] tabs[activeIndex].id 직접 비교
+        (computed activeTab 없이도 가능, 표현이 길어짐)
+
+        <AllContent v-if="tabs[activeIndex] && tabs[activeIndex].id === 'all'" />
+        <ProgressContent v-if="tabs[activeIndex] && tabs[activeIndex].id === 'progress'" />
+        <CompleteContent v-if="tabs[activeIndex] && tabs[activeIndex].id === 'complete'" />
+        <ArchiveContent v-if="tabs[activeIndex] && tabs[activeIndex].id === 'archive'" />
+        <SettingContent v-if="tabs[activeIndex] && tabs[activeIndex].id === 'setting'" />
+      -->
+
+      <!--
+        [다른 방식 4] 동적 컴포넌트 (:is)
+        (마크업 v-if 나열 제거, id → 컴포넌트 맵을 computed에서 관리)
+
+        <component :is="activeComponent" v-if="activeComponent" />
+
+        // computed 예시
+        // activeComponent() {
+        //   const map = {
+        //     all: 'AllContent',
+        //     progress: 'ProgressContent',
+        //     complete: 'CompleteContent',
+        //     archive: 'ArchiveContent',
+        //     setting: 'SettingContent'
+        //   }
+        //   return map[this.activeTab] || null
+        // }
+      -->
     </div>
   </div>
 </template>
